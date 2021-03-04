@@ -1,6 +1,3 @@
-//
-// Created by Stefan on 04-Mar-21.
-//
 
 #ifndef INC_3_CHECK_CHESS_CHESSPIECE_H
 #define INC_3_CHECK_CHESS_CHESSPIECE_H
@@ -11,9 +8,8 @@ class ChessPiece {
 public:
     char color; // b or w
     vec2 position;
-    int symbol;
-
     ChessPiece(char color, vec2 pos);
+    //std::vector<vec2> getPositions();
 };
 
 class King : public ChessPiece {
