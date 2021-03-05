@@ -46,7 +46,7 @@ Table::~Table() {
     }
 }
 
-void Table::Move(ChessPiece *cp, vec2 newPos) {
+void Table::move(ChessPiece *cp, vec2 newPos) {
     assert(isInside(newPos) && "Can't move piece outside the table");
     assert(cp != nullptr && "Piece meant to be moved is null");
     cp->prevPos = cp->position;
@@ -55,12 +55,18 @@ void Table::Move(ChessPiece *cp, vec2 newPos) {
     squares[newPos.x][newPos.y]->cp = cp;
 
 }
-void Table::Delete(ChessPiece *cp) {
+void Table::remove(ChessPiece *cp) {
     assert(cp != nullptr && "Piece meant to be deleted is null");
     squares[cp->position.x][cp->position.y]->cp = nullptr;
     delete cp;
 }
-string Table::getRealCoords(vec2 pos) {
+
+bool Table::canIPlaceItHere(ChessPiece *cp, Square *sq) {
+    if (sq->cp) return cp->color == sq->cp->color;
+    return true;
+}
+
+string Table::getCoords(vec2 pos) {
     assert(isInside(pos) && "Position outside of the table");
     string s = "a";
     s[0] += pos.x;
@@ -70,23 +76,13 @@ string Table::getRealCoords(vec2 pos) {
 bool Table::isInside(vec2 pos) const {
     return pos.x < width && pos.x >= 0 && pos.y >= 0 && pos.y < height;
 }
-int Table::getTotalScore(char color) {
-    assert(color == 'w' || color == 'b' && "Can't calculate total score for anything else besides black and white");
-    int total = 0;
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
-            if (squares[i][j]->cp && squares[i][j]->cp->color == color)
-                total += squares[i][j]->cp->score;
-        }
-    }
-    return total;
-}
-
-Table *Table::copyTable(ChessPiece *cp, vec2 newPos) {
+Table *Table::cloneTable(ChessPiece *cp, vec2 newPos) {
     Table* t = new Table(*this);
     for (int i = 0; i < t->height; ++i) {
         for (int j = 0; j < t->width; ++j) {
+            t->squares[i][j] = new Square(*squares[i][j]);
             ChessPiece* c = t->squares[i][j]->cp;
+            if (!c) continue;
 
             if(dynamic_cast<Pawn*>(c))
                 t->squares[i][j]->cp = new Pawn(*dynamic_cast<Pawn*>(c));
@@ -102,13 +98,31 @@ Table *Table::copyTable(ChessPiece *cp, vec2 newPos) {
                 t->squares[i][j]->cp = new King(*dynamic_cast<King*>(c));
         }
     }
-    t->Move(cp, newPos);
+    t->move(t->squares[cp->position.x][cp->position.y]->cp, newPos);
     return t;
 }
 
+
+int Table::getSquareScore(Square *sq, char myColor) {
+    if (!sq || !sq->cp) return 0;
+    return sq->cp->score;
+}
+int Table::getTotalScore(char color) {
+    assert(color == 'w' || color == 'b' && "Can't calculate total score for anything else besides black and white");
+    int total = 0;
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (squares[i][j]->cp && squares[i][j]->cp->color == color)
+                total += squares[i][j]->cp->score;
+        }
+    }
+    return total;
+}
+
 void Table::printTable() {
-    cout << "#########################\n";
+    cout << "###########################\n";
     for (int i = height - 1; i >= 0; i--) {
+        std::cout << (char)('A' + i) << "| ";
         for (int j = 0; j < width; ++j) {
             if (squares[i][j]->cp)
                 cout << " " << squares[i][j]->cp->score << " ";
@@ -116,8 +130,13 @@ void Table::printTable() {
         }
         cout << "\n";
     }
-    cout << "#########################\n";
-}
 
+    cout << "   ------------------------\n";
+    cout << "   ";
+    for (int j = 0; j < width; ++j)
+        cout << " " << j + 1 << " ";
+    cout << "\n###########################\n";
+
+}
 
 

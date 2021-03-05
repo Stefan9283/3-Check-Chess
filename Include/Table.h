@@ -1,9 +1,10 @@
-
 #ifndef INC_3_CHECK_CHESS_TABLE_H
 #define INC_3_CHECK_CHESS_TABLE_H
 
 #include "common.h"
 #include "ChessPiece.h"
+
+class ChessPiece;
 
 class Square {
 public:
@@ -25,12 +26,19 @@ public:
 
     Table();
     ~Table();
-    void Move(ChessPiece* cp, vec2 newPos);
-    void Delete(ChessPiece* cp);
-    string getRealCoords(vec2 pos);
+
+    void move(ChessPiece* cp, vec2 newPos);
+    void remove(ChessPiece* cp);
+
+    bool canIPlaceItHere(ChessPiece* cp, Square* sq);
+
+    string getCoords(vec2 pos);
     bool isInside(vec2 pos) const;
+
+    int getSquareScore(Square* sq, char myColor);
     int getTotalScore(char color);
-    Table* copyTable(ChessPiece* cp, vec2 newPos);
+
+    Table* cloneTable(ChessPiece* cp, vec2 newPos);
 
     void printTable();
 };
