@@ -1,3 +1,21 @@
 
 .idea/*
 cmake-build-debug/*
+.vs/*
+3_Check_Chess.dir/*
+3_Check_Chess.sln
+3_Check_Chess.vcxproj
+3_Check_Chess.vcxproj.filters
+3_Check_Chess.vcxproj.user
+ALL_BUILD.vcxproj
+ALL_BUILD.vcxproj.filters
+ALL_BUILD.vcxproj.user
+cmake_install.cmake
+CMakeCache.txt
+CMakeFiles/*
+Debug/3_Check_Chess.exe
+Debug/3_Check_Chess.ilk
+Debug/3_Check_Chess.pdb
+x64/Debug/*
+ZERO_CHECK.vcxproj.filters
+ZERO_CHECK.vcxproj

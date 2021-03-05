@@ -20,8 +20,6 @@
 
 #include <assert.h>
 
-using namespace std;
-
 typedef struct vec2 {
     int x, y;
 } vec2;

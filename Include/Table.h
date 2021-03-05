@@ -8,39 +8,51 @@ class ChessPiece;
 
 class Square {
 public:
-    /*
-     *  0 - gol
-     * -1 - sah negru
-     *  1 - sah alb
-     * */
-    int type = 0;
-    vector<ChessPiece*> possibleMoves;
-    ChessPiece *cp{};
+    std::vector<vec2> possibleNormalMoves;
+    std::vector<vec2> possibleSpecialMoves;
+    ChessPiece* piece = nullptr;
 };
 
 class Table {
 public:
-    vector<vector<Square *>> squares;
+    std::vector<std::vector<Square*>> squares;
     const int height = 8, width = 8;
     int orientation = 1;
 
     Table();
     ~Table();
 
-    void move(ChessPiece* cp, vec2 newPos);
-    void remove(ChessPiece* cp);
+    // Functii Stefan
+    void movePiece(ChessPiece* piece, vec2 pos);
+
+    void removePiece(ChessPiece* piece);
+   
+    bool isInside(vec2 pos);
 
     bool canIPlaceItHere(ChessPiece* cp, Square* sq);
 
-    string getCoords(vec2 pos);
-    bool isInside(vec2 pos) const;
+    std::string getCoords(vec2 pos);
 
-    int getSquareScore(Square* sq, char myColor);
     int getTotalScore(char color);
 
-    Table* cloneTable(ChessPiece* cp, vec2 newPos);
+    int getSquareScore(Square* sq, char myColor);
+
+    Table* createNewState(ChessPiece* piece, vec2 pos);
 
     void printTable();
+
+    // Functii Ovidiu
+    bool isAnIllegalPiece(ChessPiece* piece, vec2 pos);
+
+    void markPossibleMovesForPawn(Pawn* pawn);
+
+    void markPossibleMovesForKnight(Knight* knight);
+
+    void markPossibleMovesForBishop(Bishop* bishop);
+
+    void markPossibleMovesForRook(Rook* rook);
+
+    void markPossibleMovesForQueen(Queen* queen);
 };
 
 #endif //INC_3_CHECK_CHESS_TABLE_H
