@@ -18,6 +18,8 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+#include <assert.h>
+
 using namespace std;
 
 typedef struct vec2 {
