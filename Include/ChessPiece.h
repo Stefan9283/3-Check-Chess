@@ -33,7 +33,10 @@ public:
 
 class King : public ChessPiece {
 public:
+    bool castle = false;
+
     bool wasMoved = false;
+
     int checks = 0;
 
     King(char color, vec2 pos, int index);
@@ -41,6 +44,9 @@ public:
     int isCheck(Table* t, ChessPiece* cp);
 
     std::vector<PieceMove> getPositions(Table* t) override;
+
+    // Functii Ovidiu
+    bool isInCheckAt(Table* table, vec2 pos);
 };
 
 class Queen : public ChessPiece {

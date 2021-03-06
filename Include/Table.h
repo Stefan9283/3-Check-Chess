@@ -9,20 +9,27 @@ class ChessPiece;
 class Square {
 public:
     std::vector<vec2> possibleNormalMoves;
-    std::vector<vec2> possibleSpecialMoves;
+
     ChessPiece* piece = nullptr;
 };
 
 class Table {
 public:
-
     std::vector<std::vector<Square*>> squares;
 
     std::vector<std::vector<ChessPiece*>> pieces;
+
     std::vector<std::pair<vec2, vec2>> history;
 
     const int height = 8, width = 8;
     int orientation = 1;
+
+    // Not permanent
+    bool shortCastle_white = false;
+    bool shortCastle_black = false;
+
+    bool longCastle_white = false;
+    bool longCastle_black = false;
 
     Table();
     ~Table();
@@ -55,6 +62,13 @@ public:
 
     // Functii Ovidiu
     bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
+    bool hasNoPiecesBetween_line(vec2 pos1, vec2 pos2);
+
+    bool hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2);
+
+    bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
+
+    bool isKingInConflict(King* king, vec2 pos);
 
     void markPossibleMovesForPawn(Pawn* pawn);
 
@@ -65,6 +79,8 @@ public:
     void markPossibleMovesForRook(Rook* rook);
 
     void markPossibleMovesForQueen(Queen* queen);
+
+    void markPossibleMovesForKing(King* king);
 };
 
 #endif //INC_3_CHECK_CHESS_TABLE_H
