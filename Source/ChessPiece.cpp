@@ -378,9 +378,9 @@ bool King::isInCheckAt(Table* table, vec2 pos) {
     // Check from pawn
     for (int j = 0; j < table->width; j++)
         if (table->pieces[line][j])
-            if (((color == 'w' && table->pieces[line][j]->pos.y == pos.y + 1) ||
-                (color == 'b' && table->pieces[line][j]->pos.y == pos.y - 1)) &&
-                abs(table->pieces[line][j]->pos.x - pos.x) == 1)
+            if (((color == 'w' && table->pieces[line][j]->pos.x == pos.x + 1) ||
+                (color == 'b' && table->pieces[line][j]->pos.x == pos.x - 1)) &&
+                abs(table->pieces[line][j]->pos.y - pos.y) == 1)
                     return true;
 
     // Check from rook
