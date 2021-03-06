@@ -1,9 +1,9 @@
 #include "ChessPiece.h"
 #include "Table.h"
 
-#define CHECKMATE 2
-#define CHECK 1
 #define NOCHECK 0
+#define CHECK 1
+#define CHECKMATE 2
 
 ChessPiece::ChessPiece(char color, vec2 pos, int index) {
     assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
@@ -16,118 +16,144 @@ int King::isCheck(Table* t, ChessPiece* piece) {
     // verific daca o piesa pune in sah regele
     char color;
     int aux = 0;
-    King* foundK;
 
     if (piece->color == 'b')
         color = 'w';
     else color = 'b'; // aflam culoarea regelui care este in pericol
 
-    // [Stefan T]: de ce cautam pozitia daca o stim deja?
-    // (obiectul pentru care apelam functia este deja de tip King si deci avem this->pos)
-    /*
-    if (color == 'b') {  // daca piesa este alba, vom incepe cautarea de jos in sus
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (t->squares[i][j]->piece->score == 0) {
-                    foundK = (King*)t->squares[i][j]->piece; // retinem regele ca sa ii cunoastem pozitia
-                    aux = 1;
-                    break;
-                }
-            }
-            if (aux = 1) break;
-        }
-    }
-    else {
-        for (int i = 7; i > 0; i--) { // pornim cautarea de sus in jos ca sa aflam regele
-            for (int j = 0; j < 8; j++) {
-                if (t->squares[i][j]->piece->score == 0) {
-                    foundK = (King*)t->squares[i][j]->piece; // retinem regele ca sa ii cunoastem pozitia
-                    aux = 1;
-                    break;
-                }
-            }
-            if (aux = 1) break;
-        }
-    }
-     */
-
     //pozitia regelui
-    vec2 kPos = this->pos; //vec2{ foundK->pos.x, foundK->pos.y };
-    foundK = this;
+    vec2 kPos = this->pos;
     if (dynamic_cast<Pawn*>(piece)) { // pion
         if (piece->color == 'w') {
-            if (piece->pos.x + 1 == foundK->pos.x && (piece->pos.y - 1 == foundK->pos.y ||
-                piece->pos.y + 1 == foundK->pos.y)) { // [Stefan T]: N-ar trebui sa se ia in calcul daca se face + sau -1 pe y in functie de culoarea pionului?
-                foundK->checks++;
-                //t->squares[foundK->pos.x][foundK->pos.y] = foundK; ?????? [Stefan T]: ??????
+            if (piece->pos.x + 1 == kPos.x && piece->pos.y + 1 == kPos.y) {
+                this->checks++;
                 return CHECK; // pionul pune in sah regele negru
             }
         }
         else {
-            if (piece->pos.x - 1 == foundK->pos.x && (piece->pos.y - 1 == foundK->pos.y ||
-                piece->pos.y + 1 == foundK->pos.y)) {
-                foundK->checks++;
-                //t->squares[foundK->pos.x][foundK->pos.y] = foundK; ?????? [Stefan T]: ??????
+            if (piece->pos.x - 1 == kPos.x && piece->pos.y - 1 == kPos.y) {
+                this->checks++;
                 return CHECK; // pionul pune in sah regele alb
             }
         }
     }
-    else if (dynamic_cast<Knight*>(piece)) { // cal, am schimbat scorul, nu stiu daca e in regula
-         // ~~DYNAMIC CAST    dynamic_cast<Knight*>(c) ---> de adaugat asta SI DE schimbat 2 in 3~~ [Stefan T]: Rezolvat cu cast-ul dar vad ca n-a fost modificat score-ul in constructor
-        if ((piece->pos.x + 1 == foundK->pos.x && piece->pos.y + 2 == foundK->pos.y) || (piece->pos.x + 1 == foundK->pos.x && piece->pos.y - 2 == foundK->pos.y)
-            || (piece->pos.x + 2 == foundK->pos.x && piece->pos.y + 1) || (piece->pos.x - 1 == foundK->pos.x && piece->pos.y + 2 == foundK->pos.y)
-            || (piece->pos.x - 1 == foundK->pos.x && piece->pos.y - 2) || (piece->pos.x + 2 == foundK->pos.x && piece->pos.y - 1 == foundK->pos.y)
-            || (piece->pos.x - 2 == foundK->pos.x && piece->pos.y + 1) || (piece->pos.x - 2 == foundK->pos.x && piece->pos.y - 1 == foundK->pos.y)) {
-            foundK->checks++;
+    else if (dynamic_cast<Knight*>(piece)) { // cal
+        if ((piece->pos.x + 1 == kPos.x && piece->pos.y + 2 == kPos.y) || (piece->pos.x + 1 == kPos.x && piece->pos.y - 2 == kPos.y)
+            || (piece->pos.x + 2 == kPos.x && piece->pos.y + 1) || (piece->pos.x - 1 == kPos.x && piece->pos.y + 2 == kPos.y)
+            || (piece->pos.x - 1 == kPos.x && piece->pos.y - 2) || (piece->pos.x + 2 == kPos.x && piece->pos.y - 1 == kPos.y)
+            || (piece->pos.x - 2 == kPos.x && piece->pos.y + 1) || (piece->pos.x - 2 == kPos.x && piece->pos.y - 1 == kPos.y)) {
+            this->checks++;
             return CHECK;
         }
     }
     else if (dynamic_cast<Bishop*>(piece) || dynamic_cast<Queen*>(piece)) { // nebun sau regina
-     // TODO -- de facut !!!!
-     //  [Stefan T]: pls cand ramane ceva de facut pune la inceput de linie un TODO
+        int dist = 0;
+        vec2 kDifPos; //la nebun x1-x2 = |y1-y2|
+        kDifPos.x = kPos.x - piece->pos.x;
+        kDifPos.y = kPos.y - piece->pos.y;
+        if (kDifPos.x == kDifPos.y || kDifPos.x == -kDifPos.y) {
+            //inseamna ca regele si nebunul/regina se afla pe aceeasi diagonala
+            //verificam daca exista piese intermediare intre ele
+            //LEFT UP x > 0,  y < 0 -  se afla regele in stanga sus fata de nebun
+            if (kDifPos.x > 0 && kDifPos.y < 0) {
+                for (int i = 1; i < kDifPos.x; i++) {
+                    if (t->squares[piece->pos.x + i][piece->pos.y - i] != 0) break;
+                    dist = dist + 1;// verificam daca ajunge pana la rege
+                }
+                if (dist = kDifPos.x) {
+                    this->checks++;
+                    return CHECK;
+                }
+            }
+            // RIGHT up x>0, y>0
+            if (kDifPos.x > 0 && kDifPos.y < 0) {
+                for (int i = 1; i < kDifPos.x; i++) {
+                    if (t->squares[piece->pos.x + i][piece->pos.y + i] != 0) break;
+                    dist = dist + 1;// verificam daca ajunge pana la rege
+                }
+                if (dist = kDifPos.x) {
+                    this->checks++;
+                    return CHECK;
+                }
+            }
+            //LEFT DOWN x<0, y<0
+            if (kDifPos.x < 0 && kDifPos.y < 0) {
+                for (int i = 1; i < -kDifPos.x; i++) {
+                    if (t->squares[piece->pos.x - i][piece->pos.y - i] != 0) break;
+                    dist = dist + 1;// verificam daca ajunge pana la rege
+                }
+                if (dist = -kDifPos.x) {
+                    this->checks++;
+                    return CHECK;
+                }
+            }
+            //RIGHT DOWN x<0, y>0
+            if (kDifPos.x < 0 && kDifPos.y > 0) {
+                for (int i = 1; i < -kDifPos.y; i++) {
+                    if (t->squares[piece->pos.x - i][piece->pos.y + i] != 0) break;
+                    dist = dist + 1;// verificam daca ajunge pana la rege
+                }
+                if (dist = kDifPos.y) {
+                    this->checks++;
+                    return CHECK;
+                }
+            }
+        }
     }
     else if (dynamic_cast<Rook*>(piece) || dynamic_cast<Queen*>(piece)) { // tura sau regina
         int min;
         int dist = 0;
-        if (piece->pos.x == foundK->pos.x) {
+        if (piece->pos.x == kPos.x) {
             // verificam daca pe axa y exista celule libere de la o piesa la alta
-            if (piece->pos.y < foundK->pos.y) {
-                for (int i = piece->pos.y; i < foundK->pos.y; i++) {
-                    dist = dist + 1; // calculam distanta sa verificam daca ajunge pana acolo
+            if (piece->pos.y < kPos.y) {
+                for (int i = piece->pos.y; i < kPos.y; i++) {
                     if (t->squares[i][piece->pos.x] != 0) break;
+                    dist = dist + 1; // calculam distanta sa verificam daca ajunge pana acolo
+
                 }
-                if (dist = foundK->pos.y - piece->pos.y) return CHECK;
+                if (dist = kPos.y - piece->pos.y) {
+                    this->checks++;
+                    return CHECK;
+                }
             }
             else {
-                for (int i = foundK->pos.y; i < piece->pos.y; i++) {
+                for (int i = kPos.y; i < piece->pos.y; i++) {
                     dist = dist + 1; // calculam distanta sa verificam daca ajunge pana acolo
-                    if (t->squares[i][foundK->pos.x] != 0) break;
+                    if (t->squares[i][kPos.x] != 0) break;
                 }
-                if (dist = piece->pos.y - foundK->pos.y) return CHECK;
+                if (dist = piece->pos.y - kPos.y) {
+                    this->checks++;
+                    return CHECK;
+                }
             }
         }
-        else if (piece->pos.y == foundK->pos.y) {
+        else if (piece->pos.y == kPos.y) {
             // verificam daca pe axa x exista celule libere de la o piesa la alta
-            if (piece->pos.x < foundK->pos.x) {
-                for (int i = piece->pos.x; i < foundK->pos.x; i++) {
+            if (piece->pos.x < kPos.x) {
+                for (int i = piece->pos.x; i < kPos.x; i++) {
                     dist = dist + 1; // calculam distanta sa verificam daca ajunge pana acolo
                     if (t->squares[i][piece->pos.y] != 0) break;
                 }
-                if (dist = foundK->pos.x - piece->pos.x) return CHECK;
+                if (dist = kPos.x - piece->pos.x) {
+                    this->checks++;
+                    return CHECK;
+                }
             }
             else {
-                for (int i = foundK->pos.x; i < piece->pos.x; i++) {
+                for (int i = kPos.x; i < piece->pos.x; i++) {
                     dist = dist + 1; // calculam distanta sa verificam daca ajunge pana acolo
-                    if (t->squares[i][foundK->pos.y] != 0) break;
+                    if (t->squares[i][kPos.y] != 0) break;
                 }
-                if (dist = piece->pos.x - foundK->pos.x) return CHECK;
+                if (dist = piece->pos.x - kPos.x) {
+                    this->checks++;
+                    return CHECK;
+                }
             }
 
         }
 
     }
     return NOCHECK;
-
 }
 
 King::King(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 0; }
@@ -175,8 +201,8 @@ Queen::Queen(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { 
 std::vector<PieceMove> Queen::getPositions(Table* t) {
     std::vector<PieceMove> moves, kmoves, bmoves;
 
-    King k(color, pos, index);;
-    kmoves = k.getPositions(t);
+    Rook r(color, pos, index);;
+    kmoves = r.getPositions(t);
     moves.insert(moves.begin(), kmoves.begin(), kmoves.end());
 
     Bishop b(color, pos, index);;
@@ -341,4 +367,65 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
     if (t->isInside(vec2{ pos.x + 1, pos.y + 1 }) && t->squares[pos.x + 1][pos.y + 1]->piece)
         moves.push_back(PieceMove{ vec2{pos.x + 1, pos.y + 1}, t->squares[pos.x + 1][pos.y + 1]->piece->score });
     return moves;
+}
+
+// Functii Ovidiu
+
+// Verrify if the king is in check at a specified position
+bool King::isInCheckAt(Table* table, vec2 pos) {
+    int line = color == 'w' ? 1 : 0;
+
+    // Check from pawn
+    for (int j = 0; j < table->width; j++)
+        if (table->pieces[line][j])
+            if (((color == 'w' && table->pieces[line][j]->pos.y == pos.y + 1) ||
+                (color == 'b' && table->pieces[line][j]->pos.y == pos.y - 1)) &&
+                abs(table->pieces[line][j]->pos.x - pos.x) == 1)
+                    return true;
+
+    // Check from rook
+    if (table->pieces[line][8])
+        if (table->pieces[line][8]->pos.x == pos.x || table->pieces[line][8]->pos.y == pos.y)
+            if (table->hasNoPiecesBetween_line(table->pieces[line][8]->pos, pos))
+                return true;
+
+    if (table->pieces[line][9])
+        if (table->pieces[line][9]->pos.x == pos.x || table->pieces[line][9]->pos.y == pos.y)
+            if (table->hasNoPiecesBetween_line(table->pieces[line][9]->pos, pos))
+                return true;
+
+    // Check from knight
+    if (table->pieces[line][10] &&
+        (abs(table->pieces[line][10]->pos.x - pos.x) == 2 && abs(table->pieces[line][10]->pos.y - pos.y) == 1) ||
+        (abs(table->pieces[line][10]->pos.y - pos.y) == 2 && abs(table->pieces[line][10]->pos.x - pos.x) == 1))
+            return true;
+
+    if (table->pieces[line][11] &&
+        (abs(table->pieces[line][11]->pos.x - pos.x) == 2 && abs(table->pieces[line][11]->pos.y - pos.y) == 1) ||
+        (abs(table->pieces[line][11]->pos.y - pos.y) == 2 && abs(table->pieces[line][11]->pos.x - pos.x) == 1))
+            return true;
+
+    // Check from bishop
+    if (table->pieces[line][12])
+        if (abs(table->pieces[line][12]->pos.x - pos.x) == abs(table->pieces[line][12]->pos.y - pos.y))
+            if (table->hasNoPiecesBetween_diagonal(table->pieces[line][12]->pos, pos))
+                return true;
+
+    if (table->pieces[line][13])
+        if (abs(table->pieces[line][13]->pos.x - pos.x) == abs(table->pieces[line][13]->pos.y - pos.y))
+            if (table->hasNoPiecesBetween_diagonal(table->pieces[line][13]->pos, pos))
+                return true;
+
+    // Check from queen
+    if (table->pieces[line][14]) {
+        if (table->pieces[line][14]->pos.x == pos.x || table->pieces[line][14]->pos.y == pos.y)
+            if (table->hasNoPiecesBetween_line(table->pieces[line][14]->pos, pos))
+                return true;
+
+        if (abs(table->pieces[line][14]->pos.x - pos.x) == abs(table->pieces[line][14]->pos.y - pos.y))
+            if (table->hasNoPiecesBetween_diagonal(table->pieces[line][14]->pos, pos))
+                return true;
+    }
+
+    return false;
 }

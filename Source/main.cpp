@@ -4,13 +4,13 @@
 
 int main() {
     Table* t = new Table();
-    ChessPiece* piece = t->squares[0][1]->piece;
+    /*ChessPiece* piece = t->squares[0][1]->piece;
     t->movePiece(piece, "f3");
     King* k = dynamic_cast<King*>(t->pieces[0][15]);
     t->movePiece(k, "c4");
     t->movePiece(t->getPiece("b3"), "3c");
-    t->movePiece(t->getPiece("a8"), "c8");
-    //t->printTable();
+    t->movePiece(t->getPiece("a8"), "c8");*/
+    t->printTable();
     /*
     int i = 0;
     for (ChessPiece* piece : t->pieces[0]) {
@@ -28,7 +28,7 @@ int main() {
      * turaL, turaR, nebunL, ... regina, rege)
      * */
 
-    t->movePiece(t->getPiece("c8"), "e4");
+    /*t->movePiece(t->getPiece("c8"), "e4");
     t->programmerPrint();
 
     std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
@@ -36,7 +36,7 @@ int main() {
         Table* tmp = t->createNewState(t->getPiece("e4"), move.ownMove);
         tmp->programmerPrint();
         delete tmp;
-    }
+    }*/
 
     return 0;
 }
