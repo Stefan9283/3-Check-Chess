@@ -33,7 +33,9 @@ public:
     void removePiece(ChessPiece* piece);
     ChessPiece* getPiece(const char* pos);
 
-    bool isInside(vec2 pos);
+    bool isAnIllegalMove(Square* sq, ChessPiece* piece);
+
+    bool isInside(vec2 pos) const;
 
     bool canIPlaceItHere(ChessPiece* cp, Square* sq);
 
@@ -52,7 +54,7 @@ public:
     }
 
     // Functii Ovidiu
-    bool isAnIllegalPiece(ChessPiece* piece, vec2 pos);
+    bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
 
     void markPossibleMovesForPawn(Pawn* pawn);
 

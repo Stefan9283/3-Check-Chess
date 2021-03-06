@@ -137,54 +137,54 @@ std::vector<PieceMove> King::getPositions(Table* t) {
     vec2 v{};
 
     v = vec2{ pos.x + 1, pos.y - 1 };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x + 1, pos.y };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x + 1, pos.y + 1 };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x, pos.y + 1 };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x, pos.y - 1 };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x - 1, pos.y - 1 };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x - 1, pos.y };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     v = vec2{ pos.x - 1, pos.y + 1 };
-    if (t->isInside(v)) {
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y])) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     return moves;
-}
+} // {DONE}
 
 Queen::Queen(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 9; }
 std::vector<PieceMove> Queen::getPositions(Table* t) {
-    std::vector<PieceMove> moves, kmoves, bmoves;
+    std::vector<PieceMove> moves, rmoves, bmoves;
 
-    King k(color, pos, index);;
-    kmoves = k.getPositions(t);
-    moves.insert(moves.begin(), kmoves.begin(), kmoves.end());
+    Rook r(color, pos, index);;
+    rmoves = r.getPositions(t);
+    moves.insert(moves.begin(), rmoves.begin(), rmoves.end());
 
     Bishop b(color, pos, index);;
     bmoves = b.getPositions(t);
     moves.insert(moves.begin(), bmoves.begin(), bmoves.end());
 
     return moves;
-}
+} // {DONE}
 
 Rook::Rook(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 5; }
 std::vector<PieceMove> Rook::getPositions(Table* t) {
@@ -241,52 +241,47 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
     int i;
 
     i = 1;
-    while (t->isInside(vec2{ pos.x - i, pos.y + i })) {
-        Square* squarePiece = t->squares[pos.x - i][i + pos.y];
-        if (squarePiece) {
-            moves.push_back(PieceMove{ vec2{pos.x - i, i + pos.y}, t->getSquareScore(squarePiece, color) });
-            break;
+    while (t->isInside(vec2{ pos.x + i, pos.y - i })) {
+        Square* squarePiece = t->squares[pos.x + i][pos.y - i];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{ vec2{pos.x + i, pos.y - i}, t->getSquareScore(squarePiece, color)});
+            if (squarePiece->piece) break;
         }
-        moves.push_back(PieceMove{ vec2{pos.x - i, i + pos.y} });
         i++;
     } // LEFT UP
 
-    //i = 1;
-    //while(t->isInside(vec2{pos.x - i, pos.y - i})) {
-    //    Square* squarePiece = t->squares[pos.x - i][- i + pos.y];
-    //    if (squarePiece) {
-    //        moves.push_back(PieceMove{vec2{pos.x - i, - i + pos.y}, t->getSquareScore(squarePiece, color)});
-    //        break;
-    //    }
-    //    moves.push_back(PieceMove{vec2{pos.x - i, i + pos.y}});
-    //    i++;
-    //} // LEFT DOWN
-    //
-    //i = 1;
-    //while(t->isInside(vec2{pos.x + i, pos.y + i})) {
-    //    Square* squarePiece = t->squares[pos.x + i][i + pos.y];
-    //    if (squarePiece) {
-    //        moves.push_back(PieceMove{vec2{pos.x + i, i + pos.y}, t->getSquareScore(squarePiece, color)});
-    //        break;
-    //    }
-    //    moves.push_back(PieceMove{vec2{pos.x + i, pos.y + i}});
-    //    i++;
-    //} // RIGHT UP
-//
-    //i = 1;
-    //while(t->isInside(vec2{pos.x + i, pos.y - i})) {
-    //    cout << pos.x + i << " vec " << pos.y - i << "\n";
-    //    Square* squarePiece = t->squares[pos.x + i][pos.y - i];
-    //    if (squarePiece) {
-    //        moves.push_back(PieceMove{vec2{pos.x + i, pos.y - i}, t->getSquareScore(squarePiece, color)});
-    //        break;
-    //    }
-    //    moves.push_back(PieceMove{vec2{pos.x + i, pos.y - i}});
-    //    i++;
-    //} // RIGHT DOWN
+    i = 1;
+    while(t->isInside(vec2{pos.x - i, pos.y - i})) {
+        Square* squarePiece = t->squares[pos.x - i][pos.y - i];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{ vec2{pos.x - i, pos.y - i}, t->getSquareScore(squarePiece, color)});
+            if (squarePiece->piece) break;
+        }
+        i++;
+    } // LEFT DOWN
+
+    i = 1;
+    while(t->isInside(vec2{pos.x + i, pos.y + i})) {
+        Square* squarePiece = t->squares[pos.x + i][i + pos.y];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{vec2{pos.x + i, i + pos.y}, t->getSquareScore(squarePiece, color)});
+            if (squarePiece->piece) break;
+        }
+        i++;
+    } // RIGHT UP
+
+    i = 1;
+    while(t->isInside(vec2{pos.x - i, pos.y + i})) {
+        Square* squarePiece = t->squares[pos.x - i][pos.y + i];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{vec2{pos.x - i, pos.y + i}, t->getSquareScore(squarePiece, color)});
+            if (squarePiece->piece) break;
+        }
+        i++;
+    } // RIGHT DOWN
 
     return moves;
-}
+} // {DONE}
 
 Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; }
 std::vector<PieceMove> Knight::getPositions(Table* t) {
@@ -296,49 +291,61 @@ std::vector<PieceMove> Knight::getPositions(Table* t) {
 
     // UP
     v = vec2{ pos.x + 1, pos.y + 2 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     v = vec2{ pos.x - 1, pos.y + 2 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
 
     // DOWN
     v = vec2{ pos.x + 1, pos.y - 2 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     v = vec2{ pos.x - 1, pos.y - 2 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
 
     // RIGHT
     v = vec2{ pos.x + 2, pos.y + 1 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     v = vec2{ pos.x + 2, pos.y - 1 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
 
     // LEFT
     v = vec2{ pos.x - 2, pos.y + 1 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     v = vec2{ pos.x - 2, pos.y - 1 };
-    if (t->isInside(v))
+    if (t->isInside(v) && t->canIPlaceItHere(this, t->squares[v.x][v.y]))
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
 
     return moves;
-}
+} // {DONE}
 
 Pawn::Pawn(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 1; }
 std::vector<PieceMove> Pawn::getPositions(Table* t) {
     std::vector<PieceMove> moves;
-    if (wasMoved && t->isInside(vec2{ pos.x, pos.y + 2 }))
-        moves.push_back(PieceMove{ vec2{pos.x, pos.y + 2} });
-    if (t->isInside(vec2{ pos.x, pos.y + 1 }))
-        moves.push_back(PieceMove{ vec2{pos.x, pos.y + 1} });
-    if (t->isInside(vec2{ pos.x - 1, pos.y + 1 }) && t->squares[pos.x - 1][pos.y + 1]->piece)
-        moves.push_back(PieceMove{ vec2{pos.x - 1, pos.y + 1}, t->squares[pos.x - 1][pos.y + 1]->piece->score });
-    if (t->isInside(vec2{ pos.x + 1, pos.y + 1 }) && t->squares[pos.x + 1][pos.y + 1]->piece)
-        moves.push_back(PieceMove{ vec2{pos.x + 1, pos.y + 1}, t->squares[pos.x + 1][pos.y + 1]->piece->score });
+
+    int direction = color == 'w' ? 1 : -1;
+
+    // 2 UP
+    if (!wasMoved && t->isInside(vec2{pos.x + 2 * direction, pos.y}) && !t->squares[pos.x + 2 * direction][pos.y]->piece)
+        moves.push_back(PieceMove{vec2{pos.x + 2 * direction, pos.y}});
+
+    // 1 UP
+    if (t->isInside(vec2{ pos.x + 1 * direction, pos.y}) && !t->squares[pos.x + 1 * direction][pos.y]->piece)
+        moves.push_back(PieceMove{ vec2{pos.x + 1 * direction, pos.y} });
+
+    // LEFT
+    if (t->isInside(vec2{pos.x + 1 * direction , pos.y - 1 * direction})
+            && t->squares[pos.x + 1 * direction][pos.y - 1 * direction]->piece && t->squares[pos.x + 1 * direction][pos.y - 1 * direction]->piece->color != color)
+        moves.push_back(PieceMove{ vec2{pos.x + 1 * direction, pos.y - 1 * direction}, t->getSquareScore(t->squares[pos.x + 1 * direction][pos.y - 1 * direction], color)});
+
+    // RIGHT
+    if (t->isInside(vec2{pos.x + 1 * direction,  pos.y + 1 * direction})
+        && t->squares[pos.x + 1 * direction][pos.y + 1 * direction]->piece && t->squares[pos.x + 1 * direction][pos.y + 1 * direction]->piece->color != color)
+        moves.push_back(PieceMove{ vec2{pos.x + 1 * direction, pos.y + 1 * direction}, t->getSquareScore(t->squares[pos.x + 1 * direction][pos.y + 1 * direction], color)});
     return moves;
 }

@@ -23,17 +23,18 @@ int main() {
      * 0 0 1 0 1 0 0 0
      * 0 1 0 0 0 0 0 0
      * ?
-     *
      * (sunt pe prima linie pionii apoi pe a doua
      * turaL, turaR, nebunL, ... regina, rege)
      * */
 
     t->movePiece(t->getPiece("c8"), "e4");
-    t->programmerPrint();
+    t->movePiece(t->getPiece("a7"), "d6");
+    t->printTable();
 
     std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
-    for (PieceMove move : t->getPiece("e4")->getPositions(t)) {
-        Table* tmp = t->createNewState(t->getPiece("e4"), move.ownMove);
+    for (PieceMove move : t->getPiece("g4")->getPositions(t)) {
+        std::cout << move.ownMove.x << " " << move.ownMove.y << "\n";
+        Table* tmp = t->createNewState(t->getPiece("g4"), move.ownMove);
         tmp->programmerPrint();
         delete tmp;
     }

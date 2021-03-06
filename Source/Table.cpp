@@ -113,8 +113,8 @@ ChessPiece *Table::getPiece(const char *pos) {
     else assert(!"Illegal move position");
 }
 
-bool Table::isInside(vec2 pos) {
-    return pos.x >= 0 && pos.x < width&& pos.y >= 0 && pos.y < height;
+bool Table::isInside(vec2 pos) const {
+    return pos.x >= 0 && pos.x < height && pos.y >= 0 && pos.y < width;
 }
 
 bool Table::canIPlaceItHere(ChessPiece* piece, Square* sq) {
@@ -265,14 +265,14 @@ void Table::programmerPrint() {
     std::cout << "\n###########################\n";
 }
 
+bool Table::isAnIllegalMove(Square *sq, ChessPiece *piece) {
+    if (!sq->piece) return false;
+    return sq->piece->color == piece->color;
+}
 
 // Functii Ovidiu
-bool Table::isAnIllegalPiece(ChessPiece* piece, vec2 pos) {
-    if (piece->color == squares[pos.x][pos.y]->piece->color ||
-        !squares[pos.x][pos.y]->piece->score)
-        return true;
-
-    return false;
+bool Table::isAnIllegalMove(ChessPiece* piece, vec2 pos) {
+    return piece->color == squares[pos.x][pos.y]->piece->color;
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {
@@ -283,7 +283,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn->pos);
 
     if (squares[currPos.x][currPos.y]->piece)
-        if (isAnIllegalPiece(pawn, currPos))
+        if (isAnIllegalMove(pawn, currPos))
             squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     
     // Two squares
@@ -292,7 +292,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(pawn, currPos))
+            if (isAnIllegalMove(pawn, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 }
@@ -307,7 +307,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -318,7 +318,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -329,7 +329,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -340,7 +340,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -351,7 +351,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -362,7 +362,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -373,7 +373,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 
@@ -384,7 +384,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(knight->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(knight, currPos))
+            if (isAnIllegalMove(knight, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
     }
 }
@@ -400,7 +400,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(bishop, currPos))
+                if (isAnIllegalMove(bishop, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -417,7 +417,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(bishop, currPos))
+                if (isAnIllegalMove(bishop, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -434,7 +434,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(bishop, currPos))
+                if (isAnIllegalMove(bishop, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -451,7 +451,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(bishop, currPos))
+                if (isAnIllegalMove(bishop, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -471,7 +471,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(rook, currPos))
+            if (isAnIllegalMove(rook, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.y++;
@@ -484,7 +484,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(rook, currPos))
+            if (isAnIllegalMove(rook, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.y--;
@@ -497,7 +497,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(rook, currPos))
+            if (isAnIllegalMove(rook, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.x--;
@@ -510,7 +510,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(rook, currPos))
+            if (isAnIllegalMove(rook, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.x++;
@@ -527,7 +527,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen ->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(queen, currPos))
+            if (isAnIllegalMove(queen, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.y++;
@@ -540,7 +540,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(queen, currPos))
+            if (isAnIllegalMove(queen, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.y--;
@@ -553,7 +553,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(queen, currPos))
+            if (isAnIllegalMove(queen, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.x--;
@@ -566,7 +566,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
 
         if (squares[currPos.x][currPos.y]->piece)
-            if (isAnIllegalPiece(queen, currPos))
+            if (isAnIllegalMove(queen, currPos))
                 squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
         currPos.x++;
@@ -580,7 +580,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(queen, currPos))
+                if (isAnIllegalMove(queen, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -597,7 +597,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(queen, currPos))
+                if (isAnIllegalMove(queen, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -614,7 +614,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(queen, currPos))
+                if (isAnIllegalMove(queen, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -631,7 +631,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
 
         if (squares[currPos.x][currPos.y]->piece) {
             if (squares[currPos.x][currPos.y]->piece)
-                if (isAnIllegalPiece(queen, currPos))
+                if (isAnIllegalMove(queen, currPos))
                     squares[currPos.x][currPos.y]->possibleNormalMoves.pop_back();
 
             break;
@@ -640,5 +640,3 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
         currPos.x--; currPos.y--;
     }
 }
-
-
