@@ -19,9 +19,6 @@
 #include <stdio.h>
 
 #include <assert.h>
-
-typedef struct vec2 {
-    int x, y;
-} vec2;
+#include "Vec2.h"
 
 #endif //INC_3_CHECK_CHESS_COMMON_H

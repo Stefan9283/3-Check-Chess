@@ -156,7 +156,7 @@ int King::isCheck(Table* t, ChessPiece* piece) {
     return NOCHECK;
 }
 
-King::King(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 0; }
+King::King(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 0; abbreviation = 'K';  }
 std::vector<PieceMove> King::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -197,7 +197,7 @@ std::vector<PieceMove> King::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Queen::Queen(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 9; }
+Queen::Queen(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 9; abbreviation = 'Q'; }
 std::vector<PieceMove> Queen::getPositions(Table* t) {
     std::vector<PieceMove> moves, rmoves, bmoves;
 
@@ -212,7 +212,7 @@ std::vector<PieceMove> Queen::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Rook::Rook(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 5; }
+Rook::Rook(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 5; abbreviation = 'R'; }
 std::vector<PieceMove> Rook::getPositions(Table* t) {
     std::vector<PieceMove> moves;
     int i;
@@ -260,7 +260,8 @@ std::vector<PieceMove> Rook::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Bishop::Bishop(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; }
+Bishop::Bishop(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; abbreviation = 'B'; }
+
 std::vector<PieceMove> Bishop::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -309,7 +310,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; }
+Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; abbreviation = 'H'; }
 std::vector<PieceMove> Knight::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -350,7 +351,7 @@ std::vector<PieceMove> Knight::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Pawn::Pawn(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 1; }
+Pawn::Pawn(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 1; abbreviation = 'P';}
 std::vector<PieceMove> Pawn::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 

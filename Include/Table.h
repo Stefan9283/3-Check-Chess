@@ -60,7 +60,10 @@ public:
     }
 
     // Functii Ovidiu
+    void moveInAdvance(const char* moves, char color);
+
     bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
+
     bool hasNoPiecesBetween_line(vec2 pos1, vec2 pos2);
 
     bool hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2);

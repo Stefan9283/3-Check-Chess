@@ -3,43 +3,35 @@
 #include "ChessPiece.h"
 
 int main() {
-    Table* t = new Table();
-    /*ChessPiece* piece = t->squares[0][1]->piece;
-    t->movePiece(piece, "f3");
-    King* k = dynamic_cast<King*>(t->pieces[0][15]);
-    t->movePiece(k, "c4");
-    t->movePiece(t->getPiece("b3"), "3c");
-    t->movePiece(t->getPiece("a8"), "c8");*/
-    //t->printTable();
-    /*
-    int i = 0;
-    for (ChessPiece* piece : t->pieces[0]) {
-        std::cout << k->isCheck(t, piece) << " ";
-        if (i == 7) std::cout << "\n";
-        i++;
-    }
-    /*
-     * [Stefan T]: n-ar trebui sa fie
-     * 0 0 1 0 1 0 0 0
-     * 0 1 0 0 0 0 0 0
-     * ?
-     * (sunt pe prima linie pionii apoi pe a doua
-     * turaL, turaR, nebunL, ... regina, rege)
-     * */
+    Table* table = new Table();
 
-    t->movePiece(t->getPiece("a8"), "e4");
-    t->movePiece(t->getPiece("a7"), "d6");
-    t->printGameBoard();
-    t->printGameBoard('b', false, true);
-    //t->printGameBoard('r', true, true);
+    table->moveInAdvance("(b2, d2), (g2, f2), (b5, d5), (g4, f4), (b8, c8), (h7, f6), (b4, d4), (g8, f8), (a6, e2)", 'w');
+    table->printGameBoard();
 
-    //std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
-    //for (PieceMove move : t->getPiece("g4")->getPositions(t)) {
-    //    std::cout << move.ownMove.x << " " << move.ownMove.y << "\n";
-    //    Table* tmp = t->createNewState(t->getPiece("g4"), move.ownMove);
-    //    tmp->programmerPrint();
-    //    delete tmp;
-    //}
+    for (int j = 0; j < table->width; j++)
+        table->markPossibleMovesForPawn((Pawn*)table->pieces[0][j]);
+
+    table->markPossibleMovesForRook((Rook*)table->pieces[0][8]);
+    table->markPossibleMovesForRook((Rook*)table->pieces[0][9]);
+
+    table->markPossibleMovesForKnight((Knight*)table->pieces[0][10]);
+    table->markPossibleMovesForKnight((Knight*)table->pieces[0][11]);
+
+    table->markPossibleMovesForBishop((Bishop*)table->pieces[0][12]);
+    table->markPossibleMovesForBishop((Bishop*)table->pieces[0][13]);
+
+    table->markPossibleMovesForQueen((Queen*)table->pieces[0][14]);
+    table->markPossibleMovesForKing((King*)table->pieces[0][15]);
+
+    for (int i = 0; i < table->height; i++)
+        for (int j = 0; j < table->width; j++) {
+            std::cout << i + 1 << " " << j + 1 << ": ";
+
+            for (vec2 pos : table->squares[i][j]->possibleNormalMoves)
+                std::cout << "(" << pos.x + 1 << ", " << pos.y + 1 << ") ";
+
+            std::cout << "\n";
+        }
 
     return 0;
 }

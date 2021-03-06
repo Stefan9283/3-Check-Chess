@@ -21,6 +21,7 @@ public:
     char color;
     vec2 pos;
     int score;
+    char abbreviation;
 
     int index;
 
