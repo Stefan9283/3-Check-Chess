@@ -40,7 +40,9 @@ public:
     void removePiece(ChessPiece* piece);
     ChessPiece* getPiece(const char* pos);
 
-    bool isInside(vec2 pos);
+    bool isAnIllegalMove(Square* sq, ChessPiece* piece);
+
+    bool isInside(vec2 pos) const;
 
     bool canIPlaceItHere(ChessPiece* cp, Square* sq);
 
@@ -51,19 +53,17 @@ public:
 
     Table* createNewState(ChessPiece* piece, vec2 pos);
 
-    void printTable();
-    void programmerPrint();
+    void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true);
 
     void addMove2History(std::pair<vec2, vec2> move) {
         history.push_back(move);
     }
 
     // Functii Ovidiu
+    bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
     bool hasNoPiecesBetween_line(vec2 pos1, vec2 pos2);
 
     bool hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2);
-
-    bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
 
     bool isKingInConflict(King* king, vec2 pos);
 
