@@ -5,10 +5,10 @@
 #define CHECK 1
 #define NOCHECK 0
 
-ChessPiece::ChessPiece(char color, vec2 pos) {
-    this->color = color; this->pos = pos; this->score = 0;
+ChessPiece::ChessPiece(char color, vec2 pos, int index) {
+    assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
+    this->color = color; this->pos = pos; this->score = 0; this->index = index;
 }
-
 ChessPiece::~ChessPiece() = default;
 
 // ane
@@ -22,6 +22,9 @@ int King::isCheck(Table* t, ChessPiece* piece) {
         color = 'w';
     else color = 'b'; // aflam culoarea regelui care este in pericol
 
+    // [Stefan T]: de ce cautam pozitia daca o stim deja?
+    // (obiectul pentru care apelam functia este deja de tip King si deci avem this->pos)
+    /*
     if (color == 'b') {  // daca piesa este alba, vom incepe cautarea de jos in sus
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -46,15 +49,17 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             if (aux = 1) break;
         }
     }
+     */
 
     //pozitia regelui
-    vec2 kPos = vec2{ foundK->pos.x, foundK->pos.y };
-    if (piece->score == 1) { // pion
+    vec2 kPos = this->pos; //vec2{ foundK->pos.x, foundK->pos.y };
+    foundK = this;
+    if (dynamic_cast<Pawn*>(piece)) { // pion
         if (piece->color == 'w') {
             if (piece->pos.x + 1 == foundK->pos.x && (piece->pos.y - 1 == foundK->pos.y ||
-                piece->pos.y + 1 == foundK->pos.y)) {
+                piece->pos.y + 1 == foundK->pos.y)) { // [Stefan T]: N-ar trebui sa se ia in calcul daca se face + sau -1 pe y in functie de culoarea pionului?
                 foundK->checks++;
-                //t->squares[foundK->pos.x][foundK->pos.y] = foundK; ??????
+                //t->squares[foundK->pos.x][foundK->pos.y] = foundK; ?????? [Stefan T]: ??????
                 return CHECK; // pionul pune in sah regele negru
             }
         }
@@ -62,13 +67,13 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             if (piece->pos.x - 1 == foundK->pos.x && (piece->pos.y - 1 == foundK->pos.y ||
                 piece->pos.y + 1 == foundK->pos.y)) {
                 foundK->checks++;
-                //t->squares[foundK->pos.x][foundK->pos.y] = foundK; ??????
+                //t->squares[foundK->pos.x][foundK->pos.y] = foundK; ?????? [Stefan T]: ??????
                 return CHECK; // pionul pune in sah regele alb
             }
         }
     }
-    else if (piece->score == 2) { // cal, am schimbat scorul, nu stiu daca e in regula
-         // DYNAMIC CAST    dynamic_cast<Knight*>(c) ---> de adaugat asta SI DE schimbat 2 in 3
+    else if (dynamic_cast<Knight*>(piece)) { // cal, am schimbat scorul, nu stiu daca e in regula
+         // ~~DYNAMIC CAST    dynamic_cast<Knight*>(c) ---> de adaugat asta SI DE schimbat 2 in 3~~ [Stefan T]: Rezolvat cu cast-ul dar vad ca n-a fost modificat score-ul in constructor
         if ((piece->pos.x + 1 == foundK->pos.x && piece->pos.y + 2 == foundK->pos.y) || (piece->pos.x + 1 == foundK->pos.x && piece->pos.y - 2 == foundK->pos.y)
             || (piece->pos.x + 2 == foundK->pos.x && piece->pos.y + 1) || (piece->pos.x - 1 == foundK->pos.x && piece->pos.y + 2 == foundK->pos.y)
             || (piece->pos.x - 1 == foundK->pos.x && piece->pos.y - 2) || (piece->pos.x + 2 == foundK->pos.x && piece->pos.y - 1 == foundK->pos.y)
@@ -77,14 +82,11 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             return CHECK;
         }
     }
-    else if (piece->score == 3 || piece->score == 9) { // nebun sau regina
-     // -- de facut !!!!
-
-
-
-
+    else if (dynamic_cast<Bishop*>(piece) || dynamic_cast<Queen*>(piece)) { // nebun sau regina
+     // TODO -- de facut !!!!
+     //  [Stefan T]: pls cand ramane ceva de facut pune la inceput de linie un TODO
     }
-    else if (piece->score == 5 || piece->score == 9) { // tura sau regina
+    else if (dynamic_cast<Rook*>(piece) || dynamic_cast<Queen*>(piece)) { // tura sau regina
         int min;
         int dist = 0;
         if (piece->pos.x == foundK->pos.x) {
@@ -128,7 +130,7 @@ int King::isCheck(Table* t, ChessPiece* piece) {
 
 }
 
-King::King(char color, vec2 pos) : ChessPiece(color, pos) { score = 0; }
+King::King(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 0; }
 std::vector<PieceMove> King::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -169,73 +171,70 @@ std::vector<PieceMove> King::getPositions(Table* t) {
     return moves;
 }
 
-Queen::Queen(char color, vec2 pos) : ChessPiece(color, pos) { score = 9; }
+Queen::Queen(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 9; }
 std::vector<PieceMove> Queen::getPositions(Table* t) {
     std::vector<PieceMove> moves, kmoves, bmoves;
 
-    King k(color, pos);
+    King k(color, pos, index);;
     kmoves = k.getPositions(t);
     moves.insert(moves.begin(), kmoves.begin(), kmoves.end());
 
-    Bishop b(color, pos);
+    Bishop b(color, pos, index);;
     bmoves = b.getPositions(t);
     moves.insert(moves.begin(), bmoves.begin(), bmoves.end());
 
     return moves;
 }
 
-Rook::Rook(char color, vec2 pos) : ChessPiece(color, pos) { score = 5; }
+Rook::Rook(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 5; }
 std::vector<PieceMove> Rook::getPositions(Table* t) {
     std::vector<PieceMove> moves;
+    int i;
 
-    int i = 1;
-    while (i + pos.y < t->height) {
-        Square* squarePiece = t->squares[pos.x][i + pos.y];
-        if (squarePiece) {
-            moves.push_back(PieceMove{ vec2{pos.x, i + pos.y}, t->getSquareScore(squarePiece, color) });
-            break;
-        }
-        moves.push_back(PieceMove{ vec2{pos.x, i + pos.y} });
+    i = 1;
+    while (i + pos.x < t->height) {
+        Square* squarePiece = t->squares[pos.x + i][i + pos.y];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{ vec2{pos.x + i, pos.y}, t->getSquareScore(squarePiece, color)});
+            if (squarePiece->piece) break;
+        } else break;
         i++;
     } // UP
 
     i = -1;
-    while (i + pos.y >= 0) {
-        Square* squarePiece = t->squares[pos.x][i + pos.y];
-        if (squarePiece) {
-            moves.push_back(PieceMove{ vec2{pos.x, i + pos.y}, t->getSquareScore(squarePiece, color) });
-            break;
-        }
-        moves.push_back(PieceMove{ vec2{pos.x, i + pos.y} });
+    while (i + pos.x >= 0) {
+        Square* squarePiece = t->squares[pos.x + i][pos.y];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{ vec2{pos.x + i, pos.y}, t->getSquareScore(squarePiece, color) });
+            if (squarePiece->piece) break;
+        } else break;
         i--;
     } // DOWN
 
     i = 1;
-    while (i + pos.x != t->width) {
-        Square* squarePiece = t->squares[pos.x][i + pos.y];
-        if (squarePiece) {
-            moves.push_back(PieceMove{ vec2{pos.x, i + pos.y}, t->getSquareScore(squarePiece, color) });
-            break;
-        }
-        moves.push_back(PieceMove{ vec2{pos.x, i + pos.y} });
+    while (pos.y + i < t->width) {
+        Square* squarePiece = t->squares[pos.x][pos.y + i];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{ vec2{pos.x, pos.y + i}, t->getSquareScore(squarePiece, color) });
+            if (squarePiece->piece) break;
+        } else break;
         i++;
     } // RIGHT
 
     i = -1;
-    while (i + pos.x >= 0) {
-        Square* squarePiece = t->squares[pos.x][i + pos.y];
-        if (squarePiece) {
-            moves.push_back(PieceMove{ vec2{pos.x, i + pos.y}, t->getSquareScore(squarePiece, color) });
-            break;
-        }
-        moves.push_back(PieceMove{ vec2{pos.x, i + pos.y} });
+    while (pos.y + i >= 0) {
+        Square* squarePiece = t->squares[pos.x][pos.y + i];
+        if (t->canIPlaceItHere(this, squarePiece)) {
+            moves.push_back(PieceMove{ vec2{pos.x, pos.y + i}, t->getSquareScore(squarePiece, color) });
+            if (squarePiece->piece) break;
+        } else break;
         i--;
     } // LEFT
 
     return moves;
-}
+} // {DONE}
 
-Bishop::Bishop(char color, vec2 pos) : ChessPiece(color, pos) { score = 3; }
+Bishop::Bishop(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; }
 std::vector<PieceMove> Bishop::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -289,7 +288,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
     return moves;
 }
 
-Knight::Knight(char color, vec2 pos) : ChessPiece(color, pos) { score = 3; }
+Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; }
 std::vector<PieceMove> Knight::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -330,7 +329,7 @@ std::vector<PieceMove> Knight::getPositions(Table* t) {
     return moves;
 }
 
-Pawn::Pawn(char color, vec2 pos) : ChessPiece(color, pos) { score = 1; }
+Pawn::Pawn(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 1; }
 std::vector<PieceMove> Pawn::getPositions(Table* t) {
     std::vector<PieceMove> moves;
     if (wasMoved && t->isInside(vec2{ pos.x, pos.y + 2 }))

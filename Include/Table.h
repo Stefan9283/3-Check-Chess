@@ -15,7 +15,12 @@ public:
 
 class Table {
 public:
+
     std::vector<std::vector<Square*>> squares;
+
+    std::vector<std::vector<ChessPiece*>> pieces;
+    std::vector<std::pair<vec2, vec2>> history;
+
     const int height = 8, width = 8;
     int orientation = 1;
 
@@ -24,9 +29,10 @@ public:
 
     // Functii Stefan
     void movePiece(ChessPiece* piece, vec2 pos);
-
+    void movePiece(ChessPiece* piece, const char* pos);
     void removePiece(ChessPiece* piece);
-   
+    ChessPiece* getPiece(const char* pos);
+
     bool isInside(vec2 pos);
 
     bool canIPlaceItHere(ChessPiece* cp, Square* sq);
@@ -34,12 +40,16 @@ public:
     std::string getCoords(vec2 pos);
 
     int getTotalScore(char color);
-
     int getSquareScore(Square* sq, char myColor);
 
     Table* createNewState(ChessPiece* piece, vec2 pos);
 
     void printTable();
+    void programmerPrint();
+
+    void addMove2History(std::pair<vec2, vec2> move) {
+        history.push_back(move);
+    }
 
     // Functii Ovidiu
     bool isAnIllegalPiece(ChessPiece* piece, vec2 pos);

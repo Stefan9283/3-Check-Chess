@@ -22,7 +22,9 @@ public:
     vec2 pos;
     int score;
 
-    ChessPiece(char color, vec2 pos);
+    int index;
+
+    ChessPiece(char color, vec2 pos, int index);
 
     virtual ~ChessPiece();
 
@@ -34,7 +36,7 @@ public:
     bool wasMoved = false;
     int checks = 0;
 
-    King(char color, vec2 pos);
+    King(char color, vec2 pos, int index);
 
     int isCheck(Table* t, ChessPiece* cp);
 
@@ -43,7 +45,7 @@ public:
 
 class Queen : public ChessPiece {
 public:
-    Queen(char color, vec2 pos);
+    Queen(char color, vec2 pos, int index);
 
     std::vector<PieceMove> getPositions(Table* t) override;
 };
@@ -52,21 +54,21 @@ class Rook : public ChessPiece {
 public:
     bool wasMoved = false;
 
-    Rook(char color, vec2 pos);
+    Rook(char color, vec2 pos, int index);
 
     std::vector<PieceMove> getPositions(Table* t) override;
 };
 
 class Knight : public ChessPiece {
 public:
-    Knight(char color, vec2 pos);
+    Knight(char color, vec2 pos, int index);
 
     std::vector<PieceMove> getPositions(Table* t) override;
 };
 
 class Bishop : public ChessPiece {
 public:
-    Bishop(char color, vec2 pos);
+    Bishop(char color, vec2 pos, int index);
 
     std::vector<PieceMove> getPositions(Table* t) override;
 };
@@ -75,7 +77,7 @@ class Pawn : public ChessPiece {
 public:
     bool wasMoved = false;
 
-    Pawn(char color, vec2 pos);
+    Pawn(char color, vec2 pos, int index);
 
     std::vector<PieceMove> getPositions(Table* t) override;
 };
