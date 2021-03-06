@@ -53,8 +53,7 @@ public:
 
     Table* createNewState(ChessPiece* piece, vec2 pos);
 
-    void printTable();
-    void programmerPrint();
+    void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true);
 
     void addMove2History(std::pair<vec2, vec2> move) {
         history.push_back(move);
@@ -65,8 +64,6 @@ public:
     bool hasNoPiecesBetween_line(vec2 pos1, vec2 pos2);
 
     bool hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2);
-
-    bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
 
     bool isKingInConflict(King* king, vec2 pos);
 

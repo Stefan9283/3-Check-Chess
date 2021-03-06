@@ -10,7 +10,7 @@ int main() {
     t->movePiece(k, "c4");
     t->movePiece(t->getPiece("b3"), "3c");
     t->movePiece(t->getPiece("a8"), "c8");*/
-    t->printTable();
+    //t->printTable();
     /*
     int i = 0;
     for (ChessPiece* piece : t->pieces[0]) {
@@ -27,17 +27,19 @@ int main() {
      * turaL, turaR, nebunL, ... regina, rege)
      * */
 
-    t->movePiece(t->getPiece("c8"), "e4");
+    t->movePiece(t->getPiece("a8"), "e4");
     t->movePiece(t->getPiece("a7"), "d6");
-    t->printTable();
+    t->printGameBoard();
+    t->printGameBoard('b', false, true);
+    //t->printGameBoard('r', true, true);
 
-    std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
-    for (PieceMove move : t->getPiece("g4")->getPositions(t)) {
-        std::cout << move.ownMove.x << " " << move.ownMove.y << "\n";
-        Table* tmp = t->createNewState(t->getPiece("g4"), move.ownMove);
-        tmp->programmerPrint();
-        delete tmp;
-    }*/
+    //std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
+    //for (PieceMove move : t->getPiece("g4")->getPositions(t)) {
+    //    std::cout << move.ownMove.x << " " << move.ownMove.y << "\n";
+    //    Table* tmp = t->createNewState(t->getPiece("g4"), move.ownMove);
+    //    tmp->programmerPrint();
+    //    delete tmp;
+    //}
 
     return 0;
 }

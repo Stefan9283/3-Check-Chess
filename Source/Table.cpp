@@ -176,100 +176,87 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
     return t;
 }
 
-void Table::printTable() {
-    std::cout << "###########################\n";
-
-    if (orientation == 1) {
-        for (int i = height - 1; i >= 0; --i) {
-            std::cout << (char)('a' + i) << "| ";
-
-            for (int j = 0; j < width; ++j)
-                if (squares[i][j]->piece)
-                    std::cout << " " << squares[i][j]->piece->score << " ";
-                else
-                    std::cout << " - ";
-
-            std::cout << "\n";
-        }
-
-        std::cout << "   ------------------------\n";
-        std::cout << "   ";
-
-        for (int j = 0; j < width; ++j)
-            std::cout << " " << j + 1 << " ";
-    }
-    else {
-        for (int i = 0; i <= height - 1; ++i) {
-            std::cout << (char)('h' - i) << "| ";
-
-            for (int j = 0; j < width; ++j)
-                if (squares[i][j]->piece)
-                    std::cout << " " << squares[i][j]->piece->score << " ";
-                else
-                    std::cout << " - ";
-
-            std::cout << "\n";
-        }
-
-        std::cout << "   ------------------------\n";
-        std::cout << "   ";
-
-        for (int j = 0; j < width; ++j)
-            std::cout << " " << width - j << " ";
-    }
-
-    std::cout << "\n###########################\n";
-}
-
-void Table::programmerPrint() {
-    std::cout << "###########################\n";
-
-    if (orientation == 1) {
-        for (int i = height - 1; i >= 0; --i) {
-            std::cout << i << "| ";
-
-            for (int j = 0; j < width; ++j)
-                if (squares[i][j]->piece)
-                    std::cout << " " << squares[i][j]->piece->score << " ";
-                else
-                    std::cout << " - ";
-
-            std::cout << "\n";
-        }
-
-        std::cout << "  ------------------------\n";
-        std::cout << "   ";
-
-        for (int j = 0; j < width; ++j)
-            std::cout << " " << j << " ";
-    }
-    else {
-        for (int i = 0; i <= height - 1; ++i) {
-            std::cout << (char)('h' - i) << "| ";
-
-            for (int j = 0; j < width; ++j)
-                if (squares[i][j]->piece)
-                    std::cout << " " << squares[i][j]->piece->score << " ";
-                else
-                    std::cout << " - ";
-
-            std::cout << "\n";
-        }
-
-        std::cout << "   ------------------------\n";
-        std::cout << "   ";
-
-        for (int j = 0; j < width; ++j)
-            std::cout << " " << width - j << " ";
-    }
-
-    std::cout << "\n###########################\n";
-}
-
 bool Table::isAnIllegalMove(Square *sq, ChessPiece *piece) {
     if (!sq->piece) return false;
     return sq->piece->color == piece->color;
 }
+
+void Table::printGameBoard(char perspective, bool fromZero, bool xLetters) {
+
+    assert(perspective == 'r' || perspective == 'b' || perspective == 'w' && "Perpective (w)hite/(b)lack/(r)otated");
+    std::cout << "###########################\n";
+    if (perspective == 'w') {
+        for (int i = height - 1; i >= 0; --i) {
+            if (fromZero) std::cout << i << "| ";
+                else if (xLetters) std::cout << (char)('a' + i) << "| ";
+                    else std::cout << i + 1 << "| ";
+
+                for (int j = 0; j < width; ++j)
+                if (squares[i][j]->piece)
+                    std::cout << " " << squares[i][j]->piece->score << " ";
+                else
+                    std::cout << " - ";
+
+            std::cout << "\n";
+        }
+
+        std::cout << "   ------------------------\n";
+        std::cout << "   ";
+
+        for (int j = 0; j < width; ++j)
+            if (fromZero)
+                std::cout << " " << j << " ";
+            else std::cout << " " << j + 1 << " ";
+        std::cout << "\n";
+    } else if (perspective == 'b') {
+        for (int j = width - 1; j >= 0; --j)
+            if (fromZero)
+                std::cout << " " << j << " ";
+            else std::cout << " " << j + 1 << " ";
+        std::cout << "\n";
+        std::cout << " -----------------------\n";
+        for (int i = 0; i <= height - 1; ++i) {
+            for (int j = width - 1; j >= 0; --j) {
+                if (squares[i][j]->piece)
+                    std::cout << " " << squares[i][j]->piece->score << " ";
+                else
+                    std::cout << " - ";
+            }
+            if (fromZero) std::cout << " |" << i ;
+            else if (xLetters) std::cout << " |" << (char)('a' + i);
+            else std::cout << " |" << i + 1 ;
+            std::cout << "\n";
+        }
+    } else {
+        std::cout << "    ";
+        for (int k = 0; k < width; ++k)
+            if (fromZero)
+                std::cout << " " << k << " ";
+            else if (xLetters) std::cout << " " << (char)('a' + k) << " ";
+                else std::cout << " " << k + 1 << " ";
+
+        std::cout << "\n    ";
+        for (int k = 0; k < width; ++k)
+            std::cout << "---";
+        std::cout << "\n";
+
+        for (int i = width - 1; i >= 0 ; --i) {
+            if (fromZero)
+                std::cout << " " << width - i - 1 << " |";
+            else std::cout << " " << width - i << " |";
+
+            for (int j = 0; j <= height - 1; ++j) {
+                if (squares[j][i]->piece)
+                    std::cout << " " << squares[j][i]->piece->score << " ";
+                else
+                    std::cout << " - ";
+            }
+            std::cout << "\n";
+        }
+    }
+    std::cout << "###########################\n";
+}
+
 
 // Functii Ovidiu
 bool Table::hasNoPiecesBetween_line(vec2 pos1, vec2 pos2) {
@@ -779,3 +766,4 @@ void Table::markPossibleMovesForKing(King *king) {
             hasNoPiecesBetween_line(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
+
