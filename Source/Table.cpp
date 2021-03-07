@@ -79,6 +79,13 @@ void Table::movePiece(ChessPiece* piece, vec2 pos) {
     assert(piece != nullptr && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
+    if (squares[pos.x][pos.y]->piece) {
+        int line = squares[pos.x][pos.y]->piece->color == 'w' ? 0 : 1;
+
+        pieces[line][squares[pos.x][pos.y]->piece->index] = nullptr;
+        delete squares[pos.x][pos.y]->piece;
+    }
+
     vec2 prev = piece->pos;
     squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     squares[pos.x][pos.y]->piece = piece;
