@@ -3,7 +3,7 @@
 #include "ChessPiece.h"
 
 int main() {
-    Table* table = new Table();
+    auto* table = new Table();
     table->moveInAdvance("(e2, e4), (d7, d5), (f1, c4), (g8, f6), (d2, d3)",'w');
     table->printGameBoard('w');
 
@@ -15,8 +15,8 @@ int main() {
     //table->markPossibleMovesForKnight((Knight*)table->pieces[0][11]);
     //table->markPossibleMovesForBishop((Bishop*)table->pieces[0][12]);
     //table->markPossibleMovesForBishop((Bishop*)table->pieces[0][13]);
-    //table->markPossibleMovesForQueen((Queen*)table->pieces[0][14]);
-    //table->markPossibleMovesForKing((King*)table->pieces[0][15]);
+    //table->markPossibleMovesForQueen((Queen*)table->pieces[0][15]);
+    //table->markPossibleMovesForKing((King*)table->pieces[0][14]);
 
     //or (int i = 0; i < table->height; i++)
     //   for (int j = 0; j < table->width; j++) {

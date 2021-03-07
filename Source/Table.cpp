@@ -35,11 +35,11 @@ Table::Table() {
     squares[7][2]->piece = new Bishop('b', vec2{ 7, 2 }, 12);
     squares[7][5]->piece = new Bishop('b', vec2{ 7, 5 }, 13);
 
-    squares[0][3]->piece = new Queen('w', vec2{ 0, 3 }, 14);
-    squares[0][4]->piece = new King('w', vec2{ 0, 4 }, 15);
+    squares[0][4]->piece = new King ('w', vec2{ 0, 4 }, 14);
+    squares[0][3]->piece = new Queen('w', vec2{ 0, 3 }, 15);
 
-    squares[7][3]->piece = new Queen('b', vec2{ 7, 3 }, 14);
-    squares[7][4]->piece = new King('b', vec2{ 7, 4 }, 15);
+    squares[7][4]->piece = new King ('b', vec2{ 7, 4 }, 14);
+    squares[7][3]->piece = new Queen('b', vec2{ 7, 3 }, 15);
 
     white.push_back(squares[0][0]->piece);
     white.push_back(squares[0][7]->piece);
@@ -159,7 +159,7 @@ int Table::getTotalScore(char color) {
 }
 
 Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
-    Table* t = new Table(*this);
+    auto* t = new Table(*this);
     for (int i = 0; i < t->height; ++i) {
         for (int j = 0; j < t->width; ++j) {
             t->squares[i][j] = new Square(*squares[i][j]);
@@ -358,7 +358,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2 pos) {
 bool Table::isKingInConflict(King* king, vec2 pos) {
     int line = king->color == 'w' ? 1 : 0;
 
-    return pos.getDistanceTo(pieces[line][15]->pos) < 2;
+    return pos.getDistanceTo(pieces[line][14]->pos) < 2;
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {

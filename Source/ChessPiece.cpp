@@ -7,7 +7,7 @@
 
 ChessPiece::ChessPiece(char color, vec2 pos, int index) {
     assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
-    this->color = color; this->pos = pos; this->score = 0; this->index = index; this->abbreviation = '#';
+    this->color = color; this->pos = pos; this->score = 69; this->index = index; this->abbreviation = '#';
 }
 ChessPiece::~ChessPiece() = default;
 
@@ -314,7 +314,7 @@ Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) 
 std::vector<PieceMove> Knight::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
-    vec2 v;
+    vec2 v{};
 
     // UP
     v = vec2{ pos.x + 1, pos.y + 2 };
@@ -375,11 +375,11 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
         && t->squares[pos.x + 1 * direction][pos.y + 1 * direction]->piece && t->squares[pos.x + 1 * direction][pos.y + 1 * direction]->piece->color != color)
         moves.push_back(PieceMove{ vec2{pos.x + 1 * direction, pos.y + 1 * direction}, t->getSquareScore(t->squares[pos.x + 1 * direction][pos.y + 1 * direction], color)});
     return moves;
-}
+} // {DONE}
 
 // Functii Ovidiu
 
-// Verrify if the king is in check at a specified position
+// Verify if the king is in check at a specified position
 bool King::isInCheckAt(Table* table, vec2 pos) {
     int line = color == 'w' ? 1 : 0;
 
@@ -424,16 +424,17 @@ bool King::isInCheckAt(Table* table, vec2 pos) {
             if (table->hasNoPiecesBetween_diagonal(table->pieces[line][13]->pos, pos))
                 return true;
 
-    // Check from queen
-    if (table->pieces[line][14]) {
-        if (table->pieces[line][14]->pos.x == pos.x || table->pieces[line][14]->pos.y == pos.y)
-            if (table->hasNoPiecesBetween_line(table->pieces[line][14]->pos, pos))
-                return true;
+    // Check from queen(s)
+    for (int i = 15; i < table->pieces[line].size(); i++)
+        if (table->pieces[line][i]) {
+            if (table->pieces[line][i]->pos.x == pos.x || table->pieces[line][i]->pos.y == pos.y)
+                if (table->hasNoPiecesBetween_line(table->pieces[line][i]->pos, pos))
+                    return true;
 
-        if (abs(table->pieces[line][14]->pos.x - pos.x) == abs(table->pieces[line][14]->pos.y - pos.y))
-            if (table->hasNoPiecesBetween_diagonal(table->pieces[line][14]->pos, pos))
-                return true;
-    }
+            if (abs(table->pieces[line][i]->pos.x - pos.x) == abs(table->pieces[line][i]->pos.y - pos.y))
+                if (table->hasNoPiecesBetween_diagonal(table->pieces[line][i]->pos, pos))
+                    return true;
+        }
 
     return false;
 }
