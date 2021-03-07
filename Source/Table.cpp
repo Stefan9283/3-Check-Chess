@@ -108,11 +108,13 @@ ChessPiece* Table::getPiece(const char *pos) {
     assert(strlen(pos) == 2 && "A valid move position needs a line and a column");
 
     if(pos[0] >= 'a' && isInside(vec2{pos[0] - 'a', pos[1] - '1'}))
-        return squares[pos[0] - 'a'][pos[1] - '1']->piece;
+        return squares[1LL * pos[0] - 'a'][1LL * pos[1] - '1']->piece;
     else
     if (isInside(vec2{pos[1] - 'a', pos[0] - '1'}))
-        return squares[pos[1] - 'a'][pos[0] - '1']->piece;
+        return squares[1LL * pos[1] - 'a'][1LL * pos[0] - '1']->piece;
     else assert(!"Illegal move position");
+
+    return nullptr;
 }
 
 bool Table::isInside(vec2 pos) const {
@@ -351,16 +353,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2 pos) {
 bool Table::isKingInConflict(King* king, vec2 pos) {
     int line = king->color == 'w' ? 1 : 0;
 
-    if (pieces[line][15]->pos.x == pos.x && abs(pieces[line][15]->pos.y - pos.y) == 1)
-        return true;
-
-    if (pieces[line][15]->pos.y == pos.y && abs(pieces[line][15]->pos.x - pos.x) == 1)
-        return true;
-
-    if (abs(pieces[line][15]->pos.x - pos.x) == 1 && abs(pieces[line][15]->pos.y - pos.y) == 1)
-        return true;
-
-    return false;
+    return pos.getDistanceTo(pieces[line][15]->pos) < 2;
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {
@@ -395,35 +388,35 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
 void Table::markPossibleMovesForKnight(Knight* knight) {
     // Up - right
     if (!isAnIllegalMove(knight, {knight->pos.x + 2, knight->pos.y + 1}))
-        squares[1LL * knight->pos.x + 2][1LL * knight->pos.y + 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 2][knight->pos.y + 1]->possibleNormalMoves.push_back(knight->pos);
 
     // Right - up
     if (!isAnIllegalMove(knight, {knight->pos.x + 1, knight->pos.y + 2}))
-        squares[1LL * knight->pos.x + 1][1LL * knight->pos.y + 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 1][knight->pos.y + 2]->possibleNormalMoves.push_back(knight->pos);
 
     // Down - right
     if (!isAnIllegalMove(knight, {knight->pos.x - 2, knight->pos.y + 1}))
-        squares[1LL * knight->pos.x - 2][1LL * knight->pos.y + 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 2][knight->pos.y + 1]->possibleNormalMoves.push_back(knight->pos);
 
     // Right - down
     if (!isAnIllegalMove(knight, {knight->pos.x - 1, knight->pos.y + 2}))
-        squares[1LL * knight->pos.x - 1][1LL * knight->pos.y + 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 1][knight->pos.y + 2]->possibleNormalMoves.push_back(knight->pos);
 
     // Up - left
     if (!isAnIllegalMove(knight, {knight->pos.x + 2, knight->pos.y - 1}))
-        squares[1LL * knight->pos.x + 2][1LL * knight->pos.y - 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 2][knight->pos.y - 1]->possibleNormalMoves.push_back(knight->pos);
 
     // Left - up
     if (!isAnIllegalMove(knight, {knight->pos.x + 1, knight->pos.y - 2}))
-        squares[1LL * knight->pos.x + 1][1LL * knight->pos.y - 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 1][knight->pos.y - 2]->possibleNormalMoves.push_back(knight->pos);
 
     // Down - left
     if (!isAnIllegalMove(knight, {knight->pos.x - 2, knight->pos.y - 1}))
-        squares[1LL * knight->pos.x - 2][1LL * knight->pos.y - 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 2][knight->pos.y - 1]->possibleNormalMoves.push_back(knight->pos);
 
     // Left - down
     if (!isAnIllegalMove(knight, {knight->pos.x - 1, knight->pos.y - 2}))
-        squares[1LL * knight->pos.x - 1][1LL * knight->pos.y - 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 1][knight->pos.y - 2]->possibleNormalMoves.push_back(knight->pos);
 }
 
 void Table::markPossibleMovesForBishop(Bishop* bishop) {

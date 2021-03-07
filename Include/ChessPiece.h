@@ -18,12 +18,9 @@ struct PieceMove {
 
 class ChessPiece {
 public:
-    char color;
+    char color, abbreviation;
+    int score, index;
     vec2 pos;
-    int score;
-    char abbreviation;
-
-    int index;
 
     ChessPiece(char color, vec2 pos, int index);
 

@@ -7,7 +7,7 @@
 
 ChessPiece::ChessPiece(char color, vec2 pos, int index) {
     assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
-    this->color = color; this->pos = pos; this->score = 0; this->index = index;
+    this->color = color; this->pos = pos; this->score = 0; this->index = index; this->abbreviation = '#';
 }
 ChessPiece::~ChessPiece() = default;
 
@@ -57,7 +57,7 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             //LEFT UP x > 0,  y < 0 -  se afla regele in stanga sus fata de nebun
             if (kDifPos.x > 0 && kDifPos.y < 0) {
                 for (int i = 1; i < kDifPos.x; i++) {
-                    if (t->squares[piece->pos.x + i][piece->pos.y - i] != 0) break;
+                    if (t->squares[1LL *piece->pos.x + i][1LL * piece->pos.y - i] != 0) break;
                     dist = dist + 1;// verificam daca ajunge pana la rege
                 }
                 if (dist = kDifPos.x) {
@@ -68,7 +68,7 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             // RIGHT up x>0, y>0
             if (kDifPos.x > 0 && kDifPos.y < 0) {
                 for (int i = 1; i < kDifPos.x; i++) {
-                    if (t->squares[piece->pos.x + i][piece->pos.y + i] != 0) break;
+                    if (t->squares[1LL * piece->pos.x + i][1LL * piece->pos.y + i] != 0) break;
                     dist = dist + 1;// verificam daca ajunge pana la rege
                 }
                 if (dist = kDifPos.x) {
@@ -79,7 +79,7 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             //LEFT DOWN x<0, y<0
             if (kDifPos.x < 0 && kDifPos.y < 0) {
                 for (int i = 1; i < -kDifPos.x; i++) {
-                    if (t->squares[piece->pos.x - i][piece->pos.y - i] != 0) break;
+                    if (t->squares[1LL * piece->pos.x - i][1LL * piece->pos.y - i] != 0) break;
                     dist = dist + 1;// verificam daca ajunge pana la rege
                 }
                 if (dist = -kDifPos.x) {
@@ -90,7 +90,7 @@ int King::isCheck(Table* t, ChessPiece* piece) {
             //RIGHT DOWN x<0, y>0
             if (kDifPos.x < 0 && kDifPos.y > 0) {
                 for (int i = 1; i < -kDifPos.y; i++) {
-                    if (t->squares[piece->pos.x - i][piece->pos.y + i] != 0) break;
+                    if (t->squares[1LL * piece->pos.x - i][1LL * piece->pos.y + i] != 0) break;
                     dist = dist + 1;// verificam daca ajunge pana la rege
                 }
                 if (dist = kDifPos.y) {
@@ -219,7 +219,7 @@ std::vector<PieceMove> Rook::getPositions(Table* t) {
 
     i = 1;
     while (i + pos.x < t->height) {
-        Square* squarePiece = t->squares[pos.x + i][i + pos.y];
+        Square* squarePiece = t->squares[pos.x + i][1LL * i + pos.y];
         if (t->canIPlaceItHere(this, squarePiece)) {
             moves.push_back(PieceMove{ vec2{pos.x + i, pos.y}, t->getSquareScore(squarePiece, color)});
             if (squarePiece->piece) break;
@@ -269,7 +269,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
 
     i = 1;
     while (t->isInside(vec2{ pos.x + i, pos.y - i })) {
-        Square* squarePiece = t->squares[pos.x + i][pos.y - i];
+        Square* squarePiece = t->squares[pos.x + i][1LL * pos.y - i];
         if (t->canIPlaceItHere(this, squarePiece)) {
             moves.push_back(PieceMove{ vec2{pos.x + i, pos.y - i}, t->getSquareScore(squarePiece, color)});
             if (squarePiece->piece) break;
@@ -279,7 +279,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
 
     i = 1;
     while(t->isInside(vec2{pos.x - i, pos.y - i})) {
-        Square* squarePiece = t->squares[pos.x - i][pos.y - i];
+        Square* squarePiece = t->squares[pos.x - i][1LL * pos.y - i];
         if (t->canIPlaceItHere(this, squarePiece)) {
             moves.push_back(PieceMove{ vec2{pos.x - i, pos.y - i}, t->getSquareScore(squarePiece, color)});
             if (squarePiece->piece) break;
@@ -289,7 +289,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
 
     i = 1;
     while(t->isInside(vec2{pos.x + i, pos.y + i})) {
-        Square* squarePiece = t->squares[pos.x + i][i + pos.y];
+        Square* squarePiece = t->squares[pos.x + i][1LL * i + pos.y];
         if (t->canIPlaceItHere(this, squarePiece)) {
             moves.push_back(PieceMove{vec2{pos.x + i, i + pos.y}, t->getSquareScore(squarePiece, color)});
             if (squarePiece->piece) break;
@@ -299,7 +299,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
 
     i = 1;
     while(t->isInside(vec2{pos.x - i, pos.y + i})) {
-        Square* squarePiece = t->squares[pos.x - i][pos.y + i];
+        Square* squarePiece = t->squares[pos.x - i][1LL * pos.y + i];
         if (t->canIPlaceItHere(this, squarePiece)) {
             moves.push_back(PieceMove{vec2{pos.x - i, pos.y + i}, t->getSquareScore(squarePiece, color)});
             if (squarePiece->piece) break;
@@ -310,7 +310,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; abbreviation = 'H'; }
+Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; abbreviation = 'N'; }
 std::vector<PieceMove> Knight::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
@@ -362,7 +362,7 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
         moves.push_back(PieceMove{vec2{pos.x + 2 * direction, pos.y}});
 
     // 1 UP
-    if (t->isInside(vec2{ pos.x + 1 * direction, pos.y}) && !t->squares[pos.x + 1 * direction][pos.y]->piece)
+    if (t->isInside(vec2{pos.x + 1 * direction, pos.y}) && !t->squares[pos.x + 1 * direction][pos.y]->piece)
         moves.push_back(PieceMove{ vec2{pos.x + 1 * direction, pos.y} });
 
     // LEFT
