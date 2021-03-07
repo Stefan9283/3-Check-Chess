@@ -310,7 +310,7 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
-Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; abbreviation = 'H'; }
+Knight::Knight(char color, vec2 pos, int index) : ChessPiece(color, pos, index) { score = 3; abbreviation = 'N'; }
 std::vector<PieceMove> Knight::getPositions(Table* t) {
     std::vector<PieceMove> moves;
 
