@@ -16,9 +16,13 @@
 
 #include <io.h>
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
+#include <csignal>
+#include <cstdlib>
+#include <ctime>
+#include <cassert>
 
-#include <assert.h>
 #include "Vec2.h"
+
 
 #endif //INC_3_CHECK_CHESS_COMMON_H

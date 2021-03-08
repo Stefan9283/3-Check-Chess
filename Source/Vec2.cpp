@@ -23,3 +23,12 @@ bool vec2::operator==(const vec2& v) {
 float vec2::getDistanceTo(vec2 v) {
 	return sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y));
 }
+
+std::string vec2::toString() {
+    std::string s = "vec2(";
+    s.append(std::to_string(x));
+    s.append(", ");
+    s.append(std::to_string(y));
+    s.append(")");
+    return s;
+}

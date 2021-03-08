@@ -1,4 +1,8 @@
+#include <Algorithm.h>
+#include <AlgoPicker.h>
 #include "Table.h"
+
+#include "tools.h"
 
 Table::Table() {
     for (int i = 0; i < height; i++) {
@@ -75,24 +79,20 @@ Table::~Table() {
 }
 
 //Functii Stefan
+#pragma region pieces manuvering
 void Table::movePiece(ChessPiece* piece, vec2 pos) {
     assert(piece != nullptr && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
-    if (squares[pos.x][pos.y]->piece) {
-        int line = squares[pos.x][pos.y]->piece->color == 'w' ? 0 : 1;
-
-        pieces[line][squares[pos.x][pos.y]->piece->index] = nullptr;
-        delete squares[pos.x][pos.y]->piece;
-    }
+    if (squares[pos.x][pos.y]->piece)
+        removePiece(squares[pos.x][pos.y]->piece);
 
     vec2 prev = piece->pos;
     squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     squares[pos.x][pos.y]->piece = piece;
     piece->pos = pos;
-    addMove2History(std::make_pair(prev, pos));
+    addMove2History(piece, std::make_pair(prev, pos));
 }
-
 void Table::movePiece(ChessPiece *piece, const char* pos) {
     assert(strlen(pos) == 2 && "A valid move position needs a line and a column");
 
@@ -103,48 +103,42 @@ void Table::movePiece(ChessPiece *piece, const char* pos) {
         movePiece(piece, vec2{pos[0] - '1', pos[1] - 'a'});
     else assert(!"Illegal move position");
 }
-
 void Table::removePiece(ChessPiece* piece) {
     assert(piece != nullptr && "Piece meant to be deleted is null");
     pieces[piece->color == 'w' ? 0 : 1][piece->index] = nullptr;
     squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     delete piece;
 }
-
 ChessPiece* Table::getPiece(const char *pos) {
     assert(strlen(pos) == 2 && "A valid move position needs a line and a column");
 
     if(pos[0] >= 'a' && isInside(vec2{pos[1] - '1', pos[0] - 'a'}))
         return squares[pos[1] - '1'][pos[0] - 'a']->piece;
-    else
-    if (isInside(vec2{pos[0] - '1', pos[1] - 'a'}))
+    else if (isInside(vec2{pos[0] - '1', pos[1] - 'a'}))
         return squares[pos[0] - '1'][pos[1] - 'a']->piece;
     else assert(!"Illegal position");
-}
 
+    return nullptr;
+}
+#pragma endregion
+#pragma region checking funcs
 bool Table::isInside(vec2 pos) const {
     return pos.x >= 0 && pos.x < height && pos.y >= 0 && pos.y < width;
 }
-
 bool Table::canIPlaceItHere(ChessPiece* piece, Square* sq) {
     return !(sq->piece && piece->color == sq->piece->color);
 }
-
-std::string Table::getCoords(vec2 pos) {
-    assert(isInside(pos) && "Position outside of the table");
-    std::string s = "a";
-    s[0] += pos.x;
-
-    return s.append(std::to_string(pos.y + 1));
+bool Table::isAnIllegalMove(Square *sq, ChessPiece *piece) {
+    if (!sq->piece) return false;
+    return sq->piece->color == piece->color;
 }
-
+#pragma endregion
+#pragma region score
 int Table::getSquareScore(Square* sq, char myColor) {
     if (!sq || !sq->piece)
         return 0;
-
     return sq->piece->score;
 }
-
 int Table::getTotalScore(char color) {
     assert(color == 'w' || color == 'b' && "Unknown piece color");
 
@@ -157,7 +151,29 @@ int Table::getTotalScore(char color) {
 
     return total;
 }
+#pragma endregion
+vec2 Table::string2coords(const char *coords) {
+    assert(strlen(coords) >= 2 && "Coords should have at least a line and a column");
+    return {coords[0] - 'a', coords[1] - '1'};
+}
+std::string Table::coords2string(vec2 pos) const {
+    assert(isInside(pos) && "Position outside of the table");
+    std::string s = "a";
+    s[0] += pos.x;
+    return s.append(std::to_string(pos.y + 1));
+}
 
+std::string Table::pickAMove() {
+    AlgoPicker* picker = new TestPicker();
+    Algorithm* algo = picker->pickAlgorithm(this);
+    std::string move = "move ";
+    move = move + algo->pickMove(this);
+    vec2 start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
+    addMove2History(squares[start.y][start.x]->piece, std::make_pair(start, end));
+    delete algo;
+    delete picker;
+    return move;
+}
 Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
     auto* t = new Table(*this);
     for (int i = 0; i < t->height; ++i) {
@@ -183,17 +199,13 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
     t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
     return t;
 }
-
-bool Table::isAnIllegalMove(Square *sq, ChessPiece *piece) {
-    if (!sq->piece) return false;
-    return sq->piece->color == piece->color;
-}
-
-void Table::printGameBoard(char perspective, bool fromZero, bool xLetters) {
+void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int tabsCount) {
     assert(perspective == 'r' || perspective == 'b' || perspective == 'w' && "Perpective (w)hite/(b)lack/(r)otated");
-    std::cout << "###################################\n";
+    printTabs(tabsCount); std::cout << "###################################\n";
     if (perspective == 'w') {
+
         for (int i = height - 1; i >= 0; --i) {
+            printTabs(tabsCount);
             if (fromZero) std::cout << i << "| ";
                     else std::cout << i + 1 << "| ";
 
@@ -207,8 +219,8 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters) {
             std::cout << "\n";
         }
 
-        std::cout << "   --------------------------------\n";
-        std::cout << "   ";
+        printTabs(tabsCount); std::cout << "   --------------------------------\n";
+        printTabs(tabsCount); std::cout << "   ";
 
         for (int j = 0; j < width; ++j)
             if (fromZero)
@@ -217,14 +229,16 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters) {
             else std::cout << " " << j + 1 << "  ";
         std::cout << "\n";
     } else if (perspective == 'b') {
+        printTabs(tabsCount);
         for (int j = width - 1; j >= 0; --j)
             if (fromZero)
                 std::cout << " " << j << "  ";
             else if (xLetters) std::cout << " " << (char)('a' + j) << "  ";
             else std::cout << " " << j + 1 << "  ";
         std::cout << "\n";
-        std::cout << " -----------------------------------\n";
+        printTabs(tabsCount); std::cout << " -----------------------------------\n";
         for (int i = 0; i <= height - 1; ++i) {
+            printTabs(tabsCount);
             for (int j = width - 1; j >= 0; --j) {
                 if (squares[i][j]->piece) {
                     std::cout << " " << squares[i][j]->piece->abbreviation;
@@ -238,18 +252,22 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters) {
             std::cout << "\n";
         }
     } else {
+        printTabs(tabsCount);
         std::cout << "    ";
         for (int k = 0; k < width; ++k)
             if (fromZero)
                 std::cout << " " << k << "  ";
                 else std::cout << " " << k + 1 << "  ";
 
-        std::cout << "\n    ";
+        std::cout << "\n";
+        printTabs(tabsCount);
+        std::cout << "   ";
         for (int k = 0; k < width; ++k)
             std::cout << "----";
         std::cout << "\n";
 
         for (int i = 0; i < width ; ++i) {
+            printTabs(tabsCount);
             if (fromZero)
                 std::cout << " " << width - i - 1 << " |";
             else if (xLetters) std::cout << " " << (char)('a' + i) << " |";
@@ -266,7 +284,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters) {
             std::cout << "\n";
         }
     }
-    std::cout << "####################################\n";
+    printTabs(tabsCount); std::cout << "####################################\n";
 }
 
 // Functii Ovidiu
@@ -706,3 +724,4 @@ void Table::markPossibleMovesForKing(King *king) {
             hasNoPiecesBetween_line(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
+

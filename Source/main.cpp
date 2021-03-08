@@ -1,11 +1,37 @@
 #include <common.h>
 #include "Table.h"
-#include "ChessPiece.h"
 
 int main() {
-    auto* table = new Table();
-    table->moveInAdvance("(e2, e4), (d7, d5), (f1, c4), (g8, f6), (d2, d3)",'w');
-    table->printGameBoard('w');
+    //Table* t = new Table();
+    //t->moveInAdvance("(e2, e4), (d7, d5), (f1, c4), (g8, f6), (d2, d3)",'w');
+    //t->printGameBoard('r', false, true, 1);
+
+    //std::cout << t->pickAMove().c_str() << "\n";
+    //std::cout << t->history[0].move.first.toString() << t->history[0].move.second.toString() << "\n";
+
+    //signal(SIGTERM, SIG_IGN);
+    //char s[256];
+    //setbuf(stdin, NULL);
+    //setbuf(stdout, NULL);
+    //while (1) {
+    //    fflush(stdout);
+    //    fgets(s, 256, stdin);
+    //    if (strstr(s, "xboard")) continue;
+    //    if (strstr(s, "protover 2")) {
+    //        std::cout << "feature sigint=0 sigterm=0 san=1 myname=blue_thing\n"; //
+    //    }
+    //    if (strstr(s, "new")) {
+    //        if (t) delete t;
+    //        t = new Table();
+    //        std::cout << "black\n";
+    //    }
+    //    if (strstr(s, "quit")) {
+    //        if (t) delete t;
+    //        break;
+    //    }
+    //    std::cout << t->pickAMove().c_str() << "\n";
+    //}
+//
 
     //for (int j = 0; j < table->width; j++)
     //    table->markPossibleMovesForPawn((Pawn*)table->pieces[0][j]);
@@ -18,7 +44,7 @@ int main() {
     //table->markPossibleMovesForQueen((Queen*)table->pieces[0][15]);
     //table->markPossibleMovesForKing((King*)table->pieces[0][14]);
 
-    //or (int i = 0; i < table->height; i++)
+    //for (int i = 0; i < table->height; i++)
     //   for (int j = 0; j < table->width; j++) {
     //       std::cout << i + 1 << " " << j + 1 << ": ";
     //       for (vec2 pos : table->squares[i][j]->possibleNormalMoves)

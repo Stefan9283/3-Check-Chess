@@ -2,6 +2,7 @@
 #define INC_3_CHECK_CHESS_VEC2_H
 
 #include <cmath>
+#include <string>
 
 class vec2 {
 public:
@@ -20,6 +21,8 @@ public:
 	bool operator==(const vec2& v);
 
 	float getDistanceTo(vec2 v);
+
+	std::string toString();
 };
 
 #endif //INC_3_CHECK_CHESS_VEC2_H
