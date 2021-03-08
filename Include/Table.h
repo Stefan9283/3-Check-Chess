@@ -3,26 +3,25 @@
 
 #include "common.h"
 #include "ChessPiece.h"
+#include "Tree.h"
 
 class ChessPiece;
 
 class Square {
 public:
-    std::vector<vec2> possibleNormalMoves;
+    std::vector<ChessPiece*> possibleNormalMoves;
 
     ChessPiece* piece = nullptr;
 };
 
 class Table {
 public:
-    std::vector<std::vector<Square*>> squares;
-
-    std::vector<std::vector<ChessPiece*>> pieces;
-
-    std::vector<std::pair<vec2, vec2>> history;
-
     const int height = 8, width = 8;
-    int orientation = 1;
+    int orientation = 1, turn = 0;
+
+    std::vector<std::vector<Square*>> squares;
+    std::vector<std::vector<ChessPiece*>> pieces;
+    std::vector<std::pair<vec2, vec2>> history;
 
     // Not permanent
     bool shortCastle_white = false;
@@ -70,6 +69,8 @@ public:
 
     bool isKingInConflict(King* king, vec2 pos);
 
+    void markAllPossibleMoves();
+
     void markPossibleMovesForPawn(Pawn* pawn);
 
     void markPossibleMovesForKnight(Knight* knight);
@@ -84,3 +85,4 @@ public:
 };
 
 #endif //INC_3_CHECK_CHESS_TABLE_H
+

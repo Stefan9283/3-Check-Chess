@@ -20,26 +20,26 @@ Table::Table() {
         black.push_back(squares[6][j]->piece);
     }
 
-    squares[0][0]->piece = new Rook('w', vec2{ 0, 0 }, 8);
-    squares[0][7]->piece = new Rook('w', vec2{ 0, 7 }, 9);
-    squares[7][0]->piece = new Rook('b', vec2{ 7, 0 }, 8);
-    squares[7][7]->piece = new Rook('b', vec2{ 7, 7 }, 9);
+    squares[0][0]->piece = new Rook('w', vec2{0, 0}, 8);
+    squares[0][7]->piece = new Rook('w', vec2{0, 7}, 9);
+    squares[7][0]->piece = new Rook('b', vec2{7, 0}, 8);
+    squares[7][7]->piece = new Rook('b', vec2{7, 7}, 9);
 
-    squares[0][1]->piece = new Knight('w', vec2{ 0, 1 }, 10);
-    squares[0][6]->piece = new Knight('w', vec2{ 0, 6 }, 11);
-    squares[7][1]->piece = new Knight('b', vec2{ 7, 1 }, 10);
-    squares[7][6]->piece = new Knight('b', vec2{ 7, 6 }, 11);
+    squares[0][1]->piece = new Knight('w', vec2{0, 1}, 10);
+    squares[0][6]->piece = new Knight('w', vec2{0, 6}, 11);
+    squares[7][1]->piece = new Knight('b', vec2{7, 1}, 10);
+    squares[7][6]->piece = new Knight('b', vec2{7, 6}, 11);
 
-    squares[0][2]->piece = new Bishop('w', vec2{ 0, 2 }, 12);
-    squares[0][5]->piece = new Bishop('w', vec2{ 0, 5 }, 13);
-    squares[7][2]->piece = new Bishop('b', vec2{ 7, 2 }, 12);
-    squares[7][5]->piece = new Bishop('b', vec2{ 7, 5 }, 13);
+    squares[0][2]->piece = new Bishop('w', vec2{0, 2}, 12);
+    squares[0][5]->piece = new Bishop('w', vec2{0, 5}, 13);
+    squares[7][2]->piece = new Bishop('b', vec2{7, 2}, 12);
+    squares[7][5]->piece = new Bishop('b', vec2{7, 5}, 13);
 
-    squares[0][4]->piece = new King ('w', vec2{ 0, 4 }, 14);
-    squares[0][3]->piece = new Queen('w', vec2{ 0, 3 }, 15);
+    squares[0][4]->piece = new King ('w', vec2{0, 4}, 14);
+    squares[0][3]->piece = new Queen('w', vec2{0, 3}, 15);
 
-    squares[7][4]->piece = new King ('b', vec2{ 7, 4 }, 14);
-    squares[7][3]->piece = new Queen('b', vec2{ 7, 3 }, 15);
+    squares[7][4]->piece = new King ('b', vec2{7, 4}, 14);
+    squares[7][3]->piece = new Queen('b', vec2{7, 3}, 15);
 
     white.push_back(squares[0][0]->piece);
     white.push_back(squares[0][7]->piece);
@@ -180,6 +180,10 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
                 t->squares[i][j]->piece = new King(*dynamic_cast<King*>(c));
         }
     }
+
+    if (!piece)
+        return t;
+
     t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
     return t;
 }
@@ -361,6 +365,10 @@ bool Table::isKingInConflict(King* king, vec2 pos) {
     return pos.getDistanceTo(pieces[line][14]->pos) < 2;
 }
 
+void Table::markAllPossibleMoves() {
+    for 
+}
+
 void Table::markPossibleMovesForPawn(Pawn* pawn) {
     vec2 currPos;
 
@@ -368,60 +376,60 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     currPos.x = pawn->color == 'w' ? pawn->pos.x + 1 : pawn->pos.x - 1; currPos.y = pawn->pos.y;
 
     if (!squares[currPos.x][currPos.y]->piece)
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
 
     // On diagonal
     currPos.y = pawn->pos.y - 1;
 
     if (isInside(currPos) && squares[currPos.x][currPos.y]->piece && squares[currPos.x][currPos.y]->piece->color != pawn->color)
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
 
     currPos.y = pawn->pos.y + 1;
 
     if (isInside(currPos) && squares[currPos.x][currPos.y]->piece && squares[currPos.x][currPos.y]->piece->color != pawn->color)
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
 
     // Two squares
     if (!pawn->wasMoved) {
         currPos.x = pawn->color == 'w' ? pawn->pos.x + 2 : pawn->pos.x - 2; currPos.y = pawn->pos.y;
 
         if (!squares[currPos.x][currPos.y]->piece)
-            squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn->pos);
+            squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
     }
 }
 
 void Table::markPossibleMovesForKnight(Knight* knight) {
     // Up - right
     if (!isAnIllegalMove(knight, {knight->pos.x + 2, knight->pos.y + 1}))
-        squares[knight->pos.x + 2][knight->pos.y + 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 2][knight->pos.y + 1]->possibleNormalMoves.push_back(knight);
 
     // Right - up
     if (!isAnIllegalMove(knight, {knight->pos.x + 1, knight->pos.y + 2}))
-        squares[knight->pos.x + 1][knight->pos.y + 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 1][knight->pos.y + 2]->possibleNormalMoves.push_back(knight);
 
     // Down - right
     if (!isAnIllegalMove(knight, {knight->pos.x - 2, knight->pos.y + 1}))
-        squares[knight->pos.x - 2][knight->pos.y + 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 2][knight->pos.y + 1]->possibleNormalMoves.push_back(knight);
 
     // Right - down
     if (!isAnIllegalMove(knight, {knight->pos.x - 1, knight->pos.y + 2}))
-        squares[knight->pos.x - 1][knight->pos.y + 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 1][knight->pos.y + 2]->possibleNormalMoves.push_back(knight);
 
     // Up - left
     if (!isAnIllegalMove(knight, {knight->pos.x + 2, knight->pos.y - 1}))
-        squares[knight->pos.x + 2][knight->pos.y - 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 2][knight->pos.y - 1]->possibleNormalMoves.push_back(knight);
 
     // Left - up
     if (!isAnIllegalMove(knight, {knight->pos.x + 1, knight->pos.y - 2}))
-        squares[knight->pos.x + 1][knight->pos.y - 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x + 1][knight->pos.y - 2]->possibleNormalMoves.push_back(knight);
 
     // Down - left
     if (!isAnIllegalMove(knight, {knight->pos.x - 2, knight->pos.y - 1}))
-        squares[knight->pos.x - 2][knight->pos.y - 1]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 2][knight->pos.y - 1]->possibleNormalMoves.push_back(knight);
 
     // Left - down
     if (!isAnIllegalMove(knight, {knight->pos.x - 1, knight->pos.y - 2}))
-        squares[knight->pos.x - 1][knight->pos.y - 2]->possibleNormalMoves.push_back(knight->pos);
+        squares[knight->pos.x - 1][knight->pos.y - 2]->possibleNormalMoves.push_back(knight);
 }
 
 void Table::markPossibleMovesForBishop(Bishop* bishop) {
@@ -431,7 +439,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
     currPos.x = bishop->pos.x + 1; currPos.y = bishop->pos.y + 1;
 
     while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -443,7 +451,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
     currPos.x = bishop->pos.x + 1; currPos.y = bishop->pos.y - 1;
 
     while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -455,7 +463,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
     currPos.x = bishop->pos.x - 1; currPos.y = bishop->pos.y + 1;
 
     while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -467,7 +475,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
     currPos.x = bishop->pos.x - 1; currPos.y = bishop->pos.y - 1;
 
     while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -483,7 +491,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
     currPos.x = rook->pos.x + 1; currPos.y = rook->pos.y;
 
     while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -495,7 +503,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
     currPos.x = rook->pos.x - 1; currPos.y = rook->pos.y;
 
     while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -507,7 +515,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
     currPos.x = rook->pos.x; currPos.y = rook->pos.y - 1;
 
     while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -519,7 +527,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
     currPos.x = rook->pos.x; currPos.y = rook->pos.y + 1;
 
     while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -535,7 +543,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -547,7 +555,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x - 1; currPos.y = queen->pos.y;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -559,7 +567,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x; currPos.y = queen->pos.y - 1;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -571,7 +579,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x; currPos.y = queen->pos.y + 1;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -583,7 +591,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y + 1;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -595,7 +603,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y - 1;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -607,7 +615,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x - 1; currPos.y = queen->pos.y + 1;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -619,7 +627,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     currPos.x = queen->pos.x - 1; currPos.y = queen->pos.y - 1;
 
     while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
@@ -635,49 +643,49 @@ void Table::markPossibleMovesForKing(King *king) {
     currPos.x = king->pos.x + 1; currPos.y = king->pos.y;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Down
     currPos.x = king->pos.x - 1; currPos.y = king->pos.y;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Left
     currPos.x = king->pos.x; currPos.y = king->pos.y - 1;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Right
     currPos.x = king->pos.x; currPos.y = king->pos.y + 1;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Up - right
     currPos.x = king->pos.x + 1; currPos.y = king->pos.y + 1;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Up - left
     currPos.x = king->pos.x + 1; currPos.y = king->pos.y - 1;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Down - right
     currPos.x = king->pos.x - 1; currPos.y = king->pos.y + 1;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Down - left
     currPos.x = king->pos.x - 1; currPos.y = king->pos.y - 1;
 
     if (!isAnIllegalMove(king, currPos) && !king->isInCheckAt(this, currPos) && !isKingInConflict(king, currPos))
-        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king->pos);
+        squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Verify if white / black has already castled
     if (king->castle)

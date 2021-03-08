@@ -7,7 +7,7 @@
 
 ChessPiece::ChessPiece(char color, vec2 pos, int index) {
     assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
-    this->color = color; this->pos = pos; this->score = 69; this->index = index; this->abbreviation = '#';
+    this->color = color; this->pos = pos; this->score = -1; this->index = index; this->abbreviation = '#';
 }
 ChessPiece::~ChessPiece() = default;
 
@@ -219,7 +219,7 @@ std::vector<PieceMove> Rook::getPositions(Table* t) {
 
     i = 1;
     while (i + pos.x < t->height) {
-        Square* squarePiece = t->squares[pos.x + i][1LL * i + pos.y];
+        Square* squarePiece = t->squares[pos.x + i][i + pos.y];
         if (t->canIPlaceItHere(this, squarePiece)) {
             moves.push_back(PieceMove{ vec2{pos.x + i, pos.y}, t->getSquareScore(squarePiece, color)});
             if (squarePiece->piece) break;
