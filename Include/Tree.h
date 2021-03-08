@@ -22,6 +22,8 @@ public:
     void createTree(TreeNode* root, int level, int depth);
 
     void printTree(TreeNode* root, int level);
+
+    void countNodes(TreeNode* root, int* no);
 };
 
 #endif //INC_3_CHECK_CHESS_TREE_H

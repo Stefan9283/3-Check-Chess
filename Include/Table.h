@@ -21,7 +21,7 @@ public:
 
 class Table {
 public:
-    const int height = 8, width = 8;
+    int height = 8, width = 8;
     int orientation = 1, turn = 0;
 
     std::vector<std::vector<Square*>> squares;
@@ -55,7 +55,7 @@ public:
     int getTotalScore(char color);
     static int getSquareScore(Square* sq, char myColor);
 
-    Table* createNewState(ChessPiece* piece, vec2 pos);
+    Table* createNewState(ChessPiece* piece = nullptr, vec2 pos = vec2());
     std::string pickAMove();
     void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true, int tabsCount = 0);
 
@@ -74,7 +74,9 @@ public:
 
     bool isKingInConflict(King* king, vec2 pos);
 
-    void markAllPossibleMoves();
+    void markAllPossibleMoves(int turn);
+
+    void unmarkAllPossibleMoves();
 
     void markPossibleMovesForPawn(Pawn* pawn);
 

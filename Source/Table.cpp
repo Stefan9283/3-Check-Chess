@@ -154,7 +154,7 @@ int Table::getTotalScore(char color) {
 #pragma endregion
 vec2 Table::string2coords(const char *coords) {
     assert(strlen(coords) >= 2 && "Coords should have at least a line and a column");
-    return {coords[0] - 'a', coords[1] - '1'};
+    return {coords[0] - 'a' - 1, coords[1] - '0'};
 }
 std::string Table::coords2string(vec2 pos) const {
     assert(isInside(pos) && "Position outside of the table");
@@ -176,12 +176,13 @@ std::string Table::pickAMove() {
 }
 Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
     auto* t = new Table(*this);
-    for (int i = 0; i < t->height; ++i) {
+    for (int i = 0; i < t->height; ++i)
         for (int j = 0; j < t->width; ++j) {
             t->squares[i][j] = new Square(*squares[i][j]);
+            t->squares[i][j]->possibleNormalMoves.clear();
             ChessPiece* c = t->squares[i][j]->piece;
             if (!c) continue;
-
+    
             if (dynamic_cast<Pawn*>(c))
                 t->squares[i][j]->piece = new Pawn(*dynamic_cast<Pawn*>(c));
             else if (dynamic_cast<Rook*>(c))
@@ -194,13 +195,13 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
                 t->squares[i][j]->piece = new Knight(*dynamic_cast<Knight*>(c));
             else if (dynamic_cast<King*>(c))
                 t->squares[i][j]->piece = new King(*dynamic_cast<King*>(c));
+    
+            t->pieces[c->color == 'w' ? 0 : 1][c->index] = t->squares[i][j]->piece;
         }
-    }
-
-    if (!piece)
-        return t;
-
-    t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
+    
+    
+    if (piece)
+        t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
     return t;
 }
 void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int tabsCount) {
@@ -383,8 +384,30 @@ bool Table::isKingInConflict(King* king, vec2 pos) {
     return pos.getDistanceTo(pieces[line][14]->pos) < 2;
 }
 
-void Table::markAllPossibleMoves() {
-    for 
+void Table::markAllPossibleMoves(int turn) {
+    for (ChessPiece* piece : pieces[turn]) {
+        if (!piece)
+            continue;
+
+        if (dynamic_cast<Pawn*>(piece))
+            markPossibleMovesForPawn((Pawn*)piece);
+        else if (dynamic_cast<Knight*>(piece))
+            markPossibleMovesForKnight((Knight*)piece);
+        else if (dynamic_cast<Bishop*>(piece))
+            markPossibleMovesForBishop((Bishop*)piece);
+        else if (dynamic_cast<Rook*>(piece))
+            markPossibleMovesForRook((Rook*)piece);
+        else if (dynamic_cast<Queen*>(piece))
+            markPossibleMovesForQueen((Queen*)piece);
+        else
+            markPossibleMovesForKing((King*)piece);
+    }
+}
+
+void Table::unmarkAllPossibleMoves() {
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            squares[i][j]->possibleNormalMoves.clear();
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {
@@ -716,8 +739,8 @@ void Table::markPossibleMovesForKing(King *king) {
         if (!king->wasMoved &&
             !((Rook*)pieces[line][9])->wasMoved &&
             !king->isInCheckAt(this, king->pos) &&
-            !king->isInCheckAt(this, vec2{king->pos.x + 1, king->pos.y}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x + 2, king->pos.y}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y + 1}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y + 2}) &&
             hasNoPiecesBetween_line(king->pos, pieces[line][9]->pos))
                 king->color == 'w' ? shortCastle_white = true : shortCastle_black = true;
 
@@ -726,10 +749,9 @@ void Table::markPossibleMovesForKing(King *king) {
         if (!king->wasMoved &&
             !((Rook*)pieces[line][8])->wasMoved &&
             !king->isInCheckAt(this, king->pos) &&
-            !king->isInCheckAt(this, vec2{king->pos.x - 1, king->pos.y}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x - 2, king->pos.y}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x - 3, king->pos.y}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 1}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 2}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 3}) &&
             hasNoPiecesBetween_line(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
-
