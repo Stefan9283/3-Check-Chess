@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 project(3_Check_Chess)
 
 set(CMAKE_CXX_STANDARD 14)

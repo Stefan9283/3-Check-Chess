@@ -1,8 +1,13 @@
 #include <common.h>
 #include "Table.h"
 
+
+
 int main() {
     //Table* t = new Table();
+    //t->movePiece(t->getPiece("e1"), "g5");
+    //t->printGameBoard('b');
+
     //t->moveInAdvance("(e2, e4), (d7, d5), (f1, c4), (g8, f6), (d2, d3)",'w');
     //t->printGameBoard('r', false, true, 1);
 
@@ -10,6 +15,7 @@ int main() {
     //std::cout << t->history[0].move.first.toString() << t->history[0].move.second.toString() << "\n";
 
     //signal(SIGTERM, SIG_IGN);
+    //signal(SIGIN, SIG_IGN);
     //char s[256];
     //setbuf(stdin, NULL);
     //setbuf(stdout, NULL);
@@ -18,7 +24,7 @@ int main() {
     //    fgets(s, 256, stdin);
     //    if (strstr(s, "xboard")) continue;
     //    if (strstr(s, "protover 2")) {
-    //        std::cout << "feature sigint=0 sigterm=0 san=1 myname=blue_thing\n"; //
+    //        std::cout << "feature sigint=0 sigterm=0 san=1 name=blue_thing\n"; //
     //    }
     //    if (strstr(s, "new")) {
     //        if (t) delete t;
@@ -53,9 +59,16 @@ int main() {
     //   }
 
     Table* table = new Table();
-    Tree* tree = new Tree(table);
 
-    tree->createTree(tree->root, 0, 2);
-    tree->printTree(tree->root, 0);
+    Tree* tree = new Tree(table);
+    
+    tree->createTree(tree->root, 0, 1);
+    
+    int no = 0;
+    
+    tree->countNodes(tree->root, &no);
+    
+    std::cout << no << "\n";
+    //tree->printTree(tree->root, 0);
     return 0;
 }
