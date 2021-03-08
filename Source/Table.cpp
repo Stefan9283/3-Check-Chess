@@ -206,7 +206,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
 }
 void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int tabsCount) {
     assert(perspective == 'r' || perspective == 'b' || perspective == 'w' && "Perpective (w)hite/(b)lack/(r)otated");
-    printTabs(tabsCount); std::cout << "###################################\n";
+    printTabs(tabsCount); std::cout << "##################################\n";
     if (perspective == 'w') {
 
         for (int i = height - 1; i >= 0; --i) {
@@ -224,7 +224,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
             std::cout << "\n";
         }
 
-        printTabs(tabsCount); std::cout << "   --------------------------------\n";
+        printTabs(tabsCount); std::cout << "   -------------------------------\n";
         printTabs(tabsCount); std::cout << "   ";
 
         for (int j = 0; j < width; ++j)
@@ -289,7 +289,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
             std::cout << "\n";
         }
     }
-    printTabs(tabsCount); std::cout << "####################################\n";
+    printTabs(tabsCount); std::cout << "##################################\n";
 }
 
 // Functii Ovidiu
@@ -416,7 +416,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     // One square
     currPos.x = pawn->color == 'w' ? pawn->pos.x + 1 : pawn->pos.x - 1; currPos.y = pawn->pos.y;
 
-    if (!squares[currPos.x][currPos.y]->piece)
+    if (isInside(currPos) && !squares[currPos.x][currPos.y]->piece)
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
 
     // On diagonal
@@ -434,7 +434,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     if (!pawn->wasMoved) {
         currPos.x = pawn->color == 'w' ? pawn->pos.x + 2 : pawn->pos.x - 2; currPos.y = pawn->pos.y;
 
-        if (!squares[currPos.x][currPos.y]->piece)
+        if (isInside(currPos) && !squares[currPos.x][currPos.y]->piece)
             squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
     }
 }

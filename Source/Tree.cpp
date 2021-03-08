@@ -10,7 +10,7 @@ Tree::Tree(Table* table) {
 }
 
 void Tree::createTree(TreeNode* root, int level, int depth) {
-    if (level == depth)
+    if (level == 2 * depth - 1)
         return;
 
     root->table->markAllPossibleMoves(root->table->turn + level % 2);
@@ -35,6 +35,7 @@ void Tree::printTree(TreeNode* root, int level) {
         return;
 
     root->table->printGameBoard('w', true, false, level);
+    std::cout << "\n";
 
     for (TreeNode* child : root->children)
         printTree(child, level + 1);

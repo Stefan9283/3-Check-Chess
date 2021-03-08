@@ -19,7 +19,7 @@ int main() {
     //char s[256];
     //setbuf(stdin, NULL);
     //setbuf(stdout, NULL);
-    //while (1) {
+    //while (true) {
     //    fflush(stdout);
     //    fgets(s, 256, stdin);
     //    if (strstr(s, "xboard")) continue;
