@@ -13,7 +13,7 @@ int main() {
     //char s[256];
     //setbuf(stdin, NULL);
     //setbuf(stdout, NULL);
-    //while (1) {
+    //while (true) {
     //    fflush(stdout);
     //    fgets(s, 256, stdin);
     //    if (strstr(s, "xboard")) continue;
@@ -55,13 +55,7 @@ int main() {
     Table* table = new Table();
     Tree* tree = new Tree(table);
 
-    tree->createTree(tree->root, 0, 3);
-
-    int no = 0;
-
-    tree->countNodes(tree->root, &no);
-
-    std::cout << no;
-    //tree->printTree(tree->root, 0);
+    tree->createTree(tree->root, 0, 2);
+    tree->printTree(tree->root, 0);
     return 0;
 }
