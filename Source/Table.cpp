@@ -154,7 +154,7 @@ int Table::getTotalScore(char color) {
 #pragma endregion
 vec2 Table::string2coords(const char *coords) {
     assert(strlen(coords) >= 2 && "Coords should have at least a line and a column");
-    return {coords[0] - 'a', coords[1] - '1'};
+    return {coords[0] - 'a' - 1, coords[1] - '0'};
 }
 std::string Table::coords2string(vec2 pos) const {
     assert(isInside(pos) && "Position outside of the table");
@@ -176,13 +176,13 @@ std::string Table::pickAMove() {
 }
 Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
     auto* t = new Table(*this);
-    for (int i = 0; i < t->height; ++i) {
+    for (int i = 0; i < t->height; ++i)
         for (int j = 0; j < t->width; ++j) {
             t->squares[i][j] = new Square(*squares[i][j]);
             t->squares[i][j]->possibleNormalMoves.clear();
             ChessPiece* c = t->squares[i][j]->piece;
             if (!c) continue;
-
+    
             if (dynamic_cast<Pawn*>(c))
                 t->squares[i][j]->piece = new Pawn(*dynamic_cast<Pawn*>(c));
             else if (dynamic_cast<Rook*>(c))
@@ -195,12 +195,13 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
                 t->squares[i][j]->piece = new Knight(*dynamic_cast<Knight*>(c));
             else if (dynamic_cast<King*>(c))
                 t->squares[i][j]->piece = new King(*dynamic_cast<King*>(c));
+    
+            t->pieces[c->color == 'w' ? 0 : 1][c->index] = t->squares[i][j]->piece;
         }
-    }
-
+    
+    
     if (piece)
         t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
-
     return t;
 }
 void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int tabsCount) {

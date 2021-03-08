@@ -21,7 +21,7 @@ public:
 
 class Table {
 public:
-    const int height = 8, width = 8;
+    int height = 8, width = 8;
     int orientation = 1, turn = 0;
 
     std::vector<std::vector<Square*>> squares;
