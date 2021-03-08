@@ -7,6 +7,11 @@
 
 class ChessPiece;
 
+typedef struct PieceHistory {
+    ChessPiece* piece;
+    std::pair<vec2, vec2> move;
+} PieceHistory;
+
 class Square {
 public:
     std::vector<ChessPiece*> possibleNormalMoves;
@@ -21,7 +26,8 @@ public:
 
     std::vector<std::vector<Square*>> squares;
     std::vector<std::vector<ChessPiece*>> pieces;
-    std::vector<std::pair<vec2, vec2>> history;
+
+    std::vector<PieceHistory> history;
 
     // Not permanent
     bool shortCastle_white = false;
@@ -39,23 +45,22 @@ public:
     void removePiece(ChessPiece* piece);
     ChessPiece* getPiece(const char* pos);
 
-    bool isAnIllegalMove(Square* sq, ChessPiece* piece);
-
+    static bool isAnIllegalMove(Square* sq, ChessPiece* piece);
+    static bool canIPlaceItHere(ChessPiece* cp, Square* sq);
     bool isInside(vec2 pos) const;
 
-    bool canIPlaceItHere(ChessPiece* cp, Square* sq);
-
-    std::string getCoords(vec2 pos);
+    std::string coords2string(vec2 pos) const;
+    vec2 string2coords(const char* coords);
 
     int getTotalScore(char color);
-    int getSquareScore(Square* sq, char myColor);
+    static int getSquareScore(Square* sq, char myColor);
 
     Table* createNewState(ChessPiece* piece, vec2 pos);
+    std::string pickAMove();
+    void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true, int tabsCount = 0);
 
-    void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true);
-
-    void addMove2History(std::pair<vec2, vec2> move) {
-        history.push_back(move);
+    void addMove2History(ChessPiece* piece, std::pair<vec2, vec2> move) {
+        history.push_back({piece, move});
     }
 
     // Functii Ovidiu
