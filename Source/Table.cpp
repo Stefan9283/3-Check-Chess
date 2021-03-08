@@ -179,6 +179,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
     for (int i = 0; i < t->height; ++i) {
         for (int j = 0; j < t->width; ++j) {
             t->squares[i][j] = new Square(*squares[i][j]);
+            t->squares[i][j]->possibleNormalMoves.clear();
             ChessPiece* c = t->squares[i][j]->piece;
             if (!c) continue;
 
@@ -197,10 +198,9 @@ Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
         }
     }
 
-    if (!piece)
-        return t;
+    if (piece)
+        t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
 
-    t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
     return t;
 }
 void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int tabsCount) {
@@ -383,8 +383,30 @@ bool Table::isKingInConflict(King* king, vec2 pos) {
     return pos.getDistanceTo(pieces[line][14]->pos) < 2;
 }
 
-void Table::markAllPossibleMoves() {
-    for 
+void Table::markAllPossibleMoves(int turn) {
+    for (ChessPiece* piece : pieces[turn]) {
+        if (!piece)
+            continue;
+
+        if (dynamic_cast<Pawn*>(piece))
+            markPossibleMovesForPawn((Pawn*)piece);
+        else if (dynamic_cast<Knight*>(piece))
+            markPossibleMovesForKnight((Knight*)piece);
+        else if (dynamic_cast<Bishop*>(piece))
+            markPossibleMovesForBishop((Bishop*)piece);
+        else if (dynamic_cast<Rook*>(piece))
+            markPossibleMovesForRook((Rook*)piece);
+        else if (dynamic_cast<Queen*>(piece))
+            markPossibleMovesForQueen((Queen*)piece);
+        else
+            markPossibleMovesForKing((King*)piece);
+    }
+}
+
+void Table::unmarkAllPossibleMoves() {
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            squares[i][j]->possibleNormalMoves.clear();
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {
@@ -716,8 +738,8 @@ void Table::markPossibleMovesForKing(King *king) {
         if (!king->wasMoved &&
             !((Rook*)pieces[line][9])->wasMoved &&
             !king->isInCheckAt(this, king->pos) &&
-            !king->isInCheckAt(this, vec2{king->pos.x + 1, king->pos.y}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x + 2, king->pos.y}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y + 1}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y + 2}) &&
             hasNoPiecesBetween_line(king->pos, pieces[line][9]->pos))
                 king->color == 'w' ? shortCastle_white = true : shortCastle_black = true;
 
@@ -726,10 +748,9 @@ void Table::markPossibleMovesForKing(King *king) {
         if (!king->wasMoved &&
             !((Rook*)pieces[line][8])->wasMoved &&
             !king->isInCheckAt(this, king->pos) &&
-            !king->isInCheckAt(this, vec2{king->pos.x - 1, king->pos.y}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x - 2, king->pos.y}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x - 3, king->pos.y}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 1}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 2}) &&
+            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 3}) &&
             hasNoPiecesBetween_line(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
-

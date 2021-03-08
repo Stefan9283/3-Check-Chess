@@ -52,5 +52,16 @@ int main() {
     //       std::cout << "\n";
     //   }
 
+    Table* table = new Table();
+    Tree* tree = new Tree(table);
+
+    tree->createTree(tree->root, 0, 3);
+
+    int no = 0;
+
+    tree->countNodes(tree->root, &no);
+
+    std::cout << no;
+    //tree->printTree(tree->root, 0);
     return 0;
 }
