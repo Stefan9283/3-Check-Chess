@@ -1,0 +1,34 @@
+locale = C.UTF-8
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+shuffleOpenings = 0
+shuffleOpenings = 0
+Version: xboard 4.9.1 + 3_Check_Chess ()
+Reset(1, 0) from gameMode 0
+recognized 'normal' (-1) as variant normal
+GameEnds(0, (null), 2)
+shuffleOpenings = 0
+StartChildProcess (dir=".") ./3_Check_Chess
+202 >first : xboard
+protover 2
+210 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+210 >first : accepted sigint
+210 >first : accepted sigterm
+210 >first : accepted san
+210 >first : accepted name
+10203 >first : new
+random
+10203 >first : level 40 5 0
+10203 >first : post
+10203 >first : hard
+nps: w=-1, b=-1
+nps: w=-1, b=-1
+11033 >first : time 30000
+11041 >first : otim 30000
+book hit = (NULL)
+11042 >first : e2e4
+GameEnds(27, Error writing to first chess program, 2)
+12308 >first : result 0-1 {Error writing to first chess program}
+12308 >first : force
+12308 >first : quit

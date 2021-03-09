@@ -2,6 +2,8 @@
 #ifndef INC_3_CHECK_CHESS_COMMON_H
 #define INC_3_CHECK_CHESS_COMMON_H
 
+#define INF INT_MAX
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -10,11 +12,11 @@
 #include <deque>
 #include <stack>
 #include <algorithm>
-#include <limits>
+#include <climits>
 
 #include <string>
+#include <cstring>
 
-#include <io.h>
 #include <fcntl.h>
 #include <cstdio>
 #include <csignal>

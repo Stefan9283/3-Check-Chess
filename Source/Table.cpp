@@ -159,8 +159,8 @@ vec2 Table::string2coords(const char *coords) {
 std::string Table::coords2string(vec2 pos) const {
     assert(isInside(pos) && "Position outside of the table");
     std::string s = "a";
-    s[0] += pos.x;
-    return s.append(std::to_string(pos.y + 1));
+    s[0] += pos.y;
+    return s.append(std::to_string(pos.x + 1));
 }
 
 std::string Table::pickAMove() {
@@ -293,6 +293,34 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
 }
 
 // Functii Ovidiu
+std::string Table::makeBestMove() {
+    Tree* tree = new Tree(this);
+
+    tree->root->table->turn = 1;
+    tree->createTree(tree->root, 0, 2);
+    tree->MiniMax(tree->root, 1, 0);
+
+    std::pair<vec2, vec2> bestMove = tree->getBestMove();
+
+    movePiece(getPiece(coords2string(bestMove.first).c_str()), coords2string(bestMove.second).c_str());
+
+    if (dynamic_cast<Pawn*>(getPiece(coords2string(bestMove.second).c_str())))
+        ((Pawn*)getPiece(coords2string(bestMove.second).c_str()))->wasMoved = true;
+
+    tree->deleteTree(tree->root);
+
+    return std::string("move ").append(coords2string(bestMove.first)).append(coords2string(bestMove.second));
+}
+
+int Table::getTotalScore(int turn) {
+    int total = 0;
+
+    for (ChessPiece* chessPiece : pieces[turn])
+        total += chessPiece->score;
+
+    return total;
+}
+
 void Table::moveInAdvance(const char* moves, char color) {
     for (int i = 0; i < strlen(moves); i += 10) {
         char from[3], to[3];

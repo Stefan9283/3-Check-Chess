@@ -64,6 +64,10 @@ public:
     }
 
     // Functii Ovidiu
+    std::string makeBestMove();
+
+    int getTotalScore(int turn);
+
     void moveInAdvance(const char* moves, char color);
 
     bool isAnIllegalMove(ChessPiece* piece, vec2 pos);

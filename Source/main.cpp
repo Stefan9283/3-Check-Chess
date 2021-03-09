@@ -1,74 +1,52 @@
 #include <common.h>
 #include "Table.h"
 
-
-
 int main() {
-    //Table* t = new Table();
-    //t->movePiece(t->getPiece("e1"), "g5");
-    //t->printGameBoard('b');
+    Table* table = nullptr;
+    char buffer[256];
 
-    //t->moveInAdvance("(e2, e4), (d7, d5), (f1, c4), (g8, f6), (d2, d3)",'w');
-    //t->printGameBoard('r', false, true, 1);
+    signal(SIGTERM, SIG_IGN);
+    signal(SIGINT, SIG_IGN);
 
-    //std::cout << t->pickAMove().c_str() << "\n";
-    //std::cout << t->history[0].move.first.toString() << t->history[0].move.second.toString() << "\n";
+    setbuf(stdin, NULL);
+    setbuf(stdout, NULL);
 
-    //signal(SIGTERM, SIG_IGN);
-    //signal(SIGIN, SIG_IGN);
-    //char s[256];
-    //setbuf(stdin, NULL);
-    //setbuf(stdout, NULL);
-    //while (true) {
-    //    fflush(stdout);
-    //    fgets(s, 256, stdin);
-    //    if (strstr(s, "xboard")) continue;
-    //    if (strstr(s, "protover 2")) {
-    //        std::cout << "feature sigint=0 sigterm=0 san=1 name=blue_thing\n"; //
-    //    }
-    //    if (strstr(s, "new")) {
-    //        if (t) delete t;
-    //        t = new Table();
-    //        std::cout << "black\n";
-    //    }
-    //    if (strstr(s, "quit")) {
-    //        if (t) delete t;
-    //        break;
-    //    }
-    //    std::cout << t->pickAMove().c_str() << "\n";
-    //}
-//
+    while (true) {
+        fflush(stdout);
+        fgets(buffer, 256, stdin);
 
-    //for (int j = 0; j < table->width; j++)
-    //    table->markPossibleMovesForPawn((Pawn*)table->pieces[0][j]);
-    //table->markPossibleMovesForRook((Rook*)table->pieces[0][8]);
-    //table->markPossibleMovesForRook((Rook*)table->pieces[0][9]);
-    //table->markPossibleMovesForKnight((Knight*)table->pieces[0][10]);
-    //table->markPossibleMovesForKnight((Knight*)table->pieces[0][11]);
-    //table->markPossibleMovesForBishop((Bishop*)table->pieces[0][12]);
-    //table->markPossibleMovesForBishop((Bishop*)table->pieces[0][13]);
-    //table->markPossibleMovesForQueen((Queen*)table->pieces[0][15]);
-    //table->markPossibleMovesForKing((King*)table->pieces[0][14]);
+        if (strstr(buffer, "xboard"))
+            continue;
 
-    //for (int i = 0; i < table->height; i++)
-    //   for (int j = 0; j < table->width; j++) {
-    //       std::cout << i + 1 << " " << j + 1 << ": ";
-    //       for (vec2 pos : table->squares[i][j]->possibleNormalMoves)
-    //           std::cout << "(" << pos.x + 1 << ", " << pos.y + 1 << ") ";
-    //       std::cout << "\n";
-    //   }
+        if (strstr(buffer, "protover 2")) {
+            std::cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
+            continue;
+        }
 
-    Table* table = new Table();
+        if (strstr(buffer, "new")) {
+            if (table)
+                delete table;
 
-    Tree* tree = new Tree(table);
-    
-    tree->createTree(tree->root, 0, 1);
-    
-    int no = 0;
-    
-    tree->countNodes(tree->root, &no);
-    
-    std::cout << no << "\n";
-    //tree->printTree(tree->root, 0);
+            table = new Table();
+            continue;
+        }
+
+        if (strstr(buffer, "quit")) {
+            if (table)
+                delete table;
+
+            break;
+        }
+
+        char from[3], to[3];
+
+        from[0] = buffer[0]; from[1] = buffer[1]; from[2] = '\0';
+        to[0] = buffer[2]; to[1] = buffer[3]; to[2] = '\0';
+
+        table->movePiece(table->getPiece(from), to);
+        std::cout << "move f7f5\n";
+        //std::cout << table->makeBestMove().c_str() << "\n";
+    }
+
     return 0;
 }
