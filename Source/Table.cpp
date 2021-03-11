@@ -84,6 +84,8 @@ void Table::movePiece(ChessPiece* piece, vec2 pos) {
     assert(piece != nullptr && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
+    turn = 1 - turn;
+
     if (squares[pos.x][pos.y]->piece)
         removePiece(squares[pos.x][pos.y]->piece);
 
@@ -94,7 +96,7 @@ void Table::movePiece(ChessPiece* piece, vec2 pos) {
     addMove2History(piece, std::make_pair(prev, pos));
 }
 void Table::movePiece(ChessPiece *piece, const char* pos) {
-    assert(strlen(pos) == 2 && "A valid move position needs a line and a column");
+    assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
 
     if(pos[0] >= 'a' && isInside(vec2{pos[1] - '1', pos[0] - 'a'}))
         movePiece(piece, vec2{pos[1] - '1', pos[0] - 'a'});
@@ -103,6 +105,9 @@ void Table::movePiece(ChessPiece *piece, const char* pos) {
         movePiece(piece, vec2{pos[0] - '1', pos[1] - 'a'});
     else assert(!"Illegal move position");
 }
+void Table::movePiece(const char* move) {
+    movePiece(getPiece(move), move + 2);
+}
 void Table::removePiece(ChessPiece* piece) {
     assert(piece != nullptr && "Piece meant to be deleted is null");
     pieces[piece->color == 'w' ? 0 : 1][piece->index] = nullptr;
@@ -110,7 +115,7 @@ void Table::removePiece(ChessPiece* piece) {
     delete piece;
 }
 ChessPiece* Table::getPiece(const char *pos) {
-    assert(strlen(pos) == 2 && "A valid move position needs a line and a column");
+    assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
 
     if(pos[0] >= 'a' && isInside(vec2{pos[1] - '1', pos[0] - 'a'}))
         return squares[pos[1] - '1'][pos[0] - 'a']->piece;

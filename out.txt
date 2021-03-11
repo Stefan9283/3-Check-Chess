@@ -1,0 +1,14 @@
+xboard
+protover 2
+accepted sigint
+accepted sigterm
+accepted san
+accepted name
+new
+random
+level 40 5 0
+post
+hard
+result * {xboard exit}
+force
+quit

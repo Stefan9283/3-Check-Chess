@@ -42,6 +42,7 @@ public:
     // Functii Stefan
     void movePiece(ChessPiece* piece, vec2 pos);
     void movePiece(ChessPiece* piece, const char* pos);
+    void movePiece(const char* move);
     void removePiece(ChessPiece* piece);
     ChessPiece* getPiece(const char* pos);
 

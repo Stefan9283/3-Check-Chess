@@ -1,52 +1,27 @@
 #include <common.h>
 #include "Table.h"
+#include <fstream>
+#include <Engine.h>
 
 int main() {
-    Table* table = nullptr;
-    char buffer[256];
+    /*
+    {
+        Table* table = nullptr;
 
-    signal(SIGTERM, SIG_IGN);
-    signal(SIGINT, SIG_IGN);
+        table = new Table();
+        table->printGameBoard();
 
-    setbuf(stdin, NULL);
-    setbuf(stdout, NULL);
+        if(isAnIllegalMove(table->squares[0][0], table->getPiece("a2")))
+            std::cout << "true" << "\n";
+        else std::cout << "false" << "\n";
 
-    while (true) {
-        fflush(stdout);
-        fgets(buffer, 256, stdin);
-
-        if (strstr(buffer, "xboard"))
-            continue;
-
-        if (strstr(buffer, "protover 2")) {
-            std::cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
-            continue;
+        std::cout << "////////////////////////////////////////////\n";
+        for (PieceMove move : table->getPiece("b1")->getPositions(table)) {
+            Table* tmp = table->createNewState(table->getPiece("b1"), move.ownMove);
+            tmp->printGameBoard();
+            delete tmp;
         }
-
-        if (strstr(buffer, "new")) {
-            if (table)
-                delete table;
-
-            table = new Table();
-            continue;
-        }
-
-        if (strstr(buffer, "quit")) {
-            if (table)
-                delete table;
-
-            break;
-        }
-
-        char from[3], to[3];
-
-        from[0] = buffer[0]; from[1] = buffer[1]; from[2] = '\0';
-        to[0] = buffer[2]; to[1] = buffer[3]; to[2] = '\0';
-
-        table->movePiece(table->getPiece(from), to);
-        std::cout << "move f7f5\n";
-        //std::cout << table->makeBestMove().c_str() << "\n";
-    }
-
+    }*/
+    Engine e;
     return 0;
 }
