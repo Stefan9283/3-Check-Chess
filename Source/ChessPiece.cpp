@@ -377,6 +377,10 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
     return moves;
 } // {DONE}
 
+Queen* Pawn::promotePawn(Table* table) {
+    return new Queen(color, pos, table->pieces[color == 'w' ? 1 : 0].size());
+}
+
 // Functii Ovidiu
 
 // Verify if the king is in check at a specified position

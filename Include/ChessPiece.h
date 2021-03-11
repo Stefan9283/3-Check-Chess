@@ -84,6 +84,8 @@ public:
     Pawn(char color, vec2 pos, int index);
 
     std::vector<PieceMove> getPositions(Table* t) override;
+
+    Queen* promotePawn(Table* table);
 };
 
 #endif //INC_3_CHECK_CHESS_CHESSPIECE_H

@@ -89,6 +89,20 @@ void Table::movePiece(ChessPiece* piece, vec2 pos) {
     if (squares[pos.x][pos.y]->piece)
         removePiece(squares[pos.x][pos.y]->piece);
 
+    if (dynamic_cast<Pawn*>(piece)) {
+        if (pos.x == height - 1) {
+            Queen* queen = ((Pawn*)piece)->promotePawn(this);
+
+            delete piece;
+            piece = queen;
+            pieces[piece->color == 'w' ? 0 : 1].push_back(piece);
+        } else
+            ((Pawn*)piece)->wasMoved = true;
+    } else if (dynamic_cast<Rook*>(piece))
+        ((Rook*)piece)->wasMoved = true;
+    else if (dynamic_cast<King*>(piece))
+        ((King*)piece)->wasMoved = true;
+
     vec2 prev = piece->pos;
     squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     squares[pos.x][pos.y]->piece = piece;
@@ -174,7 +188,6 @@ std::string Table::pickAMove() {
     std::string move = "move ";
     move = move + algo->pickMove(this);
     vec2 start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
-    addMove2History(squares[start.y][start.x]->piece, std::make_pair(start, end));
     delete algo;
     delete picker;
     return move;
@@ -305,23 +318,22 @@ void Table::parseMove(const char* s) {
     movePiece(getPiece(from), to);
 }
 
-std::string Table::makeBestMove() {
+std::string Table::getBestMove(int turn) {
     Tree* tree = new Tree(this);
 
-    tree->root->table->turn = 1;
+    tree->root->table->turn = turn;
     tree->createTree(tree->root, 0, 2);
-    tree->MiniMax(tree->root, 1, 0);
+    tree->printTree(tree->root, 0);
+    tree->MiniMax(tree->root, turn, 0);
 
     std::pair<vec2, vec2> bestMove = tree->getBestMove();
 
-    movePiece(getPiece(coords2string(bestMove.first).c_str()), coords2string(bestMove.second).c_str());
-
-    if (dynamic_cast<Pawn*>(getPiece(coords2string(bestMove.second).c_str())))
-        ((Pawn*)getPiece(coords2string(bestMove.second).c_str()))->wasMoved = true;
+    std::string from = coords2string(bestMove.first);
+    std::string to = coords2string(bestMove.second);
 
     tree->deleteTree(tree->root);
 
-    return std::string("move ").append(coords2string(bestMove.first)).append(coords2string(bestMove.second)).append("\n");
+    return std::string("move ").append(from).append(to);
 }
 
 std::string Table::getARandomMove(int turn) {
@@ -494,7 +506,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     if (!pawn->wasMoved) {
         currPos.x = pawn->color == 'w' ? pawn->pos.x + 2 : pawn->pos.x - 2; currPos.y = pawn->pos.y;
 
-        if (isInside(currPos) && !squares[currPos.x][currPos.y]->piece)
+        if (isInside(currPos) && !squares[pawn->pos.x + (pawn->color == 'w' ? 1 : -1)][pawn->pos.x]->piece && !squares[currPos.x][currPos.y]->piece)
             squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
     }
 }

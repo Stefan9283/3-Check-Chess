@@ -65,7 +65,7 @@ public:
     // Functii Ovidiu
     void parseMove(const char* s);
 
-    std::string makeBestMove();
+    std::string getBestMove(int turn);
 
     std::string getARandomMove(int turn);
 
