@@ -14,9 +14,8 @@ typedef struct PieceHistory {
 
 class Square {
 public:
-    std::vector<ChessPiece*> possibleNormalMoves;
-
     ChessPiece* piece = nullptr;
+    std::vector<ChessPiece*> possibleNormalMoves;
 };
 
 class Table {
@@ -26,7 +25,6 @@ public:
 
     std::vector<std::vector<Square*>> squares;
     std::vector<std::vector<ChessPiece*>> pieces;
-
     std::vector<PieceHistory> history;
 
     // Not permanent
@@ -64,7 +62,11 @@ public:
     }
 
     // Functii Ovidiu
+    void parseMove(const char* s);
+
     std::string makeBestMove();
+
+    std::string getARandomMove(int turn);
 
     int getTotalScore(int turn);
 

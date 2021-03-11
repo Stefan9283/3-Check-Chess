@@ -293,6 +293,13 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
 }
 
 // Functii Ovidiu
+void Table::parseMove(const char* s) {
+    const char from[] = {s[strlen(s) - 4], s[strlen(s) - 3], '\0'};
+    const char to[] = {s[strlen(s) - 2], s[strlen(s) - 1], '\0'};
+
+    movePiece(getPiece(from), to);
+}
+
 std::string Table::makeBestMove() {
     Tree* tree = new Tree(this);
 
@@ -309,14 +316,34 @@ std::string Table::makeBestMove() {
 
     tree->deleteTree(tree->root);
 
-    return std::string("move ").append(coords2string(bestMove.first)).append(coords2string(bestMove.second));
+    return std::string("move ").append(coords2string(bestMove.first)).append(coords2string(bestMove.second)).append("\n");
+}
+
+std::string Table::getARandomMove(int turn) {
+    srand(time(NULL));
+    markAllPossibleMoves(turn);
+
+    int squareNo = rand() % (height * width);
+ 
+    while (!squares[squareNo / height][squareNo % width]->possibleNormalMoves.size())
+        squareNo = rand() % (height * width);
+
+    int moveNo = rand() % squares[squareNo / height][squareNo % width]->possibleNormalMoves.size();
+
+    std::string from = coords2string(squares[squareNo / height][squareNo % width]->possibleNormalMoves[moveNo]->pos);
+    std::string to = coords2string(vec2(squareNo / height, squareNo % width));
+
+    unmarkAllPossibleMoves();
+
+    return std::string("move ").append(from).append(to);
 }
 
 int Table::getTotalScore(int turn) {
     int total = 0;
 
     for (ChessPiece* chessPiece : pieces[turn])
-        total += chessPiece->score;
+        if (chessPiece)
+            total += chessPiece->score;
 
     return total;
 }

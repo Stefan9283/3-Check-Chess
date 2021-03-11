@@ -10,25 +10,61 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-202 >first : xboard
+187 >first : xboard
 protover 2
-210 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-210 >first : accepted sigint
-210 >first : accepted sigterm
-210 >first : accepted san
-210 >first : accepted name
-10203 >first : new
+196 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+196 >first : accepted sigint
+196 >first : accepted sigterm
+196 >first : accepted san
+196 >first : accepted name
+10188 >first : new
 random
-10203 >first : level 40 5 0
-10203 >first : post
-10203 >first : hard
+10189 >first : level 40 5 0
+10189 >first : post
+10189 >first : hard
 nps: w=-1, b=-1
 nps: w=-1, b=-1
-11033 >first : time 30000
-11041 >first : otim 30000
+12462 >first : time 30000
+12462 >first : otim 30000
 book hit = (NULL)
-11042 >first : e2e4
-GameEnds(27, Error writing to first chess program, 2)
-12308 >first : result 0-1 {Error writing to first chess program}
-12308 >first : force
-12308 >first : quit
+12462 >first : e2e4
+12463 <first : move g7g6
+13361 >first : time 29999
+13361 >first : otim 29910
+book hit = (NULL)
+13361 >first : g1f3
+13362 <first : move g6g5
+14186 >first : time 29999
+14186 >first : otim 29827
+book hit = (NULL)
+14186 >first : d2d4
+14187 <first : move a7a6
+16301 >first : time 29999
+16301 >first : otim 29616
+book hit = (NULL)
+16301 >first : c2c4
+16301 <first : move g5g4
+17621 >first : time 29999
+17621 >first : otim 29484
+book hit = (NULL)
+17621 >first : d1a4
+17622 <first : move e7e5
+19106 >first : time 29999
+19106 >first : otim 29336
+book hit = (NULL)
+19106 >first : d4d5
+19106 <first : move a8a7
+21056 >first : time 29999
+21056 >first : otim 29141
+book hit = (NULL)
+21056 >first : f1d3
+21056 <first : move f8g7
+22946 >first : time 29999
+22946 >first : otim 28952
+book hit = (NULL)
+22946 >first : h1f1
+22946 <first : move g7f6
+GameEnds(29, xboard exit, 2)
+29535 >first : result * {xboard exit}
+29535 >first : force
+29535 >first : quit

@@ -38,14 +38,20 @@ int main() {
             break;
         }
 
-        char from[3], to[3];
+        if (buffer[0] >= 'a' && buffer[0] <= 'h')
+            if (buffer[1] >= '1' && buffer[1] <= '8') {
+                //char from[3], to[3];
 
-        from[0] = buffer[0]; from[1] = buffer[1]; from[2] = '\0';
-        to[0] = buffer[2]; to[1] = buffer[3]; to[2] = '\0';
+                //from[0] = buffer[0]; from[1] = buffer[1]; from[2] = '\0';
+                //to[0] = buffer[2]; to[1] = buffer[3]; to[2] = '\0';
 
-        table->movePiece(table->getPiece(from), to);
-        std::cout << "move f7f5\n";
-        //std::cout << table->makeBestMove().c_str() << "\n";
+                //std::cout << table->pickAMove() << "\n";
+
+                //std::cout << table->makeBestMove();
+               std::string move = table->getARandomMove(1);
+               table->parseMove(move.c_str());
+               std::cout << move << "\n";
+            }
     }
 
     return 0;
