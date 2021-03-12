@@ -477,7 +477,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
             return true;
 
     if (dynamic_cast<King*>(piece)) {
-        if (isKingInConflict((King*)piece, pos))
+        if (((King*)pieces[turn][14])->isInCheck(this, pos) || isKingInConflict((King*)piece, pos))
             return true;
     } else if (((King*)pieces[turn][14])->isInCheck(this, piece, pos))
         return true;
@@ -503,7 +503,7 @@ bool Table::hasLegalMoves() {
 
     unmarkAllPossibleMoves();
 
-    return !found;
+    return found;
 }
 
 void Table::markAllPossibleMoves() {

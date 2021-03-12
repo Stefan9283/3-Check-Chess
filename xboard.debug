@@ -10,66 +10,52 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-200 >first : xboard
+208 >first : xboard
 protover 2
-210 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-210 >first : accepted sigint
-210 >first : accepted sigterm
-210 >first : accepted san
-210 >first : accepted name
-10201 >first : new
+216 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+216 >first : accepted sigint
+216 >first : accepted sigterm
+216 >first : accepted san
+216 >first : accepted name
+10210 >first : new
 random
-10201 >first : level 40 5 0
-10201 >first : post
-10201 >first : hard
+10211 >first : level 40 5 0
+10211 >first : post
+10211 >first : hard
 nps: w=-1, b=-1
 nps: w=-1, b=-1
-18024 >first : time 30000
-18024 >first : otim 30000
+47043 >first : time 30000
+47043 >first : otim 30000
 book hit = (NULL)
-18024 >first : e2e4
-18039 <first : move b7b6
-18654 >first : time 29998
-18654 >first : otim 29938
+47043 >first : b1a3
+47045 <first : move a7a6
+58893 >first : time 29999
+58893 >first : otim 28815
 book hit = (NULL)
-18654 >first : d2d4
-18659 <first : move g8f6
-19390 >first : time 29998
-19390 >first : otim 29865
+58893 >first : d2d4
+58894 <first : move f7f6
+68253 >first : time 29999
+68253 >first : otim 27879
 book hit = (NULL)
-19390 >first : c2c4
-19396 <first : move b6b5
-20515 >first : time 29997
-20515 >first : otim 29753
+68253 >first : c1e3
+68254 <first : move h7h6
+78919 >first : time 29999
+78919 >first : otim 26812
 book hit = (NULL)
-20515 >first : f1d3
-20522 <first : move b5c4
-21192 >first : time 29996
-21192 >first : otim 29686
+78919 >first : a3c4
+78920 <first : move b8c6
+90319 >first : time 29999
+90319 >first : otim 25673
 book hit = (NULL)
-21192 >first : d3c4
-21203 <first : move f6d5
-21762 >first : time 29995
-21762 >first : otim 29630
+90319 >first : a2a4
+90320 <first : move h6h5
+95585 >first : time 29999
+95585 >first : otim 25146
 book hit = (NULL)
-21762 >first : c4d5
-21768 <first : move c7c6
-22437 >first : time 29995
-22437 >first : otim 29563
+95585 >first : a1a3
+95586 <first : move c6d4
+98511 >first : time 29999
+98511 >first : otim 24854
 book hit = (NULL)
-22437 >first : d5c6
-22444 <first : move d7c6
-24417 >first : time 29994
-24417 >first : otim 29366
-book hit = (NULL)
-24417 >first : d1a4
-24426 <first : move h7h6
-25137 >first : time 29993
-25137 >first : otim 29295
-book hit = (NULL)
-25137 >first : a4c6
-25145 <first : 3_Check_Chess: /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess/Source/Table.cpp:150: ChessPiece* Table::getPiece(const char*): Assertion `!"Illegal position"' failed.
-GameEnds(29, xboard exit, 2)
-32134 >first : result * {xboard exit}
-32134 >first : force
-32134 >first : quit
+98511 >first : e3d4
+98512 <first : move e8f7

@@ -42,9 +42,12 @@ Engine::Engine() {
 
             std::string move = t->getARandomMove();
 
-            //std::string move = t->getBestMove(2);
-            t->parseMove(move.c_str());
             std::cout << move << "\n";
+
+            if (strstr(move.c_str(), "resign"))
+                continue;
+
+            t->parseMove(move.c_str());
         }
     }
 }
