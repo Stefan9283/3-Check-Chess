@@ -3,7 +3,7 @@
 
 class Engine {
 public:
-    Table* t;
+    Table* t = nullptr;
     Engine();
     ~Engine();
 };

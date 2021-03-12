@@ -36,12 +36,12 @@ Engine::Engine() {
             break;
         }
 
-        if (buffer[0] >= 'a' && buffer[0] <= 'z'
-            && buffer[1] >= '1' && buffer[1] <= '9') {
+        if (buffer[0] >= 'a' && buffer[0] <= 'z' && buffer[1] >= '1' && buffer[1] <= '9') {
             t->movePiece(buffer);
 
             std::string move = t->getARandomMove();
 
+            //std::string move = t->getBestMove(2);
             std::cout << move << "\n";
 
             if (strstr(move.c_str(), "resign"))

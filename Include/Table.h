@@ -78,7 +78,7 @@ public:
 
     bool isAnIllegalMove(ChessPiece* piece, vec2<int> pos);
 
-    bool hasNoPiecesBetween_line(vec2<int> pos1, vec2<int> pos2);
+    bool hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2);
 
     bool hasNoPiecesBetween_diagonal(vec2<int> pos1, vec2<int> pos2);
 

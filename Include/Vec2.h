@@ -57,7 +57,7 @@ public:
         return sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y));
     }
     std::string toString() {
-        std::string s = "vec2<T>(";
+        std::string s = "vec2(";
         s.append(std::to_string(x));
         s.append(", ");
         s.append(std::to_string(y));
@@ -65,6 +65,5 @@ public:
         return s;
     }
 };
-
 
 #endif //INC_3_CHECK_CHESS_VEC2_H

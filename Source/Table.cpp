@@ -4,9 +4,6 @@
 
 #include "tools.h"
 
-
-
-
 Square::Square(char color, ChessPiece* piece) {
     this->color = color; this->piece = piece;
 }
@@ -229,14 +226,12 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
             t->pieces[c->color == 'w' ? 0 : 1][c->index] = t->squares[i][j]->piece;
         }
 
-
     if (COPY_HISTORY_TOO)
         for (int i = 0; i < t->history.size(); ++i) {
             vec2<int> oldPiecePos = history[i].piece->pos;
             t->history[i].piece = t->squares[oldPiecePos.x][oldPiecePos.y]->piece;
         }
 
-    
     if (piece)
         t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
 
@@ -408,13 +403,13 @@ void Table::moveInAdvance(const char* moves, char color) {
     }
 }
 
-bool Table::hasNoPiecesBetween_line(vec2<int> pos1, vec2<int> pos2) {
+bool Table::hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2) {
     if (pos1.x == pos2.x) {
         int stY = std::min(pos1.y, pos2.y) + 1;
         int spY = std::max(pos1.y, pos2.y) - 1;
 
         while (stY <= spY) {
-            if (squares[stY][pos1.x]->piece)
+            if (squares[pos1.x][stY]->piece)
                 return false;
 
             stY++;
@@ -427,7 +422,7 @@ bool Table::hasNoPiecesBetween_line(vec2<int> pos1, vec2<int> pos2) {
     int spX = std::max(pos1.x, pos2.x) - 1;
 
     while (stX <= spX) {
-        if (squares[stX][pos1.x]->piece)
+        if (squares[stX][pos1.y]->piece)
             return false;
 
         stX++;
@@ -483,7 +478,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
             return true;
 
     if (dynamic_cast<King*>(piece)) {
-        if (((King*)pieces[turn][14])->isInCheck(this, pos) || isKingInConflict((King*)piece, pos))
+        if (((King*)pieces[turn][14])->isInCheck(this, pieces[turn][14], pos) || isKingInConflict((King*)piece, pos))
             return true;
     } else if (((King*)pieces[turn][14])->isInCheck(this, piece, pos))
         return true;
@@ -877,7 +872,7 @@ void Table::markPossibleMovesForKing(King *king) {
             !king->isInCheck(this, king->pos) &&
             !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y + 1}) &&
             !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y + 2}) &&
-            hasNoPiecesBetween_line(king->pos, pieces[line][9]->pos))
+            hasNoPiecesBetween_axis(king->pos, pieces[line][9]->pos))
                 king->color == 'w' ? shortCastle_white = true : shortCastle_black = true;
 
     // Long castle
@@ -888,7 +883,7 @@ void Table::markPossibleMovesForKing(King *king) {
             !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y - 1}) &&
             !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y - 2}) &&
             !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y - 3}) &&
-            hasNoPiecesBetween_line(king->pos, pieces[line][8]->pos))
+            hasNoPiecesBetween_axis(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
 
