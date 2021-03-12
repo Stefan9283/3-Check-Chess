@@ -2,7 +2,7 @@
 #include "Table.h"
 
 TreeNode::TreeNode(Table* table) {
-    this->table = table->createNewState(); pos = vec2(-INF, -INF);
+    this->table = table->createNewState(); pos = vec2<int>(-INF, -INF);
 }
 
 Tree::Tree(Table* table) {
@@ -13,18 +13,18 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
     if (level == depth - 1)
         return;
 
-    root->table->markAllPossibleMoves(root->table->turn);
+    root->table->markAllPossibleMoves();
 
     for (int i = 0; i < root->table->height; i++)
         for (int j = 0; j < root->table->width; j++)
             for (ChessPiece* piece : root->table->squares[i][j]->possibleNormalMoves) {
-                vec2 oldPos = piece->pos;
+                vec2<int> oldPos = piece->pos;
 
-                Table* newTable = root->table->createNewState(piece, vec2(i, j));
+                Table* newTable = root->table->createNewState(piece, vec2<int>(i, j));
                 TreeNode* newNode = new TreeNode(newTable);
 
                 newNode->pos = oldPos;
-                newNode->bestMove.second = vec2(i, j);
+                newNode->bestMove.second = vec2<int>(i, j);
                 newNode->parent = root;
                 newNode->table->turn = newNode->parent->table->turn == 1 ? 0 : 1;
                 root->children.push_back(newNode);
@@ -93,6 +93,6 @@ void Tree::MiniMax(TreeNode* root, int turn, int level) {
     }
 }
 
-std::pair<vec2, vec2> Tree::getBestMove() {
+std::pair<vec2<int>, vec2<int>> Tree::getBestMove() {
     return root->bestMove;
 }

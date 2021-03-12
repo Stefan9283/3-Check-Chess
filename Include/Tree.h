@@ -8,10 +8,10 @@ class Table;
 class TreeNode {
 public:
     Table* table;
-    vec2 pos;
+    vec2<int> pos;
 
     int bestScore = INF;
-    std::pair<vec2, vec2> bestMove;
+    std::pair<vec2<int>, vec2<int>> bestMove;
 
     TreeNode* parent = nullptr;
     std::vector<TreeNode*> children;
@@ -35,7 +35,7 @@ public:
 
     void MiniMax(TreeNode* root, int turn, int level);
 
-    std::pair<vec2, vec2> getBestMove();
+    std::pair<vec2<int>, vec2<int>> getBestMove();
 };
 
 #endif //INC_3_CHECK_CHESS_TREE_H
