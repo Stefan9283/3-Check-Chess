@@ -285,33 +285,6 @@ Source/Tree.cpp.s:
 	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Tree.cpp.s
 .PHONY : Source/Tree.cpp.s
 
-Source/Vec2.o: Source/Vec2.cpp.o
-
-.PHONY : Source/Vec2.o
-
-# target to build an object file
-Source/Vec2.cpp.o:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Vec2.cpp.o
-.PHONY : Source/Vec2.cpp.o
-
-Source/Vec2.i: Source/Vec2.cpp.i
-
-.PHONY : Source/Vec2.i
-
-# target to preprocess a source file
-Source/Vec2.cpp.i:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Vec2.cpp.i
-.PHONY : Source/Vec2.cpp.i
-
-Source/Vec2.s: Source/Vec2.cpp.s
-
-.PHONY : Source/Vec2.s
-
-# target to generate assembly for a file
-Source/Vec2.cpp.s:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Vec2.cpp.s
-.PHONY : Source/Vec2.cpp.s
-
 Source/main.o: Source/main.cpp.o
 
 .PHONY : Source/main.o
@@ -393,9 +366,6 @@ help:
 	@echo "... Source/Tree.o"
 	@echo "... Source/Tree.i"
 	@echo "... Source/Tree.s"
-	@echo "... Source/Vec2.o"
-	@echo "... Source/Vec2.i"
-	@echo "... Source/Vec2.s"
 	@echo "... Source/main.o"
 	@echo "... Source/main.i"
 	@echo "... Source/main.s"

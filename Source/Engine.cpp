@@ -17,7 +17,7 @@ Engine::Engine() {
             continue;
 
         if (strstr(buffer, "protover 2")) {
-            std::cout << "feature sigint = 0 sigterm = 0 san = 0 name = Maximuss\n";
+            std::cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
             continue;
         }
 
