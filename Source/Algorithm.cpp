@@ -26,4 +26,130 @@ std::string RandomChessPiecePicker::pickMove(Table* t) {
         }
     }
 }
+vec2<float> RandomChessPiecePicker::CalculateStateScore(Table *t) {
+    return vec2<float>();
+}
 
+
+
+std::string dontHurtMe::pickMove(Table *t) {
+    return std::string();
+}
+vec2<float> dontHurtMe::CalculateStateScore(Table *t) {
+    vec2<float> scores{};
+    vec2<int> defendingPieces{};
+    for (ChessPiece* i : t->pieces[0]) {
+        if (i) {
+            scores.x++;
+            if(!dynamic_cast<King*>(i) && !dynamic_cast<Pawn*>(i))
+                scores.x += 1 / i->pos.getDistanceTo(t->pieces[0][14]->pos);
+        }
+    }
+    for (auto & i : t->pieces[1]) {
+        if (i) {
+            scores.x++;
+            if(!dynamic_cast<King*>(i) && !dynamic_cast<Pawn*>(i))
+                scores.x += 1 / i->pos.getDistanceTo(t->pieces[1][14]->pos);
+        }
+    }
+
+    return scores/16 -
+    vec2<float>{
+            (float)dynamic_cast<King*>(t->pieces[0][14])->checks,
+            (float)dynamic_cast<King*>(t->pieces[1][14])->checks
+    };
+}
+
+std::string BringThemOn::pickMove(Table *t) {
+    return std::string();
+}
+vec2<float> BringThemOn::CalculateStateScore(Table *t) {
+    vec2<float> scores{};
+    vec2<float> pieceCounter{};
+
+    for (ChessPiece* piece : t->pieces[0]) {
+        if (!piece) continue;
+        pieceCounter.x++;
+        int maxValue = 0;
+        for (PieceMove move : piece->getPositions(t)) {
+            maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'w'));
+            if (dynamic_cast<King*>(t->pieces[1][14])->isInCheckAt(t, move.ownMove))
+                scores.x = 5;
+        }
+        scores.x = max((float)maxValue, scores.y);
+    }
+
+    for (ChessPiece* piece : t->pieces[1]) {
+        if (!piece) continue;
+        pieceCounter.y++;
+        int maxValue = 0;
+        for (PieceMove move : piece->getPositions(t)) {
+            maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'b'));
+            if (dynamic_cast<King*>(t->pieces[0][14])->isInCheckAt(t, move.ownMove))
+                scores.y = 5;
+        }
+        scores.y = max((float)maxValue, scores.x);
+    }
+
+
+    return scores; //TODO use this --> 10 * (scores/9 + pieceCounter/16);
+}
+
+std::string IamDeathIncarnate::pickMove(Table *t) {
+    return std::string();
+}
+vec2<float> IamDeathIncarnate::CalculateStateScore(Table *t) {
+    vec2<float> scores{};
+
+    for (ChessPiece* piece : t->pieces[0]) {
+        if (!piece) continue;
+        int maxValue = 0;
+        for (PieceMove move : piece->getPositions(t)) {
+            maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'w'));
+            if (dynamic_cast<King*>(t->pieces[1][14])->isInCheckAt(t, move.ownMove)) {
+                scores.x = 9;
+                goto exitw;
+            }
+        }
+        scores.x = max((float)maxValue, scores.y);
+    }
+    exitw:
+
+    for (ChessPiece* piece : t->pieces[1]) {
+        if (!piece) continue;
+        int maxValue = 0;
+        for (PieceMove move : piece->getPositions(t)) {
+            maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'b'));
+            if (dynamic_cast<King*>(t->pieces[0][14])->isInCheckAt(t, move.ownMove)) {
+                scores.y = 9;
+                goto exitb;
+            }
+        }
+        scores.y = max((float)maxValue, scores.x);
+    }
+    exitb:
+
+    return scores;
+}
+
+std::string UberMode::pickMove(Table *t) {
+    return std::string();
+}
+vec2<float> UberMode::CalculateStateScore(Table *t) {
+    vec2<float> scores{};
+    for (ChessPiece* piece : t->pieces[0]) {
+        if (!piece) continue;
+        for (PieceMove move : piece->getPositions(t)) {
+            if (dynamic_cast<King*>(t->pieces[1][14])->isInCheck(t, piece, move.ownMove))
+                scores.x++;
+        }
+    }
+    for (ChessPiece* piece : t->pieces[1]) {
+        if (!piece) continue;
+        for (PieceMove move : piece->getPositions(t)) {
+            if (dynamic_cast<King*>(t->pieces[0][14])->isInCheck(t, piece, move.ownMove))
+                scores.y++;
+        }
+    }
+    return scores;
+}

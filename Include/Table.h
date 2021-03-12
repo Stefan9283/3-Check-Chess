@@ -9,7 +9,7 @@ class ChessPiece;
 
 typedef struct PieceHistory {
     ChessPiece* piece;
-    std::pair<vec2, vec2> move;
+    std::pair<vec2<int>, vec2<int>> move;
 } PieceHistory;
 
 class Square {
@@ -38,7 +38,7 @@ public:
     ~Table();
 
     // Functii Stefan
-    void movePiece(ChessPiece* piece, vec2 pos);
+    void movePiece(ChessPiece* piece, vec2<int> pos);
     void movePiece(ChessPiece* piece, const char* pos);
     void movePiece(const char* move);
     void removePiece(ChessPiece* piece);
@@ -46,19 +46,19 @@ public:
 
     static bool isAnIllegalMove(Square* sq, ChessPiece* piece);
     static bool canIPlaceItHere(ChessPiece* cp, Square* sq);
-    bool isInside(vec2 pos) const;
+    bool isInside(vec2<int> pos) const;
 
-    std::string coords2string(vec2 pos) const;
-    vec2 string2coords(const char* coords);
+    std::string coords2string(vec2<int> pos) const;
+    vec2<int> string2coords(const char* coords);
 
     int getTotalScore(char color);
     static int getSquareScore(Square* sq, char myColor);
 
-    Table* createNewState(ChessPiece* piece = nullptr, vec2 pos = vec2());
+    Table* createNewState(ChessPiece* piece = nullptr, vec2<int> pos = vec2<int>());
     std::string pickAMove();
     void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true, int tabsCount = 0);
 
-    void addMove2History(ChessPiece* piece, std::pair<vec2, vec2> move) {
+    void addMove2History(ChessPiece* piece, std::pair<vec2<int>, vec2<int>> move) {
         history.push_back({piece, move});
     }
 
@@ -73,13 +73,13 @@ public:
 
     void moveInAdvance(const char* moves, char color);
 
-    bool isAnIllegalMove(ChessPiece* piece, vec2 pos);
+    bool isAnIllegalMove(ChessPiece* piece, vec2<int> pos);
 
-    bool hasNoPiecesBetween_line(vec2 pos1, vec2 pos2);
+    bool hasNoPiecesBetween_line(vec2<int> pos1, vec2<int> pos2);
 
-    bool hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2);
+    bool hasNoPiecesBetween_diagonal(vec2<int> pos1, vec2<int> pos2);
 
-    bool isKingInConflict(King* king, vec2 pos);
+    bool isKingInConflict(King* king, vec2<int> pos);
 
     void markAllPossibleMoves(int turn);
 
@@ -96,6 +96,7 @@ public:
     void markPossibleMovesForQueen(Queen* queen);
 
     void markPossibleMovesForKing(King* king);
+    
 };
 
 #endif //INC_3_CHECK_CHESS_TABLE_H

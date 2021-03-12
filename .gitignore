@@ -3,7 +3,7 @@
 cmake-build-debug/*
 .vs/*
 3_Check_Chess.dir/*
-3_Check_Chess.sln
+3_Check_Chess.*
 3_Check_Chess.vcxproj
 3_Check_Chess.vcxproj.filters
 3_Check_Chess.vcxproj.user

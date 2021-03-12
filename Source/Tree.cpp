@@ -18,13 +18,13 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
     for (int i = 0; i < root->table->height; i++)
         for (int j = 0; j < root->table->width; j++)
             for (ChessPiece* piece : root->table->squares[i][j]->possibleNormalMoves) {
-                vec2 oldPos = piece->pos;
+                vec2<int> oldPos = piece->pos;
 
-                Table* newTable = root->table->createNewState(piece, vec2(i, j));
+                Table* newTable = root->table->createNewState(piece, vec2<int>(i, j));
                 TreeNode* newNode = new TreeNode(newTable);
 
                 newNode->pos = oldPos;
-                newNode->bestMove.second = vec2(i, j);
+                newNode->bestMove.second = vec2<int>(i, j);
                 newNode->parent = root;
                 root->children.push_back(newNode);
             }
@@ -93,6 +93,6 @@ void Tree::MiniMax(TreeNode* root, int turn, int level) {
     }
 }
 
-std::pair<vec2, vec2> Tree::getBestMove() {
+std::pair<vec2<int>, vec2<int>> Tree::getBestMove() {
     return root->bestMove;
 }

@@ -17,33 +17,32 @@ Table::Table() {
     std::vector<ChessPiece*> white, black;
 
     for (int j = 0; j < width; j++) {
-        squares[1][j]->piece = new Pawn('w', vec2{ 1, j }, j);
+        squares[1][j]->piece = new Pawn('w', vec2<int>{ 1, j }, j);
         white.push_back(squares[1][j]->piece);
-
-        squares[6][j]->piece = new Pawn('b', vec2{ 6, j }, j);
+        squares[6][j]->piece = new Pawn('b', vec2<int>{ 6, j }, j);
         black.push_back(squares[6][j]->piece);
     }
 
-    squares[0][0]->piece = new Rook('w', vec2{0, 0}, 8);
-    squares[0][7]->piece = new Rook('w', vec2{0, 7}, 9);
-    squares[7][0]->piece = new Rook('b', vec2{7, 0}, 8);
-    squares[7][7]->piece = new Rook('b', vec2{7, 7}, 9);
+    squares[0][0]->piece = new Rook('w', vec2<int>{0, 0}, 8);
+    squares[0][7]->piece = new Rook('w', vec2<int>{0, 7}, 9);
+    squares[7][0]->piece = new Rook('b', vec2<int>{7, 0}, 8);
+    squares[7][7]->piece = new Rook('b', vec2<int>{7, 7}, 9);
 
-    squares[0][1]->piece = new Knight('w', vec2{0, 1}, 10);
-    squares[0][6]->piece = new Knight('w', vec2{0, 6}, 11);
-    squares[7][1]->piece = new Knight('b', vec2{7, 1}, 10);
-    squares[7][6]->piece = new Knight('b', vec2{7, 6}, 11);
+    squares[0][1]->piece = new Knight('w', vec2<int>{0, 1}, 10);
+    squares[0][6]->piece = new Knight('w', vec2<int>{0, 6}, 11);
+    squares[7][1]->piece = new Knight('b', vec2<int>{7, 1}, 10);
+    squares[7][6]->piece = new Knight('b', vec2<int>{7, 6}, 11);
 
-    squares[0][2]->piece = new Bishop('w', vec2{0, 2}, 12);
-    squares[0][5]->piece = new Bishop('w', vec2{0, 5}, 13);
-    squares[7][2]->piece = new Bishop('b', vec2{7, 2}, 12);
-    squares[7][5]->piece = new Bishop('b', vec2{7, 5}, 13);
+    squares[0][2]->piece = new Bishop('w', vec2<int>{0, 2}, 12);
+    squares[0][5]->piece = new Bishop('w', vec2<int>{0, 5}, 13);
+    squares[7][2]->piece = new Bishop('b', vec2<int>{7, 2}, 12);
+    squares[7][5]->piece = new Bishop('b', vec2<int>{7, 5}, 13);
 
-    squares[0][4]->piece = new King ('w', vec2{0, 4}, 14);
-    squares[0][3]->piece = new Queen('w', vec2{0, 3}, 15);
+    squares[0][4]->piece = new King ('w', vec2<int>{0, 4}, 14);
+    squares[0][3]->piece = new Queen('w', vec2<int>{0, 3}, 15);
 
-    squares[7][4]->piece = new King ('b', vec2{7, 4}, 14);
-    squares[7][3]->piece = new Queen('b', vec2{7, 3}, 15);
+    squares[7][4]->piece = new King ('b', vec2<int>{7, 4}, 14);
+    squares[7][3]->piece = new Queen('b', vec2<int>{7, 3}, 15);
 
     white.push_back(squares[0][0]->piece);
     white.push_back(squares[0][7]->piece);
@@ -80,7 +79,7 @@ Table::~Table() {
 
 //Functii Stefan
 #pragma region pieces manuvering
-void Table::movePiece(ChessPiece* piece, vec2 pos) {
+void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
     assert(piece != nullptr && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
@@ -89,7 +88,7 @@ void Table::movePiece(ChessPiece* piece, vec2 pos) {
     if (squares[pos.x][pos.y]->piece)
         removePiece(squares[pos.x][pos.y]->piece);
 
-    vec2 prev = piece->pos;
+    vec2<int> prev = piece->pos;
     squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     squares[pos.x][pos.y]->piece = piece;
     piece->pos = pos;
@@ -98,11 +97,11 @@ void Table::movePiece(ChessPiece* piece, vec2 pos) {
 void Table::movePiece(ChessPiece *piece, const char* pos) {
     assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
 
-    if(pos[0] >= 'a' && isInside(vec2{pos[1] - '1', pos[0] - 'a'}))
-        movePiece(piece, vec2{pos[1] - '1', pos[0] - 'a'});
+    if(pos[0] >= 'a' && isInside(vec2<int>{pos[1] - '1', pos[0] - 'a'}))
+        movePiece(piece, vec2<int>{pos[1] - '1', pos[0] - 'a'});
     else
-     if (isInside(vec2{pos[0] - '1', pos[1] - 'a'}))
-        movePiece(piece, vec2{pos[0] - '1', pos[1] - 'a'});
+     if (isInside(vec2<int>{pos[0] - '1', pos[1] - 'a'}))
+        movePiece(piece, vec2<int>{pos[0] - '1', pos[1] - 'a'});
     else assert(!"Illegal move position");
 }
 void Table::movePiece(const char* move) {
@@ -117,17 +116,20 @@ void Table::removePiece(ChessPiece* piece) {
 ChessPiece* Table::getPiece(const char *pos) {
     assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
 
-    if(pos[0] >= 'a' && isInside(vec2{pos[1] - '1', pos[0] - 'a'}))
-        return squares[pos[1] - '1'][pos[0] - 'a']->piece;
-    else if (isInside(vec2{pos[0] - '1', pos[1] - 'a'}))
-        return squares[pos[0] - '1'][pos[1] - 'a']->piece;
+    ChessPiece* piece = nullptr;
+    if(pos[0] >= 'a' && isInside(vec2<int>{pos[1] - '1', pos[0] - 'a'}))
+        piece = squares[pos[1] - '1'][pos[0] - 'a']->piece;
+    else if (isInside(vec2<int>{pos[0] - '1', pos[1] - 'a'}))
+        piece = squares[pos[0] - '1'][pos[1] - 'a']->piece;
     else assert(!"Illegal position");
 
-    return nullptr;
+    assert(piece && "Returned piece is null");
+
+    return piece;
 }
 #pragma endregion
 #pragma region checking funcs
-bool Table::isInside(vec2 pos) const {
+bool Table::isInside(vec2<int> pos) const {
     return pos.x >= 0 && pos.x < height && pos.y >= 0 && pos.y < width;
 }
 bool Table::canIPlaceItHere(ChessPiece* piece, Square* sq) {
@@ -157,11 +159,11 @@ int Table::getTotalScore(char color) {
     return total;
 }
 #pragma endregion
-vec2 Table::string2coords(const char *coords) {
+vec2<int> Table::string2coords(const char *coords) {
     assert(strlen(coords) >= 2 && "Coords should have at least a line and a column");
     return {coords[0] - 'a' - 1, coords[1] - '0'};
 }
-std::string Table::coords2string(vec2 pos) const {
+std::string Table::coords2string(vec2<int> pos) const {
     assert(isInside(pos) && "Position outside of the table");
     std::string s = "a";
     s[0] += pos.y;
@@ -173,13 +175,13 @@ std::string Table::pickAMove() {
     Algorithm* algo = picker->pickAlgorithm(this);
     std::string move = "move ";
     move = move + algo->pickMove(this);
-    vec2 start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
+    vec2<int> start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
     addMove2History(squares[start.y][start.x]->piece, std::make_pair(start, end));
     delete algo;
     delete picker;
     return move;
 }
-Table* Table::createNewState(ChessPiece* piece, vec2 pos) {
+Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
     auto* t = new Table(*this);
     for (int i = 0; i < t->height; ++i)
         for (int j = 0; j < t->width; ++j) {
@@ -312,7 +314,7 @@ std::string Table::makeBestMove() {
     tree->createTree(tree->root, 0, 2);
     tree->MiniMax(tree->root, 1, 0);
 
-    std::pair<vec2, vec2> bestMove = tree->getBestMove();
+    std::pair<vec2<int>, vec2<int>> bestMove = tree->getBestMove();
 
     movePiece(getPiece(coords2string(bestMove.first).c_str()), coords2string(bestMove.second).c_str());
 
@@ -336,7 +338,7 @@ std::string Table::getARandomMove(int turn) {
     int moveNo = rand() % squares[squareNo / height][squareNo % width]->possibleNormalMoves.size();
 
     std::string from = coords2string(squares[squareNo / height][squareNo % width]->possibleNormalMoves[moveNo]->pos);
-    std::string to = coords2string(vec2(squareNo / height, squareNo % width));
+    std::string to = coords2string(vec2<int>(squareNo / height, squareNo % width));
 
     unmarkAllPossibleMoves();
 
@@ -365,7 +367,7 @@ void Table::moveInAdvance(const char* moves, char color) {
     }
 }
 
-bool Table::hasNoPiecesBetween_line(vec2 pos1, vec2 pos2) {
+bool Table::hasNoPiecesBetween_line(vec2<int> pos1, vec2<int> pos2) {
     if (pos1.x == pos2.x) {
         int stY = std::min(pos1.y, pos2.y) + 1;
         int spY = std::max(pos1.y, pos2.y) - 1;
@@ -393,12 +395,12 @@ bool Table::hasNoPiecesBetween_line(vec2 pos1, vec2 pos2) {
     return true;
 }
 
-bool Table::hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2) {
+bool Table::hasNoPiecesBetween_diagonal(vec2<int> pos1, vec2<int> pos2) {
     // Main diagonal
     if ((pos2.x > pos1.x && pos2.y > pos1.y) ||
         (pos2.x < pos1.x && pos2.y < pos1.x)) {
-        vec2 st = pos1.y < pos2.y ? pos1 : pos2;
-        vec2 sp = pos1.y > pos2.y ? pos1 : pos2;
+        vec2<int> st = pos1.y < pos2.y ? pos1 : pos2;
+        vec2<int> sp = pos1.y > pos2.y ? pos1 : pos2;
 
         st.x++; st.y++; sp.x--; sp.y--;
 
@@ -413,8 +415,8 @@ bool Table::hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2) {
     }
 
     // Secondary diagonal
-    vec2 st = pos1.y < pos2.y ? pos1 : pos2;
-    vec2 sp = pos1.y > pos2.y ? pos1 : pos2;
+    vec2<int> st = pos1.y < pos2.y ? pos1 : pos2;
+    vec2<int> sp = pos1.y > pos2.y ? pos1 : pos2;
 
     st.x++; st.y++; sp.x--; sp.y--;
 
@@ -428,7 +430,7 @@ bool Table::hasNoPiecesBetween_diagonal(vec2 pos1, vec2 pos2) {
     return true;
 }
 
-bool Table::isAnIllegalMove(ChessPiece* piece, vec2 pos) {
+bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
     if (!isInside(pos))
         return true;
 
@@ -438,7 +440,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2 pos) {
     return piece->color == squares[pos.x][pos.y]->piece->color;
 }
 
-bool Table::isKingInConflict(King* king, vec2 pos) {
+bool Table::isKingInConflict(King* king, vec2<int> pos) {
     int line = king->color == 'w' ? 1 : 0;
 
     return pos.getDistanceTo(pieces[line][14]->pos) < 2;
@@ -471,7 +473,7 @@ void Table::unmarkAllPossibleMoves() {
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {
-    vec2 currPos;
+    vec2<int> currPos;
 
     // One square
     currPos.x = pawn->color == 'w' ? pawn->pos.x + 1 : pawn->pos.x - 1; currPos.y = pawn->pos.y;
@@ -534,7 +536,7 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
 }
 
 void Table::markPossibleMovesForBishop(Bishop* bishop) {
-    vec2 currPos;
+    vec2<int> currPos;
 
     // Up - right
     currPos.x = bishop->pos.x + 1; currPos.y = bishop->pos.y + 1;
@@ -586,7 +588,7 @@ void Table::markPossibleMovesForBishop(Bishop* bishop) {
 }
 
 void Table::markPossibleMovesForRook(Rook* rook) {
-    vec2 currPos;
+    vec2<int> currPos;
 
     // Up
     currPos.x = rook->pos.x + 1; currPos.y = rook->pos.y;
@@ -638,7 +640,7 @@ void Table::markPossibleMovesForRook(Rook* rook) {
 }
 
 void Table::markPossibleMovesForQueen(Queen* queen) {
-    vec2 currPos;
+    vec2<int> currPos;
 
     // Up
     currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y;
@@ -738,7 +740,7 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
 }
 
 void Table::markPossibleMovesForKing(King *king) {
-    vec2 currPos;
+    vec2<int> currPos;
 
     // Up
     currPos.x = king->pos.x + 1; currPos.y = king->pos.y;
@@ -799,8 +801,8 @@ void Table::markPossibleMovesForKing(King *king) {
         if (!king->wasMoved &&
             !((Rook*)pieces[line][9])->wasMoved &&
             !king->isInCheckAt(this, king->pos) &&
-            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y + 1}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y + 2}) &&
+            !king->isInCheckAt(this, vec2<int>{king->pos.x, king->pos.y + 1}) &&
+            !king->isInCheckAt(this, vec2<int>{king->pos.x, king->pos.y + 2}) &&
             hasNoPiecesBetween_line(king->pos, pieces[line][9]->pos))
                 king->color == 'w' ? shortCastle_white = true : shortCastle_black = true;
 
@@ -809,9 +811,9 @@ void Table::markPossibleMovesForKing(King *king) {
         if (!king->wasMoved &&
             !((Rook*)pieces[line][8])->wasMoved &&
             !king->isInCheckAt(this, king->pos) &&
-            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 1}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 2}) &&
-            !king->isInCheckAt(this, vec2{king->pos.x, king->pos.y - 3}) &&
+            !king->isInCheckAt(this, vec2<int>{king->pos.x, king->pos.y - 1}) &&
+            !king->isInCheckAt(this, vec2<int>{king->pos.x, king->pos.y - 2}) &&
+            !king->isInCheckAt(this, vec2<int>{king->pos.x, king->pos.y - 3}) &&
             hasNoPiecesBetween_line(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
