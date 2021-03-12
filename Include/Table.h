@@ -85,6 +85,8 @@ public:
 
     bool isKingInConflict(King* king, vec2<int> pos);
 
+    bool isKingInDanger(ChessPiece* piece, vec2<int> pos);
+
     bool hasLegalMoves();
 
     void markAllPossibleMoves();

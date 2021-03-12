@@ -73,7 +73,7 @@ vec2<float> BringThemOn::CalculateStateScore(Table *t) {
         int maxValue = 0;
         for (PieceMove move : piece->getPositions(t)) {
             maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'w'));
-            if (dynamic_cast<King*>(t->pieces[1][14])->isInCheck(t, piece, move.ownMove))
+            if (!t->isKingInDanger(piece, move.ownMove))
                 scores.x = 5;
         }
         scores.x = max((float)maxValue, scores.y);
@@ -85,7 +85,7 @@ vec2<float> BringThemOn::CalculateStateScore(Table *t) {
         int maxValue = 0;
         for (PieceMove move : piece->getPositions(t)) {
             maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'b'));
-            if (dynamic_cast<King*>(t->pieces[0][14])->isInCheck(t, piece, move.ownMove))
+            if (!t->isKingInDanger(piece, move.ownMove))
                 scores.y = 5;
         }
         scores.y = max((float)maxValue, scores.x);
@@ -106,7 +106,7 @@ vec2<float> IamDeathIncarnate::CalculateStateScore(Table *t) {
         int maxValue = 0;
         for (PieceMove move : piece->getPositions(t)) {
             maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'w'));
-            if (dynamic_cast<King*>(t->pieces[1][14])->isInCheck(t, piece, move.ownMove)) {
+            if (!t->isKingInDanger(piece, move.ownMove)) {
                 scores.x = 9;
                 goto exitw;
             }
@@ -120,7 +120,7 @@ vec2<float> IamDeathIncarnate::CalculateStateScore(Table *t) {
         int maxValue = 0;
         for (PieceMove move : piece->getPositions(t)) {
             maxValue = max(maxValue, t->getSquareScore(t->squares[move.ownMove.x][move.ownMove.y], 'b'));
-            if (dynamic_cast<King*>(t->pieces[0][14])->isInCheck(t, piece, move.ownMove)) {
+            if (!t->isKingInDanger(piece, move.ownMove)) {
                 scores.y = 9;
                 goto exitb;
             }
@@ -140,14 +140,14 @@ vec2<float> UberMode::CalculateStateScore(Table *t) {
     for (ChessPiece* piece : t->pieces[0]) {
         if (!piece) continue;
         for (PieceMove move : piece->getPositions(t)) {
-            if (dynamic_cast<King*>(t->pieces[1][14])->isInCheck(t, piece, move.ownMove))
+            if (!t->isKingInDanger(piece, move.ownMove))
                 scores.x++;
         }
     }
     for (ChessPiece* piece : t->pieces[1]) {
         if (!piece) continue;
         for (PieceMove move : piece->getPositions(t)) {
-            if (dynamic_cast<King*>(t->pieces[0][14])->isInCheck(t, piece, move.ownMove))
+            if (!t->isKingInDanger(piece, move.ownMove))
                 scores.y++;
         }
     }

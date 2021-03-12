@@ -337,10 +337,10 @@ void Table::parseMove(const char* s) {
 }
 
 std::string Table::getBestMove(int depth) {
-    bool canMove = hasLegalMoves();
+    bool noMoreMoves = hasLegalMoves();
 
-    if (((King*)pieces[turn][14])->isInCheck(this, pieces[turn][14]->pos))
-        if (!canMove)
+    if (!isKingInDanger(pieces[turn][14], pieces[turn][14]->pos))
+        if (noMoreMoves)
             return std::string("resign");
 
     Tree* tree = new Tree(this);
@@ -361,10 +361,10 @@ std::string Table::getBestMove(int depth) {
 std::string Table::getARandomMove() {
     srand(time(NULL));
 
-    bool canMove = hasLegalMoves();
+    bool noMoreMoves = hasLegalMoves();
 
-    if (((King*)pieces[turn][14])->isInCheck(this, pieces[turn][14]->pos))
-        if (!canMove)
+    if (!isKingInDanger(pieces[turn][14], pieces[turn][14]->pos))
+        if (noMoreMoves)
             return std::string("resign");
 
     markAllPossibleMoves();
@@ -481,9 +481,9 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
             return true;
 
     if (dynamic_cast<King*>(piece)) {
-        if (((King*)pieces[turn][14])->isInCheck(this, pieces[turn][14], pos) || isKingInConflict((King*)piece, pos))
+        if (!isKingInDanger(pieces[turn][14], pos) || isKingInConflict((King*)piece, pos))
             return true;
-    } else if (((King*)pieces[turn][14])->isInCheck(this, piece, pos))
+    } else if (!isKingInDanger(piece, pos))
         return true;
 
     return false;
@@ -493,6 +493,45 @@ bool Table::isKingInConflict(King* king, vec2<int> pos) {
     int line = king->color == 'w' ? 1 : 0;
 
     return pos.getDistanceTo(pieces[line][14]->pos) < 2;
+}
+
+bool Table::isKingInDanger(ChessPiece* piece, vec2<int> pos) {
+    if (isInside(pos))
+        return false;
+
+    if (piece)
+        return false;
+
+    bool inCheck;
+
+    if (dynamic_cast<King*>(piece)) {
+        vec2<int> oldPos = piece->pos;
+        piece->pos = pos;
+
+        inCheck = ((King*)pieces[turn][14])->isInCheck(this);
+        piece->pos = oldPos;
+
+    }
+    else {
+        ChessPiece* oldPiece = squares[pos.x][pos.y]->piece;
+        int index = oldPiece ? oldPiece->index : -INF;
+
+        if (index != -INF)
+            pieces[turn == 0 ? 1 : 0][index] = nullptr;
+
+        squares[piece->pos.x][piece->pos.y]->piece = piece;
+        squares[pos.x][pos.y]->piece = oldPiece;
+
+        inCheck = ((King*)pieces[turn][14])->isInCheck(this);
+
+        squares[piece->pos.x][piece->pos.y]->piece = nullptr;
+        squares[pos.x][pos.y]->piece = piece;
+
+        if (index != -INF)
+            pieces[turn == 0 ? 1 : 0][index] = oldPiece;
+    }
+
+    return inCheck;
 }
 
 bool Table::hasLegalMoves() {
@@ -872,9 +911,9 @@ void Table::markPossibleMovesForKing(King *king) {
     if (pieces[line][9])
         if (!king->wasMoved &&
             !((Rook*)pieces[line][9])->wasMoved &&
-            !king->isInCheck(this, king->pos) &&
-            !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y + 1}) &&
-            !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y + 2}) &&
+            !isKingInDanger(king, king->pos) &&
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 1}) &&
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 2}) &&
             hasNoPiecesBetween_axis(king->pos, pieces[line][9]->pos))
                 king->color == 'w' ? shortCastle_white = true : shortCastle_black = true;
 
@@ -882,10 +921,10 @@ void Table::markPossibleMovesForKing(King *king) {
     if (pieces[line][8])
         if (!king->wasMoved &&
             !((Rook*)pieces[line][8])->wasMoved &&
-            !king->isInCheck(this, king->pos) &&
-            !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y - 1}) &&
-            !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y - 2}) &&
-            !king->isInCheck(this, vec2<int>{king->pos.x, king->pos.y - 3}) &&
+            !isKingInDanger(king, king->pos) &&
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 1}) &&
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 2}) &&
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 3}) &&
             hasNoPiecesBetween_axis(king->pos, pieces[line][8]->pos))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
