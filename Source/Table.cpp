@@ -4,6 +4,9 @@
 
 #include "tools.h"
 
+
+
+
 Square::Square(char color, ChessPiece* piece) {
     this->color = color; this->piece = piece;
 }
@@ -85,6 +88,8 @@ Table::~Table() {
 }
 
 //Functii Stefan
+#define COPY_HISTORY_TOO true
+
 #pragma region pieces manuvering
 void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
     assert(piece != nullptr && "Piece meant to be moved is null");
@@ -201,6 +206,7 @@ std::string Table::pickAMove() {
     delete picker;
     return move;
 }
+
 Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
     auto* t = new Table(*this);
     for (int i = 0; i < t->height; ++i)
@@ -225,7 +231,14 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
     
             t->pieces[c->color == 'w' ? 0 : 1][c->index] = t->squares[i][j]->piece;
         }
-    
+
+
+    if (COPY_HISTORY_TOO)
+        for (int i = 0; i < t->history.size(); ++i) {
+            vec2<int> oldPiecePos = history[i].piece->pos;
+            t->history[i].piece = t->squares[oldPiecePos.x][oldPiecePos.y]->piece;
+        }
+
     
     if (piece)
         t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
