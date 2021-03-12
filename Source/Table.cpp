@@ -159,11 +159,8 @@ bool Table::isInside(vec2<int> pos) const {
     return pos.x >= 0 && pos.x < height && pos.y >= 0 && pos.y < width;
 }
 bool Table::canIPlaceItHere(ChessPiece* piece, Square* sq) {
-    return !(sq->piece && piece->color == sq->piece->color);
-}
-bool Table::isAnIllegalMove(Square *sq, ChessPiece *piece) {
-    if (!sq->piece) return false;
-    return sq->piece->color == piece->color;
+    if(!sq->piece) return true;
+    return sq->piece && piece->color != sq->piece->color;
 }
 #pragma endregion
 #pragma region score

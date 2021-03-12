@@ -48,7 +48,6 @@ public:
     void removePiece(ChessPiece* piece);
     ChessPiece* getPiece(const char* pos);
 
-    static bool isAnIllegalMove(Square* sq, ChessPiece* piece);
     static bool canIPlaceItHere(ChessPiece* cp, Square* sq);
     bool isInside(vec2<int> pos) const;
 
