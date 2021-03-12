@@ -239,7 +239,7 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
         return new Queen(color, pos, table->pieces[color == 'w' ? 1 : 0].size());
     }
 // Functii Ovidiu
-bool King::isInCheck(Table* table, vec2<int> pos) {
+bool King::isInCheck(Table* table) {
 	int line = color == 'w' ? 1 : 0;
 
 	// Check from pawn
@@ -298,30 +298,3 @@ bool King::isInCheck(Table* table, vec2<int> pos) {
 
 	return false;
 }
-
-bool King::isInCheck(Table* table, ChessPiece* piece, vec2<int> pos) {
-    ChessPiece* oldPiece = table->squares[pos.x][pos.y]->piece;
-    int index = oldPiece ? oldPiece->index : -INF;
-
-    if (index != -INF)
-        table->pieces[table->turn == 0 ? 1 : 0][index] = nullptr;
-
-    table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
-    table->squares[pos.x][pos.y]->piece = piece;
-
-    bool inCheck = isInCheck(table, this->pos);
-
-    table->squares[piece->pos.x][piece->pos.y]->piece = piece;
-    table->squares[pos.x][pos.y]->piece = oldPiece;
-
-    if (index != -INF)
-        table->pieces[table->turn == 0 ? 1 : 0][index] = oldPiece;
-
-    return inCheck;
-}
-
-
-
-
-
-

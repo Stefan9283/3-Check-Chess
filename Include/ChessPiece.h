@@ -42,8 +42,7 @@ public:
     std::vector<PieceMove> getPositions(Table* t) override;
 
     // Functii Ovidiu
-    bool isInCheck(Table* table, vec2<int> pos);
-    bool isInCheck(Table* table, ChessPiece* piece, vec2<int> pos); // verify if the king is in check after moving a piece
+    bool isInCheck(Table* table);
 };
 
 class Queen : public ChessPiece {
