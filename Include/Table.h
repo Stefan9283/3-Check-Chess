@@ -14,8 +14,12 @@ typedef struct PieceHistory {
 
 class Square {
 public:
-    ChessPiece* piece = nullptr;
+    char color;
+
+    ChessPiece* piece;
     std::vector<ChessPiece*> possibleNormalMoves;
+
+    Square(char color, ChessPiece* piece);
 };
 
 class Table {
@@ -65,11 +69,11 @@ public:
     // Functii Ovidiu
     void parseMove(const char* s);
 
-    std::string makeBestMove();
+    std::string getBestMove(int depth);
 
-    std::string getARandomMove(int turn);
+    std::string getARandomMove();
 
-    int getTotalScore(int turn);
+    int getTotalScore();
 
     void moveInAdvance(const char* moves, char color);
 
@@ -81,7 +85,9 @@ public:
 
     bool isKingInConflict(King* king, vec2<int> pos);
 
-    void markAllPossibleMoves(int turn);
+    bool hasLegalMoves();
+
+    void markAllPossibleMoves();
 
     void unmarkAllPossibleMoves();
 
@@ -96,7 +102,10 @@ public:
     void markPossibleMovesForQueen(Queen* queen);
 
     void markPossibleMovesForKing(King* king);
-    
+
+    bool isSquareOfTheSameColor(vec2<int> pos1, vec2<int> pos2);
+
+    bool isSquareOfTheSameColor(ChessPiece* piece1, ChessPiece* piece2);
 };
 
 #endif //INC_3_CHECK_CHESS_TABLE_H

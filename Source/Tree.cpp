@@ -2,7 +2,7 @@
 #include "Table.h"
 
 TreeNode::TreeNode(Table* table) {
-    this->table = table->createNewState();
+    this->table = table->createNewState(); pos = vec2<int>(-INF, -INF);
 }
 
 Tree::Tree(Table* table) {
@@ -13,7 +13,7 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
     if (level == depth - 1)
         return;
 
-    root->table->markAllPossibleMoves(root->table->turn + level % 2);
+    root->table->markAllPossibleMoves();
 
     for (int i = 0; i < root->table->height; i++)
         for (int j = 0; j < root->table->width; j++)
@@ -26,6 +26,7 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
                 newNode->pos = oldPos;
                 newNode->bestMove.second = vec2<int>(i, j);
                 newNode->parent = root;
+                newNode->table->turn = newNode->parent->table->turn == 1 ? 0 : 1;
                 root->children.push_back(newNode);
             }
 
@@ -51,7 +52,6 @@ void Tree::printTree(TreeNode* root, int level) {
         return;
 
     root->table->printGameBoard('w', false, true, level);
-    std::cout << "\n";
 
     for (TreeNode* child : root->children)
         printTree(child, level + 1);

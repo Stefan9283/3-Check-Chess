@@ -10,19 +10,51 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-144 >first : xboard
+219 >first : xboard
 protover 2
-158 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-158 >first : accepted sigint
-158 >first : accepted sigterm
-159 >first : accepted san
-159 >first : accepted name
-10155 >first : new
+234 <first : feature sigint = 0 sigterm = 0 san = 0 name = Maximuss
+234 >first : rejected sigint 
+234 >first : rejected 0 sigterm 
+234 >first : rejected 0 san 
+234 >first : rejected 0 name 
+234 >first : rejected Maximuss
+10221 >first : new
 random
-10156 >first : level 40 5 0
-10156 >first : post
-10156 >first : hard
+10221 >first : level 40 5 0
+10221 >first : post
+10221 >first : hard
+nps: w=-1, b=-1
+nps: w=-1, b=-1
+22738 >first : time 30000
+22738 >first : otim 30000
+book hit = (NULL)
+22738 >first : d2d4
+22739 <first : move b8a6
+Interrupting first
+34470 >first : time 29999
+34470 >first : otim 28826
+book hit = (NULL)
+34470 >first : e2e4
+34471 <first : move a6c5
+Interrupting first
+92266 >first : time 29999
+92266 >first : otim 23047
+book hit = (NULL)
+92266 >first : d4c5
+92268 <first : move a8b8
+Interrupting first
+116085 >first : time 29999
+116085 >first : otim 20665
+book hit = (NULL)
+116085 >first : c5c6
+116086 <first : move b7c6
+Interrupting first
+131476 >first : time 29999
+131476 >first : otim 19126
+book hit = (NULL)
+131476 >first : d1d7
 GameEnds(29, xboard exit, 2)
-115417 >first : result * {xboard exit}
-115418 >first : force
-115426 >first : quit
+Interrupting first
+138996 >first : result * {xboard exit}
+138996 >first : force
+138996 >first : quit
