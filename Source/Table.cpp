@@ -123,12 +123,12 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
 void Table::movePiece(ChessPiece *piece, const char* pos) {
     assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
 
-    if(pos[0] >= 'a' && isInside(vec2<int>{pos[1] - '1', pos[0] - 'a'}))
+    if (pos[0] >= 'a' && isInside(vec2<int>{pos[1] - '1', pos[0] - 'a'}))
         movePiece(piece, vec2<int>{pos[1] - '1', pos[0] - 'a'});
     else
-     if (isInside(vec2<int>{pos[0] - '1', pos[1] - 'a'}))
-        movePiece(piece, vec2<int>{pos[0] - '1', pos[1] - 'a'});
-    else assert(!"Illegal move position");
+        if (isInside(vec2<int>{pos[0] - '1', pos[1] - 'a'}))
+            movePiece(piece, vec2<int>{pos[0] - '1', pos[1] - 'a'});
+        else assert(!"Illegal move position");
 }
 void Table::movePiece(const char* move) {
     movePiece(getPiece(move), move + 2);
@@ -481,16 +481,17 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
     if (!isInside(pos))
         return true;
 
+    if (squares[pos.x][pos.y]->piece && 
+        piece->color == squares[pos.x][pos.y]->piece->color)
+            return true;
+
     if (dynamic_cast<King*>(piece)) {
-        if (((King*)piece)->isInCheck(this, pos) || isKingInConflict((King*)piece, pos))
+        if (((King*)pieces[turn][14])->isInCheck(this, pos) || isKingInConflict((King*)piece, pos))
             return true;
     } else if (((King*)pieces[turn][14])->isInCheck(this, piece, pos))
         return true;
 
-    if (!squares[pos.x][pos.y]->piece)
-        return false;
-
-    return piece->color == squares[pos.x][pos.y]->piece->color;
+    return false;
 }
 
 bool Table::isKingInConflict(King* king, vec2<int> pos) {
@@ -511,7 +512,7 @@ bool Table::hasLegalMoves() {
 
     unmarkAllPossibleMoves();
 
-    return !found;
+    return found;
 }
 
 void Table::markAllPossibleMoves() {
@@ -552,7 +553,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     // One square
     currPos.x = pawn->color == 'w' ? pawn->pos.x + 1 : pawn->pos.x - 1; currPos.y = pawn->pos.y;
 
-    if (!isAnIllegalMove(pawn, currPos))
+    if (!isAnIllegalMove(pawn, currPos) && !squares[currPos.x][currPos.y]->piece)
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
 
     // On diagonal
@@ -570,8 +571,10 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     if (!pawn->wasMoved) {
         currPos.x = pawn->pos.x + pawn->color == 'w' ? 2 :-2; currPos.y = pawn->pos.y;
 
-        if (!isAnIllegalMove(pawn, currPos) && !squares[pawn->pos.x + (pawn->color == 'w' ? 1 : -1)][pawn->pos.y]->piece)
-            squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
+        if (!isAnIllegalMove(pawn, currPos) &&
+            !squares[currPos.x][currPos.y]->piece &&
+            !squares[pawn->pos.x + (pawn->color == 'w' ? 1 : -1)][pawn->pos.y]->piece)
+                squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
     }
 }
 

@@ -259,34 +259,7 @@ Source\Table.cpp.s:
 	$(MAKE) -f CMakeFiles\3_Check_Chess.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\3_Check_Chess.dir\Source\Table.cpp.s
 .PHONY : Source\Table.cpp.s
 
-Source\Tree.obj: Source\Tree.cpp.obj
-
-.PHONY : Source\Tree.obj
-
-# target to build an object file
-Source\Tree.cpp.obj:
-	$(MAKE) -f CMakeFiles\3_Check_Chess.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\3_Check_Chess.dir\Source\Tree.cpp.obj
-.PHONY : Source\Tree.cpp.obj
-
-Source\Tree.i: Source\Tree.cpp.i
-
-.PHONY : Source\Tree.i
-
-# target to preprocess a source file
-Source\Tree.cpp.i:
-	$(MAKE) -f CMakeFiles\3_Check_Chess.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\3_Check_Chess.dir\Source\Tree.cpp.i
-.PHONY : Source\Tree.cpp.i
-
-Source\Tree.s: Source\Tree.cpp.s
-
-.PHONY : Source\Tree.s
-
-# target to generate assembly for a file
-Source\Tree.cpp.s:
-	$(MAKE) -f CMakeFiles\3_Check_Chess.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\3_Check_Chess.dir\Source\Tree.cpp.s
-.PHONY : Source\Tree.cpp.s
-
-Source\main.obj: Source\main.cpp.obj
+Source/main.o: Source/main.cpp.o
 
 .PHONY : Source\main.obj
 
@@ -342,37 +315,37 @@ Source\tools.cpp.s:
 
 # Help Target
 help:
-	@echo The following are some of the valid targets for this Makefile:
-	@echo ... all (the default if no target is provided)
-	@echo ... clean
-	@echo ... depend
-	@echo ... 3_Check_Chess
-	@echo ... edit_cache
-	@echo ... rebuild_cache
-	@echo ... Source/AlgoPicker.obj
-	@echo ... Source/AlgoPicker.i
-	@echo ... Source/AlgoPicker.s
-	@echo ... Source/Algorithm.obj
-	@echo ... Source/Algorithm.i
-	@echo ... Source/Algorithm.s
-	@echo ... Source/ChessPiece.obj
-	@echo ... Source/ChessPiece.i
-	@echo ... Source/ChessPiece.s
-	@echo ... Source/Engine.obj
-	@echo ... Source/Engine.i
-	@echo ... Source/Engine.s
-	@echo ... Source/Table.obj
-	@echo ... Source/Table.i
-	@echo ... Source/Table.s
-	@echo ... Source/Tree.obj
-	@echo ... Source/Tree.i
-	@echo ... Source/Tree.s
-	@echo ... Source/main.obj
-	@echo ... Source/main.i
-	@echo ... Source/main.s
-	@echo ... Source/tools.obj
-	@echo ... Source/tools.i
-	@echo ... Source/tools.s
+	@echo "The following are some of the valid targets for this Makefile:"
+	@echo "... all (the default if no target is provided)"
+	@echo "... clean"
+	@echo "... depend"
+	@echo "... rebuild_cache"
+	@echo "... edit_cache"
+	@echo "... 3_Check_Chess"
+	@echo "... Source/AlgoPicker.o"
+	@echo "... Source/AlgoPicker.i"
+	@echo "... Source/AlgoPicker.s"
+	@echo "... Source/Algorithm.o"
+	@echo "... Source/Algorithm.i"
+	@echo "... Source/Algorithm.s"
+	@echo "... Source/ChessPiece.o"
+	@echo "... Source/ChessPiece.i"
+	@echo "... Source/ChessPiece.s"
+	@echo "... Source/Engine.o"
+	@echo "... Source/Engine.i"
+	@echo "... Source/Engine.s"
+	@echo "... Source/Table.o"
+	@echo "... Source/Table.i"
+	@echo "... Source/Table.s"
+	@echo "... Source/Tree.o"
+	@echo "... Source/Tree.i"
+	@echo "... Source/Tree.s"
+	@echo "... Source/main.o"
+	@echo "... Source/main.i"
+	@echo "... Source/main.s"
+	@echo "... Source/tools.o"
+	@echo "... Source/tools.i"
+	@echo "... Source/tools.s"
 .PHONY : help
 
 

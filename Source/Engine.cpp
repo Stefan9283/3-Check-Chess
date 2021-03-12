@@ -17,7 +17,7 @@ Engine::Engine() {
             continue;
 
         if (strstr(buffer, "protover 2")) {
-            std::cout << "feature sigint = 0 sigterm = 0 san = 0 name = Maximuss\n";
+            std::cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
             continue;
         }
 
@@ -42,9 +42,12 @@ Engine::Engine() {
 
             std::string move = t->getARandomMove();
 
-            //std::string move = t->getBestMove(2);
-            t->parseMove(move.c_str());
             std::cout << move << "\n";
+
+            if (strstr(move.c_str(), "resign"))
+                continue;
+
+            t->parseMove(move.c_str());
         }
     }
 }

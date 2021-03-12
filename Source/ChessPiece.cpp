@@ -1,10 +1,6 @@
 #include "ChessPiece.h"
 #include "Table.h"
 
-#define NOCHECK 0
-#define CHECK 1
-#define CHECKMATE 2
-
 ChessPiece::ChessPiece(char color, vec2<int> pos, int index) {
     assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
     this->color = color; this->pos = pos; this->score = -1; this->index = index; this->abbreviation = '#';
@@ -248,27 +244,27 @@ bool King::isInCheck(Table* table, vec2<int> pos) {
                     abs(table->pieces[line][j]->pos.y - pos.y) == 1)
                     return true;
 
-        // Check from rook
-        if (table->pieces[line][8])
-            if (table->pieces[line][8]->pos.x == pos.x || table->pieces[line][8]->pos.y == pos.y)
-                if (table->hasNoPiecesBetween_line(table->pieces[line][8]->pos, pos))
-                    return true;
+    // Check from rook
+    if (table->pieces[line][8])
+        if (table->pieces[line][8]->pos.x == pos.x || table->pieces[line][8]->pos.y == pos.y)
+            if (table->hasNoPiecesBetween_line(table->pieces[line][8]->pos, pos))
+                return true;
 
-        if (table->pieces[line][9])
-            if (table->pieces[line][9]->pos.x == pos.x || table->pieces[line][9]->pos.y == pos.y)
-                if (table->hasNoPiecesBetween_line(table->pieces[line][9]->pos, pos))
-                    return true;
+    if (table->pieces[line][9])
+        if (table->pieces[line][9]->pos.x == pos.x || table->pieces[line][9]->pos.y == pos.y)
+            if (table->hasNoPiecesBetween_line(table->pieces[line][9]->pos, pos))
+                return true;
 
-        // Check from knight
-        if (table->pieces[line][10] &&
-            (abs(table->pieces[line][10]->pos.x - pos.x) == 2 && abs(table->pieces[line][10]->pos.y - pos.y) == 1) ||
+    // Check from knight
+    if (table->pieces[line][10])
+        if ((abs(table->pieces[line][10]->pos.x - pos.x) == 2 && abs(table->pieces[line][10]->pos.y - pos.y) == 1) ||
             (abs(table->pieces[line][10]->pos.y - pos.y) == 2 && abs(table->pieces[line][10]->pos.x - pos.x) == 1))
             return true;
 
-        if (table->pieces[line][11] &&
-            (abs(table->pieces[line][11]->pos.x - pos.x) == 2 && abs(table->pieces[line][11]->pos.y - pos.y) == 1) ||
+    if (table->pieces[line][11])
+        if ((abs(table->pieces[line][11]->pos.x - pos.x) == 2 && abs(table->pieces[line][11]->pos.y - pos.y) == 1) ||
             (abs(table->pieces[line][11]->pos.y - pos.y) == 2 && abs(table->pieces[line][11]->pos.x - pos.x) == 1))
-            return true;
+                return true;
 
         // Check from bishop
         if (table->pieces[line][12] && table->isSquareOfTheSameColor(this, table->pieces[line][12]))
@@ -281,11 +277,9 @@ bool King::isInCheck(Table* table, vec2<int> pos) {
                 if (table->hasNoPiecesBetween_diagonal(table->pieces[line][13]->pos, pos))
                     return true;
 
-        // Check from queen(s)
-        for (int i = 15; i < table->pieces[line].size(); i++)
-            if (table->pieces[line][i]) {
-                if (table->pieces[line][i]->pos.x == pos.x || table->pieces[line][i]->pos.y == pos.y)
-                    if (table->hasNoPiecesBetween_line(table->pieces[line][i]->pos, pos))
+            if (table->isSquareOfTheSameColor(this, table->pieces[line][i]))
+                if (abs(table->pieces[line][i]->pos.x - pos.x) == abs(table->pieces[line][i]->pos.y - pos.y))
+                    if (table->hasNoPiecesBetween_diagonal(table->pieces[line][i]->pos, pos))
                         return true;
 
                 if (table->isSquareOfTheSameColor(this, table->pieces[line][i]))
@@ -299,6 +293,10 @@ bool King::isInCheck(Table* table, vec2<int> pos) {
 
 bool King::isInCheck(Table* table, ChessPiece* piece, vec2<int> pos) {
     ChessPiece* oldPiece = table->squares[pos.x][pos.y]->piece;
+    int index = oldPiece ? oldPiece->index : -INF;
+
+    if (index != -INF)
+        table->pieces[table->turn == 0 ? 1 : 0][index] = nullptr;
 
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     table->squares[pos.x][pos.y]->piece = piece;
@@ -307,6 +305,9 @@ bool King::isInCheck(Table* table, ChessPiece* piece, vec2<int> pos) {
 
     table->squares[piece->pos.x][piece->pos.y]->piece = piece;
     table->squares[pos.x][pos.y]->piece = oldPiece;
+
+    if (index != -INF)
+        table->pieces[table->turn == 0 ? 1 : 0][index] = oldPiece;
 
     return inCheck;
 }
