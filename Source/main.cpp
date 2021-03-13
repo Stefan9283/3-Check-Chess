@@ -1,15 +1,15 @@
 #include <Engine.h>
 
 int main() {
-    Engine e;
+    //Engine e;
 
-    /*Table* table = new Table();
+    Table* table = new Table();
 
-    table->moveInAdvance("(e2, e4), (e7, e5), (d2, d4), (b7, b5), (d4, e5), (c8, b7), (e5, e6)", 'w');
+    table->moveInAdvance("(e2, e4), (g7, g6), (d2, d4), (f7, f6), (e4, e5), (h7, h5), (e5, e6), (d7, e6), (d4, d5), (d8, d5), (d1, d5)", 'w');
 
     table->printGameBoard();
 
-    std::cout << table->getARandomMove();*/
+    std::cout << table->getARandomMove();
 
    /* std::cout << "\n";
 

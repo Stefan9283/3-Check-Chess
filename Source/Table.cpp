@@ -101,8 +101,8 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
             piece = queen;
             pieces[piece->color == 'w' ? 0 : 1].push_back(piece);
         }
-        else if (squares[pos.x + (piece->color == 'w' ? -1 : 1)][pos.y]->piece && abs(piece->pos.y - pos.y) == 1)
-            removePiece(squares[pos.x + (piece->color == 'w' ? -1 : 1)][pos.y]->piece);
+        /*else if (squares[pos.x + (piece->color == 'w' ? -1 : 1)][pos.y]->piece && abs(piece->pos.y - pos.y) == 1)
+            removePiece(squares[pos.x + (piece->color == 'w' ? -1 : 1)][pos.y]->piece);*/
         else
             ((Pawn*)piece)->wasMoved = true;
     } else if (dynamic_cast<Rook*>(piece))
@@ -617,7 +617,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
     }
 
     // En passant
-    currPos.x = pawn->pos.x, currPos.y = pawn->pos.y - 1;
+    /*currPos.x = pawn->pos.x, currPos.y = pawn->pos.y - 1;
 
     if (isInside(currPos) && dynamic_cast<Pawn*>(squares[currPos.x][currPos.y]->piece))
         if (pawn->color != squares[currPos.x][currPos.y]->piece->color)
@@ -631,7 +631,7 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
         if (pawn->color != squares[currPos.x][currPos.y]->piece->color)
             if (history.back().move.second == currPos && abs(history.back().move.first.x - currPos.x) == 2)
                 if (!isKingInDanger(pawn, vec2<int>(currPos.x + (pawn->color == 'w' ? 1 : -1), currPos.y)))
-                    squares[currPos.x + (pawn->color == 'w' ? 1 : -1)][currPos.y]->possibleNormalMoves.push_back(pawn);
+                    squares[currPos.x + (pawn->color == 'w' ? 1 : -1)][currPos.y]->possibleNormalMoves.push_back(pawn);*/
 }
 
 void Table::markPossibleMovesForKnight(Knight* knight) {
