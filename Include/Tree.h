@@ -8,9 +8,9 @@ class Table;
 class TreeNode {
 public:
     Table* table;
-    vec2<int> pos;
-
-    int bestScore = INF;
+    std::pair<vec2<int>, vec2<int>> move;
+    
+    int bestScore = -INF;
     std::pair<vec2<int>, vec2<int>> bestMove;
 
     TreeNode* parent = nullptr;
@@ -33,7 +33,7 @@ public:
 
     void countNodes(TreeNode* root, int *no);
 
-    void MiniMax(TreeNode* root, int turn, int level);
+    void MiniMax(TreeNode* root, int level);
 
     std::pair<vec2<int>, vec2<int>> getBestMove();
 };

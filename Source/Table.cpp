@@ -85,26 +85,25 @@ Table::~Table() {
 }
 
 //Functii Stefan
-#define COPY_HISTORY_TOO true
-
 #pragma region pieces manuvering
 void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
     assert(piece != nullptr && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
-    turn = 1 - turn;
-
     if (squares[pos.x][pos.y]->piece)
         removePiece(squares[pos.x][pos.y]->piece);
 
     if (dynamic_cast<Pawn*>(piece)) {
-        if (pos.x == height - 1) {
+        if (!pos.x || pos.x == height - 1) {
             Queen* queen = ((Pawn*)piece)->promotePawn(this);
 
-            delete piece;
+            removePiece(piece);
             piece = queen;
             pieces[piece->color == 'w' ? 0 : 1].push_back(piece);
-        } else
+        }
+        else if (squares[pos.x + (piece->color == 'w' ? -1 : 1)][pos.y]->piece && abs(piece->pos.y - pos.y) == 1)
+            removePiece(squares[pos.x + (piece->color == 'w' ? -1 : 1)][pos.y]->piece);
+        else
             ((Pawn*)piece)->wasMoved = true;
     } else if (dynamic_cast<Rook*>(piece))
         ((Rook*)piece)->wasMoved = true;
@@ -115,7 +114,8 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
     squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     squares[pos.x][pos.y]->piece = piece;
     piece->pos = pos;
-    addMove2History(piece, std::make_pair(prev, pos));
+    addMove2History(std::make_pair(prev, pos));
+    turn = 1 - turn;
 }
 void Table::movePiece(ChessPiece *piece, const char* pos) {
     assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
@@ -169,12 +169,11 @@ int Table::getSquareScore(Square* sq, char myColor) {
 int Table::getTotalScore(char color) {
     assert(color == 'w' || color == 'b' && "Unknown piece color");
 
-    int total = 0;
+    int total = 0, line = color == 'w' ? 0 : 1;
 
-    for (int i = 0; i < height; ++i)
-        for (int j = 0; j < width; ++j)
-            if (squares[i][j]->piece && squares[i][j]->piece->color == color)
-                total += squares[i][j]->piece->score;
+    for (ChessPiece* chessPiece : pieces[line])
+        if (chessPiece)
+            total += chessPiece->score;
 
     return total;
 }
@@ -226,18 +225,12 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
             t->pieces[c->color == 'w' ? 0 : 1][c->index] = t->squares[i][j]->piece;
         }
 
-    if (COPY_HISTORY_TOO)
-        for (int i = 0; i < t->history.size(); ++i) {
-            vec2<int> oldPiecePos = history[i].piece->pos;
-            t->history[i].piece = t->squares[oldPiecePos.x][oldPiecePos.y]->piece;
-        }
-
     if (piece)
         t->movePiece(t->squares[piece->pos.x][piece->pos.y]->piece, pos);
 
     return t;
 }
-void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int tabsCount)  {
+void Table::printGameBoard(char perspective, bool fromZero, bool yLetters, int tabsCount)  {
     assert(perspective == 'r' || perspective == 'b' || perspective == 'w' && "Perpective (w)hite/(b)lack/(r)otated");
     printTabs(tabsCount); std::cout << "##################################\n";
     if (perspective == 'w') {
@@ -263,7 +256,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
         for (int j = 0; j < width; ++j)
             if (fromZero)
                 std::cout << " " << j << "  ";
-            else if (xLetters) std::cout << " " << (char)('a' + j) << "  ";
+            else if (yLetters) std::cout << " " << (char)('a' + j) << "  ";
             else std::cout << " " << j + 1 << "  ";
         std::cout << "\n";
     } else if (perspective == 'b') {
@@ -271,7 +264,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
         for (int j = width - 1; j >= 0; --j)
             if (fromZero)
                 std::cout << " " << j << "  ";
-            else if (xLetters) std::cout << " " << (char)('a' + j) << "  ";
+            else if (yLetters) std::cout << " " << (char)('a' + j) << "  ";
             else std::cout << " " << j + 1 << "  ";
         std::cout << "\n";
         printTabs(tabsCount); std::cout << " -----------------------------------\n";
@@ -308,7 +301,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
             printTabs(tabsCount);
             if (fromZero)
                 std::cout << " " << width - i - 1 << " |";
-            else if (xLetters) std::cout << " " << (char)('a' + i) << " |";
+            else if (yLetters) std::cout << " " << (char)('a' + i) << " |";
             else std::cout << " " << width - i << " |";
 
             for (int j = height - 1; j >= 0; --j) {
@@ -325,7 +318,7 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
     printTabs(tabsCount); std::cout << "##################################\n";
 }
 
-std::vector<ChessPiece *> Table::getVulnerablePieces(char color, int leastNumOfPiecesThatShouldBeAbleToTakeThePiece) {
+std::vector<ChessPiece *> Table::getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece) {
     std::vector<ChessPiece *> res;
 
     turn = 1 - turn;
@@ -341,6 +334,7 @@ std::vector<ChessPiece *> Table::getVulnerablePieces(char color, int leastNumOfP
 
     return res;
 }
+
 // Functii Ovidiu
 void Table::parseMove(const char* s) {
     const char from[] = {s[strlen(s) - 4], s[strlen(s) - 3], '\0'};
@@ -350,16 +344,10 @@ void Table::parseMove(const char* s) {
 }
 
 std::string Table::getBestMove(int depth) {
-    bool noMoreMoves = hasLegalMoves();
-
-    if (!isKingInDanger(pieces[turn][14], pieces[turn][14]->pos))
-        if (noMoreMoves)
-            return std::string("resign");
-
     Tree* tree = new Tree(this);
 
     tree->createTree(tree->root, 0, depth);
-    tree->MiniMax(tree->root, turn, 0);
+    tree->MiniMax(tree->root, 0);
 
     std::pair<vec2<int>, vec2<int>> bestMove = tree->getBestMove();
 
@@ -373,13 +361,6 @@ std::string Table::getBestMove(int depth) {
 
 std::string Table::getARandomMove() {
     srand(time(NULL));
-
-    bool noMoreMoves = hasLegalMoves();
-
-    if (!isKingInDanger(pieces[turn][14], pieces[turn][14]->pos))
-        if (noMoreMoves)
-            return std::string("resign");
-
     markAllPossibleMoves();
 
     int squareNo = rand() % (height * width);
@@ -450,7 +431,7 @@ bool Table::hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2) {
 bool Table::hasNoPiecesBetween_diagonal(vec2<int> pos1, vec2<int> pos2) {
     // Main diagonal
     if ((pos2.x > pos1.x && pos2.y > pos1.y) ||
-        (pos2.x < pos1.x && pos2.y < pos1.x)) {
+        (pos2.x < pos1.x && pos2.y < pos1.y)) {
         vec2<int> st = pos1.y < pos2.y ? pos1 : pos2;
         vec2<int> sp = pos1.y > pos2.y ? pos1 : pos2;
 
@@ -470,9 +451,9 @@ bool Table::hasNoPiecesBetween_diagonal(vec2<int> pos1, vec2<int> pos2) {
     vec2<int> st = pos1.y < pos2.y ? pos1 : pos2;
     vec2<int> sp = pos1.y > pos2.y ? pos1 : pos2;
 
-    st.x++; st.y++; sp.x--; sp.y--;
+    st.x--; st.y++; sp.x++; sp.y--;
 
-    while (st.x <= sp.x) {
+    while (st.x >= sp.x) {
         if (squares[st.x][st.y]->piece)
             return false;
 
@@ -490,15 +471,16 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
         return true;
 
     if (squares[pos.x][pos.y]->piece && 
-        piece->color == squares[pos.x][pos.y]->piece->color)
+        (piece->color == squares[pos.x][pos.y]->piece->color ||
+        dynamic_cast<King*>(squares[pos.x][pos.y]->piece)))
             return true;
 
     if (dynamic_cast<King*>(piece)) {
-        if (!isKingInDanger(pieces[turn][14], pos) || isKingInConflict((King*)piece, pos))
+        if (isKingInDanger(pieces[turn][14], pos) || isKingInConflict((King*)piece, pos))
             return true;
-    } else if (!isKingInDanger(piece, pos))
+    } else if (isKingInDanger(piece, pos))
         return true;
-
+        
     return false;
 }
 
@@ -509,40 +491,50 @@ bool Table::isKingInConflict(King* king, vec2<int> pos) {
 }
 
 bool Table::isKingInDanger(ChessPiece* piece, vec2<int> pos) {
-    if (isInside(pos))
-        return false;
+    assert(piece && isInside(pos));
 
-    if (piece)
-        return false;
+    if (piece->pos == pos)
+        return ((King*)piece)->isInCheck(this);
 
-    bool inCheck;
+    vec2<int> oldPos;
 
-    if (dynamic_cast<King*>(piece)) {
-        vec2<int> oldPos = piece->pos;
-        piece->pos = pos;
-
-        inCheck = ((King*)pieces[turn][14])->isInCheck(this);
-        piece->pos = oldPos;
-
-    }
-    else {
+    if (squares[pos.x][pos.y]->piece) {
         ChessPiece* oldPiece = squares[pos.x][pos.y]->piece;
-        int index = oldPiece ? oldPiece->index : -INF;
-
-        if (index != -INF)
-            pieces[turn == 0 ? 1 : 0][index] = nullptr;
-
-        squares[piece->pos.x][piece->pos.y]->piece = piece;
-        squares[pos.x][pos.y]->piece = oldPiece;
-
-        inCheck = ((King*)pieces[turn][14])->isInCheck(this);
 
         squares[piece->pos.x][piece->pos.y]->piece = nullptr;
+        pieces[turn == 0 ? 1 : 0][oldPiece->index] = nullptr;
         squares[pos.x][pos.y]->piece = piece;
+        oldPos = piece->pos;
 
-        if (index != -INF)
-            pieces[turn == 0 ? 1 : 0][index] = oldPiece;
+        if (dynamic_cast<King*>(piece))
+            piece->pos = pos;
+
+        bool inCheck = ((King*)pieces[turn][14])->isInCheck(this);
+
+        if (dynamic_cast<King*>(piece))
+            piece->pos = oldPos;
+
+        squares[piece->pos.x][piece->pos.y]->piece = piece;
+        pieces[turn == 0 ? 1 : 0][oldPiece->index] = oldPiece;
+        squares[pos.x][pos.y]->piece = oldPiece;
+
+        return inCheck;
     }
+
+    squares[piece->pos.x][piece->pos.y]->piece = nullptr;
+    squares[pos.x][pos.y]->piece = piece;
+    oldPos = piece->pos;
+
+    if (dynamic_cast<King*>(piece))
+        piece->pos = pos;
+
+    bool inCheck = ((King*)pieces[turn][14])->isInCheck(this);
+
+    if (dynamic_cast<King*>(piece))
+        piece->pos = oldPos;
+
+    squares[piece->pos.x][piece->pos.y]->piece = piece;
+    squares[pos.x][pos.y]->piece = nullptr;
 
     return inCheck;
 }
@@ -616,13 +608,30 @@ void Table::markPossibleMovesForPawn(Pawn* pawn) {
 
     // Two squares
     if (!pawn->wasMoved) {
-        currPos.x = pawn->pos.x + pawn->color == 'w' ? 2 :-2; currPos.y = pawn->pos.y;
+        currPos.x = pawn->pos.x + (pawn->color == 'w' ? 2 : -2); currPos.y = pawn->pos.y;
 
         if (!isAnIllegalMove(pawn, currPos) &&
             !squares[currPos.x][currPos.y]->piece &&
             !squares[pawn->pos.x + (pawn->color == 'w' ? 1 : -1)][pawn->pos.y]->piece)
                 squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(pawn);
     }
+
+    // En passant
+    currPos.x = pawn->pos.x, currPos.y = pawn->pos.y - 1;
+
+    if (isInside(currPos) && dynamic_cast<Pawn*>(squares[currPos.x][currPos.y]->piece))
+        if (pawn->color != squares[currPos.x][currPos.y]->piece->color)
+            if (history.back().move.second == currPos && abs(history.back().move.first.x - currPos.x) == 2)
+                if (!isKingInDanger(pawn, vec2<int>(currPos.x + (pawn->color == 'w' ? 1 : -1), currPos.y)))
+                    squares[currPos.x + (pawn->color == 'w' ? 1 : -1)][currPos.y]->possibleNormalMoves.push_back(pawn);
+
+    currPos.x = pawn->pos.x, currPos.y = pawn->pos.y + 1;
+
+    if (isInside(currPos) && dynamic_cast<Pawn*>(squares[currPos.x][currPos.y]->piece))
+        if (pawn->color != squares[currPos.x][currPos.y]->piece->color)
+            if (history.back().move.second == currPos && abs(history.back().move.first.x - currPos.x) == 2)
+                if (!isKingInDanger(pawn, vec2<int>(currPos.x + (pawn->color == 'w' ? 1 : -1), currPos.y)))
+                    squares[currPos.x + (pawn->color == 'w' ? 1 : -1)][currPos.y]->possibleNormalMoves.push_back(pawn);
 }
 
 void Table::markPossibleMovesForKnight(Knight* knight) {
@@ -869,7 +878,7 @@ void Table::markPossibleMovesForKing(King *king) {
     // Up
     currPos.x = king->pos.x + 1; currPos.y = king->pos.y;
 
-    if (!isAnIllegalMove(king, currPos))
+    if (!isAnIllegalMove(king, currPos) )
         squares[currPos.x][currPos.y]->possibleNormalMoves.push_back(king);
 
     // Down
@@ -918,27 +927,25 @@ void Table::markPossibleMovesForKing(King *king) {
     if (king->castle)
         return;
 
-    int line = king->color == 'w' ? 0 : 1;
-
     // Short castle
-    if (pieces[line][9])
+    if (pieces[turn][9])
         if (!king->wasMoved &&
-            !((Rook*)pieces[line][9])->wasMoved &&
+            !((Rook*)pieces[turn][9])->wasMoved &&
+            hasNoPiecesBetween_axis(king->pos, pieces[turn][9]->pos) &&
             !isKingInDanger(king, king->pos) &&
             !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 1}) &&
-            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 2}) &&
-            hasNoPiecesBetween_axis(king->pos, pieces[line][9]->pos))
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 2}))
                 king->color == 'w' ? shortCastle_white = true : shortCastle_black = true;
 
     // Long castle
-    if (pieces[line][8])
+    if (pieces[turn][8])
         if (!king->wasMoved &&
-            !((Rook*)pieces[line][8])->wasMoved &&
+            !((Rook*)pieces[turn][8])->wasMoved &&
+            hasNoPiecesBetween_axis(king->pos, pieces[turn][8]->pos) &&
             !isKingInDanger(king, king->pos) &&
             !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 1}) &&
             !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 2}) &&
-            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 3}) &&
-            hasNoPiecesBetween_axis(king->pos, pieces[line][8]->pos))
+            !isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 3}))
                 king->color == 'w' ? longCastle_white = true : longCastle_black = true;
 }
 
@@ -949,4 +956,3 @@ bool Table::isSquareOfTheSameColor(vec2<int> pos1, vec2<int> pos2) {
 bool Table::isSquareOfTheSameColor(ChessPiece* piece1, ChessPiece* piece2) {
     return isSquareOfTheSameColor(piece1->pos, piece2->pos);
 }
-

@@ -8,7 +8,6 @@
 class ChessPiece;
 
 typedef struct PieceHistory {
-    ChessPiece* piece;
     std::pair<vec2<int>, vec2<int>> move;
 } PieceHistory;
 
@@ -59,13 +58,13 @@ public:
 
     Table* createNewState(ChessPiece* piece = nullptr, vec2<int> pos = vec2<int>());
     std::string pickAMove();
-    void printGameBoard(char perspective = 'w', bool fromZero = false, bool xLetters = true, int tabsCount = 0);
+    void printGameBoard(char perspective = 'w', bool fromZero = false, bool yLetters = true, int tabsCount = 0);
 
-    void addMove2History(ChessPiece* piece, std::pair<vec2<int>, vec2<int>> move) {
-        history.push_back({piece, move});
+    void addMove2History(std::pair<vec2<int>, vec2<int>> move) {
+        history.push_back({move});
     }
 
-    std::vector<ChessPiece*> getVulnerablePieces(char color, int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
+    std::vector<ChessPiece*> getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
 
     // Functii Ovidiu
     void parseMove(const char* s);

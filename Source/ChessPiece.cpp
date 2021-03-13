@@ -235,10 +235,11 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
         return moves;
     } // {DONE}
 
-    Queen* Pawn::promotePawn(Table* table) {
-        return new Queen(color, pos, table->pieces[color == 'w' ? 1 : 0].size());
-    }
 // Functii Ovidiu
+Queen* Pawn::promotePawn(Table* table) {
+    return new Queen(color, pos, table->pieces[color == 'w' ? 0 : 1].size());
+}
+
 bool King::isInCheck(Table* table) {
 	int line = color == 'w' ? 1 : 0;
 
@@ -284,17 +285,17 @@ bool King::isInCheck(Table* table) {
 				return true;
 
 	// Check from queen(s)
-	for (int i = 15; i < table->pieces[line].size(); i++)
-		if (table->pieces[line][i]) {
-			if (table->pieces[line][i]->pos.x == pos.x || table->pieces[line][i]->pos.y == pos.y)
-				if (table->hasNoPiecesBetween_axis(table->pieces[line][i]->pos, pos))
-					return true;
+    for (int i = 15; i < table->pieces[line].size(); i++)
+        if (table->pieces[line][i]) {
+            if (table->pieces[line][i]->pos.x == pos.x || table->pieces[line][i]->pos.y == pos.y)
+                if (table->hasNoPiecesBetween_axis(table->pieces[line][i]->pos, pos))
+                    return true;
 
-			if (table->isSquareOfTheSameColor(this, table->pieces[line][i]))
-				if (abs(table->pieces[line][i]->pos.x - pos.x) == abs(table->pieces[line][i]->pos.y - pos.y))
-					if (table->hasNoPiecesBetween_diagonal(table->pieces[line][i]->pos, pos))
-						return true;
-		}
+            if (table->isSquareOfTheSameColor(this, table->pieces[line][i]))
+                if (abs(table->pieces[line][i]->pos.x - pos.x) == abs(table->pieces[line][i]->pos.y - pos.y))
+                    if (table->hasNoPiecesBetween_diagonal(table->pieces[line][i]->pos, pos))
+                        return true;
+        }
 
 	return false;
 }

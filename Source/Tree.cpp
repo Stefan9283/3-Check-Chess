@@ -2,7 +2,7 @@
 #include "Table.h"
 
 TreeNode::TreeNode(Table* table) {
-    this->table = table->createNewState(); pos = vec2<int>(-INF, -INF);
+    this->table = table->createNewState(); move = std::pair<vec2<int>, vec2<int>>(vec2<int>(-INF, -INF), vec2<int>(-INF, -INF));
 }
 
 Tree::Tree(Table* table) {
@@ -10,7 +10,7 @@ Tree::Tree(Table* table) {
 }
 
 void Tree::createTree(TreeNode* root, int level, int depth) {
-    if (level == depth - 1)
+    if (level == depth)
         return;
 
     root->table->markAllPossibleMoves();
@@ -18,15 +18,13 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
     for (int i = 0; i < root->table->height; i++)
         for (int j = 0; j < root->table->width; j++)
             for (ChessPiece* piece : root->table->squares[i][j]->possibleNormalMoves) {
-                vec2<int> oldPos = piece->pos;
-
                 Table* newTable = root->table->createNewState(piece, vec2<int>(i, j));
                 TreeNode* newNode = new TreeNode(newTable);
 
-                newNode->pos = oldPos;
-                newNode->bestMove.second = vec2<int>(i, j);
+                newNode->move.first = piece->pos;
+                newNode->move.second = vec2<int>(i, j);
                 newNode->parent = root;
-                newNode->table->turn = newNode->parent->table->turn == 1 ? 0 : 1;
+                newNode->table->turn = 1 - root->table->turn;
                 root->children.push_back(newNode);
             }
 
@@ -67,27 +65,45 @@ void Tree::countNodes(TreeNode* root, int* no) {
         countNodes(child, no);
 }
 
-void Tree::MiniMax(TreeNode* root, int turn, int level) {
+void Tree::MiniMax(TreeNode* root, int level) {
     if (!root)
         return;
 
     for (TreeNode* child : root->children)
-        MiniMax(child, turn, level + 1);
+        MiniMax(child, level + 1);
 
     if (root->parent) {
-        int currScore = (root->table->getTotalScore(0) - root->table->getTotalScore(1)) * (turn == 0 ? 1 : -1);
+        int score1 = root->table->getTotalScore('w'), score2 = root->table->getTotalScore('b');
 
         if (level % 2 != 0) {
-            if (root->parent->bestScore == INF || currScore > root->parent->bestScore) {
-                root->parent->bestScore = currScore;
-                root->parent->bestMove.first = root->pos;
-                root->parent->bestMove.second = root->bestMove.second;
+            if (!root->table->turn) {
+                if (root->parent->bestScore == -INF || score2 > root->parent->bestScore) {
+                    root->parent->bestScore = score2;
+                    root->parent->bestMove.first = root->move.first;
+                    root->parent->bestMove.second = root->move.second;
+                }
+            } else {
+                if (root->parent->bestScore == -INF || score1 > root->parent->bestScore) {
+                    root->parent->bestScore = score1;
+                    root->parent->bestMove.first = root->move.first;
+                    root->parent->bestMove.second = root->move.second;
+                }
             }
         } else {
-            if (root->parent->bestScore == INF || currScore < root->parent->bestScore) {
-                root->parent->bestScore = currScore;
-                root->parent->bestMove.first = root->pos;
-                root->parent->bestMove.second = root->bestMove.second;
+            if (!root->table->turn) {
+                if (root->parent->bestScore == -INF || score1 < root->parent->bestScore) {
+                    root->parent->bestScore = score1;
+                    root->parent->bestMove.first = root->move.first;
+                    root->parent->bestMove.second = root->move.second;
+                }
+            }
+            else {
+                if (root->parent->bestScore == -INF || score2 < root->parent->bestScore) {
+                    root->parent->bestScore = score2;
+                    root->parent->bestMove.first = root->move.first;
+
+                    root->parent->bestMove.second = root->move.second;
+                }
             }
         }
     }

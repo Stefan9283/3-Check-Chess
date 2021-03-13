@@ -57,12 +57,11 @@ public:
         return sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y));
     }
     std::string toString() {
-        std::string s = "vec2(";
-        s.append(std::to_string(x));
-        s.append(", ");
-        s.append(std::to_string(y));
-        s.append(")");
-        return s;
+        return std::string("vec2(").
+               append(std::to_string(x)).
+               append(", ").
+               append(std::to_string(y)).
+               append(")");
     }
 };
 
