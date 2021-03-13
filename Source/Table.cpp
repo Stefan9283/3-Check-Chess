@@ -325,6 +325,22 @@ void Table::printGameBoard(char perspective, bool fromZero, bool xLetters, int t
     printTabs(tabsCount); std::cout << "##################################\n";
 }
 
+std::vector<ChessPiece *> Table::getVulnerablePieces(char color, int leastNumOfPiecesThatShouldBeAbleToTakeThePiece) {
+    std::vector<ChessPiece *> res;
+
+    turn = 1 - turn;
+    markAllPossibleMoves();
+    turn = 1 - turn;
+
+    for (ChessPiece* piece : pieces[turn]) {
+        if (squares[piece->pos.x][piece->pos.y]->possibleNormalMoves.size() >= leastNumOfPiecesThatShouldBeAbleToTakeThePiece)
+            res.push_back(piece);
+    }
+
+    unmarkAllPossibleMoves();
+
+    return res;
+}
 // Functii Ovidiu
 void Table::parseMove(const char* s) {
     const char from[] = {s[strlen(s) - 4], s[strlen(s) - 3], '\0'};
@@ -933,3 +949,4 @@ bool Table::isSquareOfTheSameColor(vec2<int> pos1, vec2<int> pos2) {
 bool Table::isSquareOfTheSameColor(ChessPiece* piece1, ChessPiece* piece2) {
     return isSquareOfTheSameColor(piece1->pos, piece2->pos);
 }
+

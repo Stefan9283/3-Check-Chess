@@ -65,6 +65,8 @@ public:
         history.push_back({piece, move});
     }
 
+    std::vector<ChessPiece*> getVulnerablePieces(char color, int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
+
     // Functii Ovidiu
     void parseMove(const char* s);
 
