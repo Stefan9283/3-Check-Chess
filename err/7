@@ -1,0 +1,95 @@
+locale = C.UTF-8
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+shuffleOpenings = 0
+shuffleOpenings = 0
+Version: xboard 4.9.1 + 3_Check_Chess ()
+Reset(1, 0) from gameMode 0
+recognized 'normal' (-1) as variant normal
+GameEnds(0, (null), 2)
+shuffleOpenings = 0
+StartChildProcess (dir=".") ./3_Check_Chess
+139 >first : xboard
+protover 2
+150 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+151 >first : accepted sigint
+151 >first : accepted sigterm
+151 >first : accepted san
+151 >first : accepted name
+10140 >first : new
+random
+10141 >first : level 40 5 0
+10141 >first : post
+10141 >first : hard
+nps: w=-1, b=-1
+nps: w=-1, b=-1
+36876 >first : time 30000
+36877 >first : otim 30000
+book hit = (NULL)
+36877 >first : g1f3
+36902 <first : move a7a5
+39335 >first : time 29997
+39335 >first : otim 29756
+book hit = (NULL)
+39336 >first : h2h4
+39367 <first : move a5a4
+40581 >first : time 29994
+40581 >first : otim 29635
+book hit = (NULL)
+40582 >first : h1h3
+40614 <first : move a4a3
+43295 >first : time 29990
+43296 >first : otim 29367
+book hit = (NULL)
+43296 >first : b2a3
+43330 <first : move a8a4
+46221 >first : time 29987
+46221 >first : otim 29078
+book hit = (NULL)
+46222 >first : b1c3
+46272 <first : move a4c4
+55085 >first : time 29982
+55086 >first : otim 28197
+book hit = (NULL)
+55086 >first : e2e3
+55151 <first : move c4g4
+62376 >first : time 29975
+62376 >first : otim 27474
+book hit = (NULL)
+62376 >first : f3h2
+62445 <first : move g4g6
+64596 >first : time 29968
+64596 >first : otim 27259
+book hit = (NULL)
+64597 >first : g2g3
+64650 <first : move c7c5
+71180 >first : time 29963
+71181 >first : otim 26606
+book hit = (NULL)
+71181 >first : c3b1
+71238 <first : move d8a5
+74302 >first : time 29957
+74302 >first : otim 26300
+book hit = (NULL)
+74303 >first : c2c3
+74385 <first : move g6b6
+76355 >first : time 29949
+76356 >first : otim 26103
+book hit = (NULL)
+76356 >first : c1b2
+76437 <first : move b6b2
+86182 >first : time 29940
+86182 >first : otim 25128
+book hit = (NULL)
+86183 >first : c3c4
+86251 <first : move d7d5
+88312 >first : time 29934
+88312 >first : otim 24922
+book hit = (NULL)
+88313 >first : b1c3
+88331 <first : 3_Check_Chess: /mnt/d/GIT/3-Check-Chess_new/Source/Tree.cpp:34: void TreeNode::movePieceOnState(std::pair<vec2<int>, vec2<int> >): Assertion `piece && table->isInside(pos) && "Illegal piece or position!"' failed.
+GameEnds(29, xboard exit, 2)
+98003 >first : result * {xboard exit}
+98004 >first : force
+98004 >first : quit

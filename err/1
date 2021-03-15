@@ -1,0 +1,55 @@
+locale = C.UTF-8
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+shuffleOpenings = 0
+shuffleOpenings = 0
+Version: xboard 4.9.1 + 3_Check_Chess ()
+Reset(1, 0) from gameMode 0
+recognized 'normal' (-1) as variant normal
+GameEnds(0, (null), 2)
+shuffleOpenings = 0
+StartChildProcess (dir=".") ./3_Check_Chess
+262 >first : xboard
+protover 2
+276 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+276 >first : accepted sigint
+276 >first : accepted sigterm
+276 >first : accepted san
+277 >first : accepted name
+10273 >first : new
+random
+10273 >first : level 40 5 0
+10273 >first : post
+10274 >first : hard
+nps: w=-1, b=-1
+nps: w=-1, b=-1
+48291 >first : time 30000
+48291 >first : otim 30000
+book hit = (NULL)
+48292 >first : a2a4
+48314 <first : move a7a5
+52162 >first : time 29997
+52162 >first : otim 29615
+book hit = (NULL)
+52162 >first : a1a3
+52191 <first : move c7c5
+55747 >first : time 29994
+55748 >first : otim 29259
+book hit = (NULL)
+55748 >first : c2c4
+55780 <first : move d8b6
+60247 >first : time 29991
+60248 >first : otim 28812
+book hit = (NULL)
+60248 >first : b2b3
+60286 <first : move b6b4
+65842 >first : time 29987
+65842 >first : otim 28257
+book hit = (NULL)
+65843 >first : e2e3
+65889 <first : move b7b5
+GameEnds(29, xboard exit, 2)
+91994 >first : result * {xboard exit}
+91994 >first : force
+91994 >first : quit

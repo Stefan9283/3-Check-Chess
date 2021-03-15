@@ -14,11 +14,17 @@ void addMove(string* cmd, const char* move) {
     cmd->append("), ");
 }
 
-int main() {
-    ifstream f("xboard.debug");
+int main(int argc, char** argv) {
+
+    ifstream f;
+
+    if (argc == 1)
+        f = ifstream("xboard.debug");
+    else
+        f = ifstream(argv[1]);
     string line ;
     string cmd = "table->moveInAdvance(\"";
-    while(getline(f, line ) ) 
+    while(getline(f, line ) )
     {
         if (strstr(line.c_str(), "first : ") && !strstr(line.c_str(), "tim") && !strstr(line.c_str(), "accept")
         && !strstr(line.c_str(), "=") && !strstr(line.c_str(), "xboard") && !strstr(line.c_str(), "new") && !strstr(line.c_str(), "level")
