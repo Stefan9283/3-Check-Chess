@@ -5,8 +5,6 @@
 #include "ChessPiece.h"
 #include "Tree.h"
 
-class ChessPiece;
-
 typedef struct PieceHistory {
     std::pair<vec2<int>, vec2<int>> move;
 } PieceHistory;
@@ -30,20 +28,16 @@ public:
     std::vector<std::vector<ChessPiece*>> pieces;
     std::vector<PieceHistory> history;
 
-    // Not permanent
-    bool shortCastle_white = false;
-    bool shortCastle_black = false;
-
-    bool longCastle_white = false;
-    bool longCastle_black = false;
-
     Table();
     ~Table();
 
     // Functii Stefan
     void movePiece(ChessPiece* piece, vec2<int> pos);
+
     void movePiece(ChessPiece* piece, const char* pos);
+
     void movePiece(const char* move);
+
     void removePiece(ChessPiece* piece);
     ChessPiece* getPiece(const char* pos);
 
@@ -73,6 +67,10 @@ public:
 
     std::string getARandomMove();
 
+    void castleShort(King* king);
+    
+    void castleLong(King* king);
+
     int getTotalScore();
 
     void moveInAdvance(const char* moves, char color);
@@ -92,6 +90,12 @@ public:
     void markAllPossibleMoves();
 
     void unmarkAllPossibleMoves();
+
+    bool canEnPassant(Pawn* pawn, vec2<int> pos);
+
+    bool canCastleShort(King* king);
+
+    bool canCastleLong(King* king);
 
     void markPossibleMovesForPawn(Pawn* pawn);
 

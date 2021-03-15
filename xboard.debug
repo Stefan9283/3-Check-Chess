@@ -10,51 +10,96 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-195 >first : xboard
+185 >first : xboard
 protover 2
-203 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-203 >first : accepted sigint
-203 >first : accepted sigterm
-203 >first : accepted san
-203 >first : accepted name
-10196 >first : new
+192 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+192 >first : accepted sigint
+192 >first : accepted sigterm
+192 >first : accepted san
+192 >first : accepted name
+10186 >first : new
 random
-10196 >first : level 40 5 0
-10196 >first : post
-10196 >first : hard
+10186 >first : level 40 5 0
+10186 >first : post
+10186 >first : hard
 nps: w=-1, b=-1
 nps: w=-1, b=-1
-12879 >first : time 30000
-12879 >first : otim 30000
+17439 >first : time 30000
+17439 >first : otim 30000
 book hit = (NULL)
-12879 >first : e2e4
-12880 <first : move g7g6
-13882 >first : time 29999
-13882 >first : otim 29899
+17439 >first : e2e4
+17476 <first : move a7a5
+18008 >first : time 29996
+18008 >first : otim 29946
 book hit = (NULL)
-13882 >first : d2d4
-13883 <first : move f7f6
-14409 >first : time 29999
-14409 >first : otim 29847
+18008 >first : d2d4
+18057 <first : move a5a4
+18641 >first : time 29991
+18641 >first : otim 29888
 book hit = (NULL)
-14409 >first : e4e5
-14410 <first : move h7h5
-15639 >first : time 29999
-15639 >first : otim 29724
+18641 >first : b2b3
+18701 <first : move a4b3
+19163 >first : time 29985
+19163 >first : otim 29842
 book hit = (NULL)
-15639 >first : e5e6
-15640 <first : move d7e6
-16901 >first : time 29999
-16901 >first : otim 29598
+19163 >first : a2b3
+19237 <first : move a8a1
+20288 >first : time 29977
+20288 >first : otim 29737
 book hit = (NULL)
-16901 >first : d4d5
-16901 <first : move d8d5
-18160 >first : time 29999
-18160 >first : otim 29472
+20288 >first : c2c4
+20352 <first : move a1b1
+20888 >first : time 29971
+20888 >first : otim 29683
 book hit = (NULL)
-18160 >first : d1d5
-18161 <first : move e8e7
+20888 >first : c4c5
+20930 <first : move b1a1
+21323 >first : time 29967
+21323 >first : otim 29644
+book hit = (NULL)
+21323 >first : c5c6
+21386 <first : move b7c6
+22178 >first : time 29961
+22178 >first : otim 29565
+book hit = (NULL)
+22178 >first : d4d5
+22235 <first : move c6c5
+23258 >first : time 29955
+23258 >first : otim 29462
+book hit = (NULL)
+23258 >first : e4e5
+23314 <first : move a1b1
+23828 >first : time 29949
+23828 >first : otim 29411
+book hit = (NULL)
+23828 >first : d5d6
+23876 <first : move c7d6
+25088 >first : time 29944
+25088 >first : otim 29290
+book hit = (NULL)
+25088 >first : e5d6
+25139 <first : move d8a5
+27143 >first : time 29939
+27143 >first : otim 29089
+book hit = (NULL)
+27143 >first : d1d2
+27212 <first : move b1c1
+29813 >first : time 29932
+29813 >first : otim 28829
+book hit = (NULL)
+29813 >first : e1e2
+29898 <first : move c8a6
+31448 >first : time 29924
+31448 >first : otim 28674
+book hit = (NULL)
+31448 >first : e2f3
+31562 <first : move a5d2
+33533 >first : time 29913
+33533 >first : otim 28477
+book hit = (NULL)
+33533 >first : f3g3
+33604 <first : move c1f1
 GameEnds(29, xboard exit, 2)
-51290 >first : result * {xboard exit}
-51290 >first : force
-51290 >first : quit
+34434 >first : result * {xboard exit}
+34434 >first : force
+34434 >first : quit

@@ -20,6 +20,7 @@ class ChessPiece {
 public:
     char color, abbreviation;
     int score, index;
+    int noOfMoves = 0;
     vec2<int> pos{};
 
     ChessPiece(char color, vec2<int> pos, int index);

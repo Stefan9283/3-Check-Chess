@@ -53,6 +53,10 @@ public:
         return x == v.x && y == v.y;
     }
 
+    bool operator!=(const vec2<T>& v) {
+        return x != v.x || y != v.y;
+    }
+
     float getDistanceTo(vec2<T> v) {
         return sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y));
     }
