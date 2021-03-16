@@ -41,7 +41,7 @@ public:
     void moveInAdvanceOnState(const char* moves, char color);
 
     void blabla() {
-        for (int i = moves.size() - 1; i >=0 ; i--)
+        for (int i = moves.size() - 1; i >= 0 ; i--)
             undoMoveOnState(moves[i]);
     }
 
@@ -51,7 +51,7 @@ public:
 
     void undoEnPassant(ChessPiece* piece, vec2<int> pos);
 
-    void undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int moveNo);
+    void undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int index);
 
     void undoShortCastle(King* king);
 

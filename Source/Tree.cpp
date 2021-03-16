@@ -55,8 +55,7 @@ void TreeNode::movePieceOnState(MoveHistory move) {
             eliminatePieceFromState(table->squares[piece->pos.x][pos.y]->piece, move.index);
         else
             ((Pawn*)piece)->wasMoved = true;
-    }
-    else if (dynamic_cast<Rook*>(piece) && !((Rook*)piece)->wasMoved)
+    } else if (dynamic_cast<Rook*>(piece) && !((Rook*)piece)->wasMoved)
         ((Rook*)piece)->wasMoved = true;
     else if (dynamic_cast<King*>(piece) && !((King*)piece)->wasMoved) {
         ((King*)piece)->wasMoved = true;
@@ -103,8 +102,9 @@ void TreeNode::undoMoveOnState(MoveHistory move) {
             ((Pawn*)piece)->wasMoved = false;
 
         if (deletedPieces.size())
-            if (move.index != deletedPieces.back().second && abs(pos.y - piece->pos.y) == 1)
-                undoEnPassant(piece, pos);
+            if (move.index == deletedPieces.back().second)
+                if (deletedPieces.back().first->pos == vec2<int>(pos.x, piece->pos.y) && abs(pos.y - piece->pos.y) == 1)
+                    undoEnPassant(piece, pos);
     } else if (dynamic_cast<Queen*>(piece)) {
         if (addedPieces.size())
             if (move.index == addedPieces.back().second) {
@@ -156,7 +156,7 @@ void TreeNode::undoEnPassant(ChessPiece* piece, vec2<int> pos) {
     deletedPieces.pop_back();
 }
 
-void TreeNode::undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int moveNo) {
+void TreeNode::undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int index) {
     vec2<int> oldPos = piece->pos;
 
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
@@ -165,9 +165,9 @@ void TreeNode::undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int moveNo) {
     addedPieces.pop_back();
     delete piece;
 
-    if (oldPos == deletedPieces.back().first->pos && moveNo == deletedPieces.back().second) {
+    if (oldPos == deletedPieces.back().first->pos && index == deletedPieces.back().second) {
         table->squares[oldPos.x][oldPos.y]->piece = deletedPieces.back().first;
-        table->pieces[!table->turn ? 1 : 0][deletedPieces.back().first->index] = deletedPieces.back().first;
+        table->pieces[table->turn][deletedPieces.back().first->index] = deletedPieces.back().first;
         deletedPieces.pop_back();
     }
 
