@@ -10,96 +10,41 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-185 >first : xboard
+197 >first : xboard
 protover 2
-192 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-192 >first : accepted sigint
-192 >first : accepted sigterm
-192 >first : accepted san
-192 >first : accepted name
-10186 >first : new
+205 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+205 >first : accepted sigint
+205 >first : accepted sigterm
+205 >first : accepted san
+205 >first : accepted name
+10199 >first : new
 random
-10186 >first : level 40 5 0
-10186 >first : post
-10186 >first : hard
+10199 >first : level 40 5 0
+10199 >first : post
+10199 >first : hard
 nps: w=-1, b=-1
 nps: w=-1, b=-1
-17439 >first : time 30000
-17439 >first : otim 30000
+26204 >first : time 30000
+26204 >first : otim 30000
 book hit = (NULL)
-17439 >first : e2e4
-17476 <first : move a7a5
-18008 >first : time 29996
-18008 >first : otim 29946
+26204 >first : e2e4
+27271 <first : move e7e5
+29745 >first : time 29893
+29745 >first : otim 29752
 book hit = (NULL)
-18008 >first : d2d4
-18057 <first : move a5a4
-18641 >first : time 29991
-18641 >first : otim 29888
+29745 >first : d2d4
+33055 <first : move d8h4
+43431 >first : time 29562
+43431 >first : otim 28715
 book hit = (NULL)
-18641 >first : b2b3
-18701 <first : move a4b3
-19163 >first : time 29985
-19163 >first : otim 29842
+43431 >first : d1f3
+49819 <first : move e5d4
+60292 >first : time 28923
+60292 >first : otim 27667
 book hit = (NULL)
-19163 >first : a2b3
-19237 <first : move a8a1
-20288 >first : time 29977
-20288 >first : otim 29737
-book hit = (NULL)
-20288 >first : c2c4
-20352 <first : move a1b1
-20888 >first : time 29971
-20888 >first : otim 29683
-book hit = (NULL)
-20888 >first : c4c5
-20930 <first : move b1a1
-21323 >first : time 29967
-21323 >first : otim 29644
-book hit = (NULL)
-21323 >first : c5c6
-21386 <first : move b7c6
-22178 >first : time 29961
-22178 >first : otim 29565
-book hit = (NULL)
-22178 >first : d4d5
-22235 <first : move c6c5
-23258 >first : time 29955
-23258 >first : otim 29462
-book hit = (NULL)
-23258 >first : e4e5
-23314 <first : move a1b1
-23828 >first : time 29949
-23828 >first : otim 29411
-book hit = (NULL)
-23828 >first : d5d6
-23876 <first : move c7d6
-25088 >first : time 29944
-25088 >first : otim 29290
-book hit = (NULL)
-25088 >first : e5d6
-25139 <first : move d8a5
-27143 >first : time 29939
-27143 >first : otim 29089
-book hit = (NULL)
-27143 >first : d1d2
-27212 <first : move b1c1
-29813 >first : time 29932
-29813 >first : otim 28829
-book hit = (NULL)
-29813 >first : e1e2
-29898 <first : move c8a6
-31448 >first : time 29924
-31448 >first : otim 28674
-book hit = (NULL)
-31448 >first : e2f3
-31562 <first : move a5d2
-33533 >first : time 29913
-33533 >first : otim 28477
-book hit = (NULL)
-33533 >first : f3g3
-33604 <first : move c1f1
+60292 >first : g2g3
+65728 <first : 3_Check_Chess: /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess/Source/Tree.cpp:99: void TreeNode::undoMoveOnState(MoveHistory): Assertion `piece && table->isInside(pos) && "Illegal piece or position!"' failed.
 GameEnds(29, xboard exit, 2)
-34434 >first : result * {xboard exit}
-34434 >first : force
-34434 >first : quit
+76981 >first : result * {xboard exit}
+76981 >first : force
+76981 >first : quit

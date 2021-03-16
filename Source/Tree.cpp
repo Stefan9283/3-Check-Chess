@@ -6,20 +6,27 @@ TreeNode::TreeNode(Table* table) {
     this->table = table;
 }
 
-void TreeNode::eliminatePieceFromState(ChessPiece* piece) {
+void TreeNode::eliminatePieceFromState(ChessPiece* piece, int index) {
     table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = nullptr;
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
-    deletedPieces.push_back(piece);
+    deletedPieces.push_back({piece, index});
 }
 
 void TreeNode::moveInAdvanceOnState(const char* moves, char color) {
+    int index = 0;
+
     for (int i = 0; i < strlen(moves); i += 10) {
         char from[3], to[3];
 
         from[0] = moves[i + 1]; from[1] = moves[i + 2]; from[2] = '\0';
         to[0] = moves[i + 5]; to[1] = moves[i + 6]; to[2] = '\0';
 
-        this->moves.push_back({table->string2coords(from), table->string2coords(to)});
+        MoveHistory moveHistroy;
+
+        moveHistroy.index = ++index;
+        moveHistroy.pos = {table->string2coords(from), table->string2coords(to)};
+
+        this->moves.push_back(moveHistroy);
         color = color == 'w' ? 'b' : 'w';
     }
 
@@ -27,9 +34,9 @@ void TreeNode::moveInAdvanceOnState(const char* moves, char color) {
         movePieceOnState(this->moves[i]);
 }
 
-void TreeNode::movePieceOnState(std::pair<vec2<int>, vec2<int>> move) {
-    ChessPiece* piece = table->squares[move.first.x][move.first.y]->piece;
-    vec2<int> pos = move.second;
+void TreeNode::movePieceOnState(MoveHistory move) {
+    ChessPiece* piece = table->squares[move.pos.first.x][move.pos.first.y]->piece;
+    vec2<int> pos = move.pos.second;
 
     assert(piece && table->isInside(pos) && "Illegal piece or position!");
 
@@ -37,16 +44,15 @@ void TreeNode::movePieceOnState(std::pair<vec2<int>, vec2<int>> move) {
         if (!pos.x || pos.x == table->height - 1) {
             Queen* queen = ((Pawn*)piece)->promotePawn(table);
 
-            addedPieces.push_back(queen);
-            eliminatePieceFromState(piece);
+            addedPieces.push_back({queen, move.index});
+            eliminatePieceFromState(piece, move.index);
 
             piece = queen;
             table->pieces[piece->color == 'w' ? 0 : 1].push_back(piece);
 
             piece->noOfMoves--;
-        }
-        else if (!table->squares[pos.x][pos.y]->piece && abs(piece->pos.y - pos.y) == 1)
-            eliminatePieceFromState(table->squares[piece->pos.x][pos.y]->piece);
+        } else if (!table->squares[pos.x][pos.y]->piece && abs(piece->pos.y - pos.y) == 1)
+            eliminatePieceFromState(table->squares[piece->pos.x][pos.y]->piece, move.index);
         else
             ((Pawn*)piece)->wasMoved = true;
     }
@@ -54,7 +60,7 @@ void TreeNode::movePieceOnState(std::pair<vec2<int>, vec2<int>> move) {
         ((Rook*)piece)->wasMoved = true;
     else if (dynamic_cast<King*>(piece) && !((King*)piece)->wasMoved) {
         ((King*)piece)->wasMoved = true;
-
+            
         if (piece->color == 'w' && pos == vec2<int>(0, 6)) {
             table->castleShort((King*)piece);
             return;
@@ -76,20 +82,20 @@ void TreeNode::movePieceOnState(std::pair<vec2<int>, vec2<int>> move) {
     piece->noOfMoves++;
 
     if (table->squares[pos.x][pos.y]->piece)
-        eliminatePieceFromState(table->squares[pos.x][pos.y]->piece);
+        eliminatePieceFromState(table->squares[pos.x][pos.y]->piece, move.index);
 
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
     table->squares[pos.x][pos.y]->piece = piece;
     piece->pos = pos;
 
-    table->addMove2History(std::make_pair(move.first, pos));
+    table->addMove2History(std::make_pair(move.pos.first, pos));
     table->turn = 1 - table->turn;
 }
 
-void TreeNode::undoMoveOnState(std::pair<vec2<int>, vec2<int>> move) {
-    ChessPiece* piece = table->squares[move.second.x][move.second.y]->piece;
-    vec2<int> pos = move.first;
-
+void TreeNode::undoMoveOnState(MoveHistory move) {
+    ChessPiece* piece = table->squares[move.pos.second.x][move.pos.second.y]->piece;
+    vec2<int> pos = move.pos.first;
+      
     assert(piece && table->isInside(pos) && "Illegal piece or position!");
 
     if (dynamic_cast<Pawn*>(piece)) {
@@ -97,37 +103,12 @@ void TreeNode::undoMoveOnState(std::pair<vec2<int>, vec2<int>> move) {
             ((Pawn*)piece)->wasMoved = false;
 
         if (deletedPieces.size())
-            if (piece->pos != deletedPieces.back()->pos && abs(pos.y - piece->pos.y) == 1) {
-                table->squares[pos.x][piece->pos.y]->piece = deletedPieces.back();
-                table->pieces[piece->color == 'w' ? 1 : 0][deletedPieces.back()->index] = deletedPieces.back();
-                deletedPieces.pop_back();
-            }
+            if (move.index != deletedPieces.back().second && abs(pos.y - piece->pos.y) == 1)
+                undoEnPassant(piece, pos);
     } else if (dynamic_cast<Queen*>(piece)) {
         if (addedPieces.size())
-            if (piece->pos == addedPieces.back()->pos) {
-                vec2<int> oldPos = piece->pos;
-
-                table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
-                table->pieces[piece->color == 'w' ? 0 : 1].pop_back();
-
-                addedPieces.pop_back();
-                delete piece;
-
-                if (oldPos == deletedPieces.back()->pos) {
-                    table->squares[oldPos.x][oldPos.y]->piece = deletedPieces.back();
-                    table->pieces[!table->turn ? 1 : 0][deletedPieces.back()->index] = deletedPieces.back();
-                    deletedPieces.pop_back();
-                }
-
-                piece = deletedPieces.back();
-                deletedPieces.pop_back();
-
-                table->squares[piece->pos.x][pos.y]->piece = piece;
-                table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = piece;
-
-                table->history.pop_back();
-                table->turn = 1 - table->turn;
-
+            if (move.index == addedPieces.back().second) {
+                undoPawnPromotion(piece, pos, move.index);
                 return;
             }
     } else if (dynamic_cast<Rook*>(piece)) {
@@ -157,13 +138,44 @@ void TreeNode::undoMoveOnState(std::pair<vec2<int>, vec2<int>> move) {
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
 
     if (deletedPieces.size())
-        if ((piece->pos == deletedPieces.back()->pos)) {
-            table->squares[piece->pos.x][piece->pos.y]->piece = deletedPieces.back();
-            table->pieces[piece->color == 'w' ? 1 : 0][deletedPieces.back()->index] = deletedPieces.back();
+        if (move.index == deletedPieces.back().second) {
+            table->squares[piece->pos.x][piece->pos.y]->piece = deletedPieces.back().first;
+            table->pieces[piece->color == 'w' ? 1 : 0][deletedPieces.back().first->index] = deletedPieces.back().first;
             deletedPieces.pop_back();
         }
         
     piece->pos = pos;
+
+    table->history.pop_back();
+    table->turn = 1 - table->turn;
+}
+
+void TreeNode::undoEnPassant(ChessPiece* piece, vec2<int> pos) {
+    table->squares[pos.x][piece->pos.y]->piece = deletedPieces.back().first;
+    table->pieces[piece->color == 'w' ? 1 : 0][deletedPieces.back().first->index] = deletedPieces.back().first;
+    deletedPieces.pop_back();
+}
+
+void TreeNode::undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int moveNo) {
+    vec2<int> oldPos = piece->pos;
+
+    table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
+    table->pieces[piece->color == 'w' ? 0 : 1].pop_back();
+
+    addedPieces.pop_back();
+    delete piece;
+
+    if (oldPos == deletedPieces.back().first->pos && moveNo == deletedPieces.back().second) {
+        table->squares[oldPos.x][oldPos.y]->piece = deletedPieces.back().first;
+        table->pieces[!table->turn ? 1 : 0][deletedPieces.back().first->index] = deletedPieces.back().first;
+        deletedPieces.pop_back();
+    }
+
+    piece = deletedPieces.back().first;
+    deletedPieces.pop_back();
+
+    table->squares[piece->pos.x][piece->pos.y]->piece = piece;
+    table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = piece;
 
     table->history.pop_back();
     table->turn = 1 - table->turn;
@@ -226,22 +238,23 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
     if (level == depth)
         return;
 
-   /* if (root->moves.size())
-        root->movePieceOnState(root->moves.back());*/
-
-    for (std::pair<vec2<int>, vec2<int>> move : root->moves)
-        root->movePieceOnState(move);
+    for (int i = 0; i < root->moves.size(); i++)
+        root->movePieceOnState(root->moves[i]);
 
     root->table->markAllPossibleMoves();
 
     for (int i = 0; i < root->table->height; i++)
         for (int j = 0; j < root->table->width; j++)
-            for (ChessPiece* piece : root->table->squares[i][j]->possibleNormalMoves) {
+            for (ChessPiece* piece : root->table->squares[i][j]->possibleMoves) {
                 TreeNode* newNode = new TreeNode(root->table);
-                
+                MoveHistory moveHistory;
+
                 newNode->moves = root->moves;
-                newNode->moves.push_back({piece->pos, vec2<int>(i, j)});
-                
+                moveHistory.pos = {piece->pos, vec2<int>(i, j)};
+
+                moveHistory.index = root->moves.size() + 1;
+                newNode->moves.push_back(moveHistory);
+
                 root->children.push_back(newNode);
                 newNode->parent = root;
             }
@@ -251,12 +264,8 @@ void Tree::createTree(TreeNode* root, int level, int depth) {
     for (int i = root->moves.size() - 1; i >= 0; i--)
         root->undoMoveOnState(root->moves[i]);
 
-    for (TreeNode* child : root->children) {
+    for (TreeNode* child : root->children)
         createTree(child, level + 1, depth);
-
-        /*if (root->moves.size())
-            root->undoMoveOnState(root->moves.back());*/
-    }  
 }
 
 void Tree::deleteNodes(TreeNode* root) {
@@ -273,8 +282,8 @@ void Tree::printTree(TreeNode* root, int level) {
     if (!root)
         return;
 
-    for (std::pair<vec2<int>, vec2<int>> move : root->moves)
-        root->movePieceOnState(move);
+    for (int i = 0; i < root->moves.size(); i++)
+        root->movePieceOnState(root->moves[i]);
 
     root->table->printGameBoard('w', false, true, level);
 
@@ -298,12 +307,12 @@ void Tree::countNodes(TreeNode* root, int* no) {
 void Tree::MiniMax(TreeNode* root, int priority, int level) {
     if (!root)
         return;
-
+       
     for (TreeNode* child : root->children)
         MiniMax(child, priority, level + 1);
 
-    for (std::pair<vec2<int>, vec2<int>> move : root->moves)
-        root->movePieceOnState(move);
+    for (int i = 0; i < root->moves.size(); i++)
+        root->movePieceOnState(root->moves[i]);
 
     if (root->parent) {
         if (!root->children.size())
@@ -323,13 +332,28 @@ void Tree::MiniMax(TreeNode* root, int priority, int level) {
 }
 
 std::pair<vec2<int>, vec2<int>> Tree::getBestMove() {
-    int maxScore = -INF;
+    srand(time(NULL));
+
+    int maxScore = -INF, no = 0;
     std::pair<vec2<int>, vec2<int>> bestMove = {vec2<int>(-INF, -INF), vec2<int>(-INF, -INF)};
 
     for (TreeNode* child : root->children)
         if (child->bestScore > maxScore) {
             maxScore = child->bestScore;
-            bestMove = std::pair<vec2<int>, vec2<int>>(child->moves.back());
+            no = 1;
+        } else if (child->bestScore == maxScore)
+            no++;
+
+    int config = rand() % no, actConfig = 0;
+
+    for (TreeNode* child : root->children)
+        if (child->bestScore == maxScore) {
+            if (actConfig == config) {
+                bestMove = child->moves.back().pos;
+                break;
+            }
+
+            actConfig++;
         }
 
     return bestMove;

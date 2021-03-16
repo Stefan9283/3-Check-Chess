@@ -9,34 +9,49 @@ class King;
 
 class Table;
 
+struct MoveHistory {
+    int index;
+    std::pair<vec2<int>, vec2<int>> pos;
+};
+
 class TreeNode {
 public:
     Table* table;
 
     int bestScore = -INF;
+    std::vector<MoveHistory> moves;
 
-    std::vector<std::pair<vec2<int>, vec2<int>>> moves;
-
-    std::vector<ChessPiece*> addedPieces;
-    std::vector<ChessPiece*> deletedPieces;
+    std::vector<std::pair<ChessPiece*, int>> addedPieces;
+    std::vector<std::pair<ChessPiece*, int>> deletedPieces;
 
     TreeNode* parent = nullptr;
     std::vector<TreeNode*> children;
 
     TreeNode(Table* table);
 
-    void eliminatePieceFromState(ChessPiece* piece);
+    void eliminatePieceFromState(ChessPiece* piece, int index);
+
+    void move() {
+        for (MoveHistory move : moves) {
+            movePieceOnState(move);
+            std::cout << move.pos.first.toString() << " " << move.pos.second.toString() << "\n";
+        }
+    }
 
     void moveInAdvanceOnState(const char* moves, char color);
 
     void blabla() {
-        for (int i = moves.size() - 1; i >= 0; i--)
+        for (int i = moves.size() - 1; i >=0 ; i--)
             undoMoveOnState(moves[i]);
     }
 
-    void movePieceOnState(std::pair<vec2<int>, vec2<int>> move);
+    void movePieceOnState(MoveHistory move);
 
-    void undoMoveOnState(std::pair<vec2<int>, vec2<int>> move);
+    void undoMoveOnState(MoveHistory move);
+
+    void undoEnPassant(ChessPiece* piece, vec2<int> pos);
+
+    void undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int moveNo);
 
     void undoShortCastle(King* king);
 

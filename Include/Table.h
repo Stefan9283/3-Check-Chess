@@ -14,7 +14,7 @@ public:
     char color;
 
     ChessPiece* piece;
-    std::vector<ChessPiece*> possibleNormalMoves;
+    std::vector<ChessPiece*> possibleMoves;
 
     Square(char color, ChessPiece* piece);
 };
