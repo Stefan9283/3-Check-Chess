@@ -31,20 +31,6 @@ public:
 
     void eliminatePieceFromState(ChessPiece* piece, int index);
 
-    void move() {
-        for (MoveHistory move : moves) {
-            movePieceOnState(move);
-            std::cout << move.pos.first.toString() << " " << move.pos.second.toString() << "\n";
-        }
-    }
-
-    void moveInAdvanceOnState(const char* moves, char color);
-
-    void blabla() {
-        for (int i = moves.size() - 1; i >= 0 ; i--)
-            undoMoveOnState(moves[i]);
-    }
-
     void movePieceOnState(MoveHistory move);
 
     void undoMoveOnState(MoveHistory move);
@@ -67,17 +53,17 @@ public:
 
     ~Tree();
 
-    void createTree(TreeNode* root, int level, int depth);
+    std::pair<vec2<int>, vec2<int>> MiniMax(TreeNode* root, int level, int depth, int priority);
+
+    int getBestScore(TreeNode* root, int level);
+
+    std::pair<vec2<int>, vec2<int>> getBestMove();
 
     void deleteNodes(TreeNode* root);
 
     void printTree(TreeNode* root, int level);
 
     void countNodes(TreeNode* root, int *no);
-
-    void MiniMax(TreeNode* root, int priority, int level);
-
-    std::pair<vec2<int>, vec2<int>> getBestMove();
 };
 
 #endif //INC_3_CHECK_CHESS_TREE_H

@@ -71,6 +71,8 @@ public:
     
     void castleLong(King* king);
 
+    int getNoOfPieces(char color);
+
     int getTotalScore();
 
     void moveInAdvance(const char* moves, char color);

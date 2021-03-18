@@ -371,17 +371,12 @@ void Table::parseMove(const char* s) {
 
 std::string Table::getBestMove(int depth) {
     Tree* tree = new Tree(this);
-
-    tree->createTree(tree->root, 0, depth);
-    tree->MiniMax(tree->root, turn, 0);
-
-    std::pair<vec2<int>, vec2<int>> bestMove = tree->getBestMove();
+    std::pair<vec2<int>, vec2<int>> bestMove = tree->MiniMax(tree->root, 0, depth, turn);
 
     std::string from = coords2string(bestMove.first);
     std::string to = coords2string(bestMove.second);
 
     delete tree;
-
     return std::string("move ").append(from).append(to);
 }
 
@@ -445,12 +440,22 @@ void Table::castleLong(King* king) {
     turn = 1 - turn;
 }
 
+int Table::getNoOfPieces(char color) {
+    int no = 0, line = color == 'w' ? 0 : 1;
+
+    for (ChessPiece* piece : pieces[line])
+        if (piece)
+            no++;
+
+    return no;
+}
+
 int Table::getTotalScore() {
     int total = 0;
 
-    for (ChessPiece* chessPiece : pieces[turn])
-        if (chessPiece)
-            total += chessPiece->score;
+    for (ChessPiece* piece : pieces[turn])
+        if (piece)
+            total += piece->index; 
 
     return total;
 }
@@ -674,6 +679,11 @@ bool Table::canCastleShort(King* king) {
     if (!hasNoPiecesBetween_axis(king->pos, pieces[turn][9]->pos))
         return false;
 
+    if (isKingInConflict(king, king->pos) ||
+        isKingInConflict(king, vec2<int>{king->pos.x, king->pos.y + 1}) ||
+        isKingInConflict(king, vec2<int>{king->pos.x, king->pos.y + 2}))
+            return false;
+
     if (isKingInDanger(king, king->pos) ||
         isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 1}) ||
         isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y + 2}))
@@ -691,6 +701,12 @@ bool Table::canCastleLong(King* king) {
 
     if (!hasNoPiecesBetween_axis(king->pos, pieces[turn][8]->pos))
         return false;
+
+    if (isKingInConflict(king, king->pos) ||
+        isKingInConflict(king, vec2<int>{king->pos.x, king->pos.y - 1}) ||
+        isKingInConflict(king, vec2<int>{king->pos.x, king->pos.y - 2}) ||
+        isKingInConflict(king, vec2<int>{king->pos.x, king->pos.y - 3}))
+            return false;
 
     if (isKingInDanger(king, king->pos) ||
         isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 1}) ||
