@@ -22,32 +22,23 @@ Engine::Engine() {
             std::cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
             continue;
         }
-
         if (strstr(buffer, "new")) {
-            if (t)
-                delete t;
-
+            delete t;
             t = new Table();
             continue;
         }
-
         if (strstr(buffer, "go")) {
+            editMode = false;
             std::string move = t->getARandomMove();
             std::cout << move << "\n";
             t->parseMove(move.c_str());
-
             continue;
         }
-
         if (strstr(buffer, "force")) {
             editMode = true;
         }
-
-
         if (strstr(buffer, "quit")) {
-            if (t)
-                delete t;
-
+            delete t;
             break;
         }
 

@@ -89,7 +89,7 @@ Table::~Table() {
 void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
     assert(piece && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
-
+    
     if (dynamic_cast<Pawn*>(piece)) {
         if (!pos.x || pos.x == height - 1) {
             Queen* queen = ((Pawn*)piece)->promotePawn(this);
