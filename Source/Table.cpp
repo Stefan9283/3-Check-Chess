@@ -1,6 +1,6 @@
-#include <Algorithm.h>
-#include <AlgoPicker.h>
+
 #include "Table.h"
+#include <random>
 
 #include "tools.h"
 
@@ -103,24 +103,6 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
             removePiece(squares[piece->pos.x][pos.y]->piece);
         else
             ((Pawn*)piece)->wasMoved = true;
-    } else if (dynamic_cast<Rook*>(piece) && !((Rook*)piece)->wasMoved)
-        ((Rook*)piece)->wasMoved = true;
-    else if (dynamic_cast<King*>(piece) && !((King*)piece)->wasMoved) {
-        ((King*)piece)->wasMoved = true;
-
-        if (piece->color == 'w' && pos == vec2<int>(0, 6)) {
-            castleShort((King*)piece);
-            return;
-        } else  if (piece->color == 'w' && pos == vec2<int>(0, 2)) {
-            castleLong((King*)piece);
-            return;
-        } else  if (piece->color == 'b' && pos == vec2<int>(7, 6)) {
-            castleShort((King*)piece);
-            return;
-        } else  if (piece->color == 'b' && pos == vec2<int>(7, 2)) {
-            castleLong((King*)piece);
-            return;
-        }
     }
 
     piece->noOfMoves++;
@@ -210,17 +192,6 @@ std::string Table::coords2string(vec2<int> pos) const {
     return s.append(std::to_string(pos.x + 1));
 }
 
-std::string Table::pickAMove() {
-    AlgoPicker* picker = new TestPicker();
-    Algorithm* algo = picker->pickAlgorithm(this);
-    std::string move = "move ";
-    move = move + algo->pickMove(this);
-    vec2<int> start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
-    delete algo;
-    delete picker;
-    return move;
-}
-
 Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
     auto* table = new Table(*this);
 
@@ -233,7 +204,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
 
             if (!piece)
                 continue;
-    
+
             if (dynamic_cast<Pawn*>(piece))
                 table->squares[i][j]->piece = new Pawn(*dynamic_cast<Pawn*>(piece));
             else if (dynamic_cast<Rook*>(piece))
@@ -246,7 +217,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
                 table->squares[i][j]->piece = new Knight(*dynamic_cast<Knight*>(piece));
             else if (dynamic_cast<King*>(piece))
                 table->squares[i][j]->piece = new King(*dynamic_cast<King*>(piece));
-    
+
             table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = table->squares[i][j]->piece;
         }
 
@@ -369,102 +340,42 @@ void Table::parseMove(const char* s) {
     movePiece(getPiece(from), to);
 }
 
-std::string Table::getBestMove(int depth) {
-    Tree* tree = new Tree(this);
-
-    tree->createTree(tree->root, 0, depth);
-    tree->MiniMax(tree->root, turn, 0);
-
-    std::pair<vec2<int>, vec2<int>> bestMove = tree->getBestMove();
-
-    std::string from = coords2string(bestMove.first);
-    std::string to = coords2string(bestMove.second);
-
-    delete tree;
-
-    return std::string("move ").append(from).append(to);
-}
 
 std::string Table::getARandomMove() {
-    srand(time(NULL));
-    markAllPossibleMoves();
 
-    int squareNo = rand() % (height * width);
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution(0,7);
 
-    while (!squares[squareNo / height][squareNo % width]->possibleMoves.size())
-        squareNo = rand() % (height * width);
+    ChessPiece* pawn = nullptr;
 
-    int moveNo = rand() % squares[squareNo / height][squareNo % width]->possibleMoves.size();
+    std::vector<PieceMove> moves;
 
-    std::string from = coords2string(squares[squareNo / height][squareNo % width]->possibleMoves[moveNo]->pos);
-    std::string to = coords2string(vec2<int>(squareNo / height, squareNo % width));
-
-    unmarkAllPossibleMoves();
-    return std::string("move ").append(from).append(to);
-}
-
-void Table::castleShort(King* king) {
-    vec2<int> prev = king->pos;
-
-    squares[king->pos.x][king->pos.y]->piece = nullptr;
-    squares[!turn ? 0 : 7][6]->piece = king;
-    king->pos = vec2<int>(!turn ? 0 : 7, 6);
-
-    squares[pieces[turn][9]->pos.x][7]->piece = nullptr;
-    squares[!turn ? 0 : 7][5]->piece = pieces[turn][9];
-    pieces[turn][9]->pos.y -= 2;
-
-    king->castle = true;
-    king->noOfMoves++;
-
-    ((Rook*)pieces[turn][9])->wasMoved = true;
-    pieces[turn][9]->noOfMoves++;
-
-    addMove2History(std::make_pair(prev, vec2<int>(!turn ? 0 : 7, 6)));
-    turn = 1 - turn;
-}
-
-void Table::castleLong(King* king) {
-    vec2<int> prev = king->pos;
-
-    squares[king->pos.x][king->pos.y]->piece = nullptr;
-    squares[!turn ? 0 : 7][2]->piece = king;
-    king->pos = vec2<int>(!turn ? 0 : 7, 2);
-
-    squares[pieces[turn][8]->pos.x][0]->piece = nullptr;
-    squares[!turn ? 0 : 7][3]->piece = pieces[turn][8];
-    pieces[turn][8]->pos.y += 3;
-
-    king->castle = true;
-    king->noOfMoves++;
-
-    ((Rook*)pieces[turn][8])->wasMoved = true;
-    pieces[turn][8]->noOfMoves++;
-
-    addMove2History(std::make_pair(prev, vec2<int>(!turn ? 0 : 7, 2)));
-    turn = 1 - turn;
-}
-
-int Table::getTotalScore() {
-    int total = 0;
-
-    for (ChessPiece* chessPiece : pieces[turn])
-        if (chessPiece)
-            total += chessPiece->score;
-
-    return total;
-}
-
-void Table::moveInAdvance(const char* moves, char color) {
-    for (int i = 0; i < strlen(moves); i += 10) {
-        char from[3], to[3];
-
-        from[0] = moves[i + 1]; from[1] = moves[i + 2]; from[2] = '\0';
-        to[0] = moves[i + 5]; to[1] = moves[i + 6]; to[2] = '\0';
-
-        movePiece(getPiece(from), to);
-        color = color == 'w' ? 'b' : 'w';
+    bool doIhaveAnyPawns = false;
+    for (int i = 0; i < 8; i++) {
+        if (pieces[turn][i] && !pieces[turn][i]->getPositions(this).empty()) {
+            doIhaveAnyPawns = true;
+            break;
+        }
     }
+
+    if (!doIhaveAnyPawns) return std::string("resign");
+
+
+    while (true) {
+        pawn = pieces[turn][distribution(generator)];
+
+        if (pawn) {
+            moves = pawn->getPositions(this);
+            if (!moves.empty())
+                break;
+        }
+    }
+
+    std::uniform_int_distribution<int> mvDistribution(0, moves.size() - 1);
+
+    std::string from = coords2string(pawn->pos), to = coords2string(moves[mvDistribution(generator)].ownMove);
+
+    return std::string("move ").append(from).append(to);
 }
 
 bool Table::hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2) {
@@ -537,7 +448,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
     if (!isInside(pos))
         return true;
 
-    if (squares[pos.x][pos.y]->piece && 
+    if (squares[pos.x][pos.y]->piece &&
         (piece->color == squares[pos.x][pos.y]->piece->color ||
         dynamic_cast<King*>(squares[pos.x][pos.y]->piece)))
             return true;
@@ -547,7 +458,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
             return true;
     } else if (isKingInDanger(piece, pos))
         return true;
-        
+
     return false;
 }
 
@@ -651,7 +562,7 @@ bool Table::canEnPassant(Pawn* pawn, vec2<int> pos) {
 
     squares[oldPos.x][pos.y]->piece = nullptr;
     pieces[turn == 0 ? 1 : 0][oldPiece->index] = nullptr;
-        
+
     bool inCheck = ((King*)pieces[turn][14])->isInCheck(this);
 
     pieces[turn == 0 ? 1 : 0][oldPiece->index] = oldPiece;
@@ -660,7 +571,7 @@ bool Table::canEnPassant(Pawn* pawn, vec2<int> pos) {
     pawn->pos = oldPos;
     squares[pos.x][pos.y]->piece = nullptr;
     squares[pawn->pos.x][pawn->pos.y]->piece = pawn;
-    
+
     return inCheck;
 }
 

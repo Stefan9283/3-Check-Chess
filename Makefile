@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess
+CMAKE_SOURCE_DIR = /mnt/d/GIT/3-Check-Chess_new
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess
+CMAKE_BINARY_DIR = /mnt/d/GIT/3-Check-Chess_new
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess/CMakeFiles /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/GIT/3-Check-Chess_new/CMakeFiles /mnt/d/GIT/3-Check-Chess_new/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/Ovidiu/Desktop/3-Check-Chess/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/GIT/3-Check-Chess_new/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -122,60 +122,6 @@ depend:
 3_Check_Chess/fast:
 	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/build
 .PHONY : 3_Check_Chess/fast
-
-Source/AlgoPicker.o: Source/AlgoPicker.cpp.o
-
-.PHONY : Source/AlgoPicker.o
-
-# target to build an object file
-Source/AlgoPicker.cpp.o:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/AlgoPicker.cpp.o
-.PHONY : Source/AlgoPicker.cpp.o
-
-Source/AlgoPicker.i: Source/AlgoPicker.cpp.i
-
-.PHONY : Source/AlgoPicker.i
-
-# target to preprocess a source file
-Source/AlgoPicker.cpp.i:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/AlgoPicker.cpp.i
-.PHONY : Source/AlgoPicker.cpp.i
-
-Source/AlgoPicker.s: Source/AlgoPicker.cpp.s
-
-.PHONY : Source/AlgoPicker.s
-
-# target to generate assembly for a file
-Source/AlgoPicker.cpp.s:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/AlgoPicker.cpp.s
-.PHONY : Source/AlgoPicker.cpp.s
-
-Source/Algorithm.o: Source/Algorithm.cpp.o
-
-.PHONY : Source/Algorithm.o
-
-# target to build an object file
-Source/Algorithm.cpp.o:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Algorithm.cpp.o
-.PHONY : Source/Algorithm.cpp.o
-
-Source/Algorithm.i: Source/Algorithm.cpp.i
-
-.PHONY : Source/Algorithm.i
-
-# target to preprocess a source file
-Source/Algorithm.cpp.i:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Algorithm.cpp.i
-.PHONY : Source/Algorithm.cpp.i
-
-Source/Algorithm.s: Source/Algorithm.cpp.s
-
-.PHONY : Source/Algorithm.s
-
-# target to generate assembly for a file
-Source/Algorithm.cpp.s:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Algorithm.cpp.s
-.PHONY : Source/Algorithm.cpp.s
 
 Source/ChessPiece.o: Source/ChessPiece.cpp.o
 
@@ -258,33 +204,6 @@ Source/Table.cpp.s:
 	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Table.cpp.s
 .PHONY : Source/Table.cpp.s
 
-Source/Tree.o: Source/Tree.cpp.o
-
-.PHONY : Source/Tree.o
-
-# target to build an object file
-Source/Tree.cpp.o:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Tree.cpp.o
-.PHONY : Source/Tree.cpp.o
-
-Source/Tree.i: Source/Tree.cpp.i
-
-.PHONY : Source/Tree.i
-
-# target to preprocess a source file
-Source/Tree.cpp.i:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Tree.cpp.i
-.PHONY : Source/Tree.cpp.i
-
-Source/Tree.s: Source/Tree.cpp.s
-
-.PHONY : Source/Tree.s
-
-# target to generate assembly for a file
-Source/Tree.cpp.s:
-	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/Tree.cpp.s
-.PHONY : Source/Tree.cpp.s
-
 Source/main.o: Source/main.cpp.o
 
 .PHONY : Source/main.o
@@ -348,12 +267,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... 3_Check_Chess"
-	@echo "... Source/AlgoPicker.o"
-	@echo "... Source/AlgoPicker.i"
-	@echo "... Source/AlgoPicker.s"
-	@echo "... Source/Algorithm.o"
-	@echo "... Source/Algorithm.i"
-	@echo "... Source/Algorithm.s"
 	@echo "... Source/ChessPiece.o"
 	@echo "... Source/ChessPiece.i"
 	@echo "... Source/ChessPiece.s"
@@ -363,9 +276,6 @@ help:
 	@echo "... Source/Table.o"
 	@echo "... Source/Table.i"
 	@echo "... Source/Table.s"
-	@echo "... Source/Tree.o"
-	@echo "... Source/Tree.i"
-	@echo "... Source/Tree.s"
 	@echo "... Source/main.o"
 	@echo "... Source/main.i"
 	@echo "... Source/main.s"

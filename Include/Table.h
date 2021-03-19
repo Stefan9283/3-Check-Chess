@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "ChessPiece.h"
-#include "Tree.h"
 
 typedef struct PieceHistory {
     std::pair<vec2<int>, vec2<int>> move;
@@ -51,7 +50,6 @@ public:
     static int getSquareScore(Square* sq, char myColor);
 
     Table* createNewState(ChessPiece* piece = nullptr, vec2<int> pos = vec2<int>());
-    std::string pickAMove();
     void printGameBoard(char perspective = 'w', bool fromZero = false, bool yLetters = true, int tabsCount = 0);
 
     void addMove2History(std::pair<vec2<int>, vec2<int>> move) {
@@ -63,17 +61,7 @@ public:
     // Functii Ovidiu
     void parseMove(const char* s);
 
-    std::string getBestMove(int depth);
-
     std::string getARandomMove();
-
-    void castleShort(King* king);
-    
-    void castleLong(King* king);
-
-    int getTotalScore();
-
-    void moveInAdvance(const char* moves, char color);
 
     bool isAnIllegalMove(ChessPiece* piece, vec2<int> pos);
 

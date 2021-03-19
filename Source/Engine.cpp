@@ -9,6 +9,8 @@ Engine::Engine() {
     setbuf(stdin, NULL);
     setbuf(stdout, NULL);
 
+    bool editMode = false;
+
     while (true) {
         fflush(stdout);
         fgets(buffer, 256, stdin);
@@ -29,6 +31,19 @@ Engine::Engine() {
             continue;
         }
 
+        if (strstr(buffer, "go")) {
+            std::string move = t->getARandomMove();
+            std::cout << move << "\n";
+            t->parseMove(move.c_str());
+
+            continue;
+        }
+
+        if (strstr(buffer, "force")) {
+            editMode = true;
+        }
+
+
         if (strstr(buffer, "quit")) {
             if (t)
                 delete t;
@@ -38,12 +53,11 @@ Engine::Engine() {
 
         if (buffer[0] >= 'a' && buffer[0] <= 'z' && buffer[1] >= '1' && buffer[1] <= '9') {
             t->movePiece(buffer);
-
-            //std::string move = t->getARandomMove();
-
-            std::string move = t->getBestMove(4);
-            t->parseMove(move.c_str());
-            std::cout << move << "\n";
+            if (!editMode) {
+                std::string move = t->getARandomMove();
+                std::cout << move << "\n";
+                t->parseMove(move.c_str());
+            }
         }
     }
 }
