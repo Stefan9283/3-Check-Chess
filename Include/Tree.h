@@ -14,6 +14,11 @@ struct MoveHistory {
     std::pair<vec2<int>, vec2<int>> pos;
 };
 
+struct Pair {
+    int score;
+    std::pair<vec2<int>, vec2<int>> pos;
+};
+
 class TreeNode {
 public:
     Table* table;
@@ -28,6 +33,10 @@ public:
     std::vector<TreeNode*> children;
 
     TreeNode(Table* table);
+
+    int evaluateState(int priority);
+
+    std::vector<std::pair<vec2<int>, vec2<int>>> sortMoves(std::vector<std::pair<vec2<int>, vec2<int>>> allMoves, int priority, bool ascendingOrder);
 
     void eliminatePieceFromState(ChessPiece* piece, int index);
 
@@ -53,11 +62,7 @@ public:
 
     ~Tree();
 
-    std::pair<vec2<int>, vec2<int>> MiniMax(TreeNode* root, int level, int depth, int priority);
-
-    int getBestScore(TreeNode* root, int level);
-
-    std::pair<vec2<int>, vec2<int>> getBestMove();
+    int MiniMax(TreeNode* root, int depth, int alpha, int beta, int priority, bool maximizingPlayer);
 
     void deleteNodes(TreeNode* root);
 

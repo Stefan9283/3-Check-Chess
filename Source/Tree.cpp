@@ -6,6 +6,36 @@ TreeNode::TreeNode(Table* table) {
     this->table = table;
 }
 
+int TreeNode::evaluateState(int priority) {
+    return (table->getTotalScore('w') - table->getTotalScore('b')) * (!priority ? 1 : -1);
+}
+
+std::vector<std::pair<vec2<int>, vec2<int>>> TreeNode::sortMoves(std::vector<std::pair<vec2<int>, vec2<int>>> allMoves, int priority, bool ascendingOrder) {
+    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves_sorted;
+    std::vector<Pair> pairs;
+
+    for (int i = 0; i < allMoves.size(); i++) {
+        MoveHistory moveHistory;
+
+        moveHistory.index = moves.size() + 1;
+        moveHistory.pos = allMoves[i];
+
+        movePieceOnState(moveHistory);
+        pairs.push_back({evaluateState(priority), allMoves[i]});
+        undoMoveOnState(moveHistory);
+    }
+
+    if (ascendingOrder)
+        std::sort(pairs.begin(), pairs.end(), [](const Pair& pair1, const Pair& pair2) { return pair1.score < pair2.score; });
+    else
+        std::sort(pairs.begin(), pairs.end(), [](const Pair& pair1, const Pair& pair2) { return pair1.score > pair2.score; });
+
+    for (int i = 0; i < pairs.size(); i++)
+        allMoves_sorted.push_back(pairs[i].pos);
+
+    return allMoves_sorted;
+}
+
 void TreeNode::eliminatePieceFromState(ChessPiece* piece, int index) {
     table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = nullptr;
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
@@ -212,85 +242,81 @@ Tree::~Tree() {
     delete baseTable;
 }
 
-std::pair<vec2<int>, vec2<int>> Tree::MiniMax(TreeNode* root, int level, int depth, int priority) {
-    if (level == depth) {
-        root->bestScore = (root->table->getTotalScore('w') - root->table->getTotalScore('b')) * (priority == 0 ? 1 : -1);
-        root->parent->bestScore = getBestScore(root, level);
+int Tree::MiniMax(TreeNode* root, int depth, int alpha, int beta, int priority, bool maximizingPlayer) {
+    if (!depth)
+        return root->evaluateState(priority);
 
-        return {vec2<int>(-INF, -INF), vec2<int>(-INF, -INF)};
+    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves;
+
+    for (int i = 0; i < root->moves.size(); i++)
+        root->movePieceOnState(root->moves[i]);
+
+    root->table->markAllPossibleMoves();
+    allMoves = root->table->getAllMoves();
+    allMoves = maximizingPlayer ? root->sortMoves(allMoves, priority, false) : root->sortMoves(allMoves, priority, true);
+    root->table->unmarkAllPossibleMoves();
+  
+    for (int i = root->moves.size() - 1; i >= 0; i--)
+        root->movePieceOnState(root->moves[i]);
+
+    if (!allMoves.size())
+        return maximizingPlayer ? INF : -INF;
+
+    if (maximizingPlayer) {
+        int maxScore = -INF;
+
+        for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
+            TreeNode* newNode = new TreeNode(root->table);
+            MoveHistory moveHistory;
+
+            newNode->moves = root->moves;
+            moveHistory.pos = move;
+
+            moveHistory.index = root->moves.size() + 1;
+            newNode->moves.push_back(moveHistory);
+
+            root->children.push_back(newNode);
+            newNode->parent = root;
+
+            int currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, false);
+
+            maxScore = std::max(maxScore, currScore);
+            alpha = std::max(alpha, maxScore);
+            root->bestScore = maxScore;
+
+            if (beta <= alpha)
+                break;
+        }
+
+        return maxScore;
+    }
+        
+    int minScore = INF;
+
+    for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
+        TreeNode* newNode = new TreeNode(root->table);
+        MoveHistory moveHistory;
+
+        newNode->moves = root->moves;
+        moveHistory.pos = move;
+
+        moveHistory.index = root->moves.size() + 1;
+        newNode->moves.push_back(moveHistory);
+
+        root->children.push_back(newNode);
+        newNode->parent = root;
+
+        int currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, false);
+
+        minScore = std::min(minScore, currScore);
+        beta = std::min(beta, minScore);
+        root->bestScore = minScore;
+
+        if (beta <= alpha)
+            break;
     }
 
-    if (root->moves.size())
-        root->movePieceOnState(root->moves.back());
-    
-    root->table->markAllPossibleMoves();
-    
-    for (int i = 0; i < root->table->height; i++)
-        for (int j = 0; j < root->table->width; j++)
-            for (ChessPiece* piece : root->table->squares[i][j]->possibleMoves) {
-                    TreeNode* newNode = new TreeNode(root->table);
-                    MoveHistory moveHistory;
-                    
-                    newNode->moves = root->moves;
-                    moveHistory.pos = { piece->pos, vec2<int>(i, j) };
-                    
-                    moveHistory.index = root->moves.size() + 1;
-                    newNode->moves.push_back(moveHistory);
-                    
-                    root->children.push_back(newNode);
-                    newNode->parent = root;
-                }
-    
-    root->table->unmarkAllPossibleMoves();
-    
-    for (TreeNode* child : root->children)
-        MiniMax(child, level + 1, depth, priority);
-    
-    if (root->parent)
-        root->parent->bestScore = getBestScore(root, level);
-    else
-        return getBestMove();
-    
-    if (root->moves.size())
-        root->undoMoveOnState(root->moves.back());
-
-    return {vec2<int>(-INF, -INF), vec2<int>(-INF, -INF)};
-}
-
-int Tree::getBestScore(TreeNode* root, int level) {
-    if (level % 2 != 0) 
-        return (root->parent->bestScore == -INF || root->bestScore > root->parent->bestScore) ? root->bestScore : root->parent->bestScore;
-
-    return (root->parent->bestScore == -INF || root->bestScore < root->parent->bestScore) ? root->bestScore : root->parent->bestScore;
-}
-
-std::pair<vec2<int>, vec2<int>> Tree::getBestMove() {
-    srand(time(NULL));
-
-    int maxScore = -INF, no = 0;
-    std::pair<vec2<int>, vec2<int>> bestMove = {vec2<int>(-INF, -INF), vec2<int>(-INF, -INF)};
-
-    for (TreeNode* child : root->children)
-        if (child->bestScore > maxScore) {
-            maxScore = child->bestScore;
-            no = 1;
-        }
-        else if (child->bestScore == maxScore)
-            no++;
-
-    int config = rand() % no, actConfig = 0;
-
-    for (TreeNode* child : root->children)
-        if (child->bestScore == maxScore) {
-            if (actConfig == config) {
-                bestMove = child->moves.back().pos;
-                break;
-            }
-
-            actConfig++;
-        }
-
-    return bestMove;
+    return minScore;
 }
 
 void Tree::deleteNodes(TreeNode* root) {

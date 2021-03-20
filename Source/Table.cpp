@@ -371,7 +371,15 @@ void Table::parseMove(const char* s) {
 
 std::string Table::getBestMove(int depth) {
     Tree* tree = new Tree(this);
-    std::pair<vec2<int>, vec2<int>> bestMove = tree->MiniMax(tree->root, 0, depth, turn);
+
+    int bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
+    std::pair<vec2<int>, vec2<int>> bestMove;
+
+    for (TreeNode* child : tree->root->children)
+        if (child->bestScore == bestScore) {
+            bestMove = child->moves.back().pos;
+            break;
+        }
 
     std::string from = coords2string(bestMove.first);
     std::string to = coords2string(bestMove.second);
@@ -603,6 +611,17 @@ bool Table::hasLegalMoves() {
     unmarkAllPossibleMoves();
 
     return found;
+}
+
+std::vector<std::pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
+    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves;
+
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            for (ChessPiece* piece : squares[i][j]->possibleMoves)
+                allMoves.push_back({piece->pos, vec2<int>(i, j)});
+    
+    return allMoves;
 }
 
 void Table::markAllPossibleMoves() {

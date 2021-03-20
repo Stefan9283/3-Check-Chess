@@ -89,6 +89,8 @@ public:
 
     bool hasLegalMoves();
 
+    std::vector<std::pair<vec2<int>, vec2<int>>> getAllMoves();
+
     void markAllPossibleMoves();
 
     void unmarkAllPossibleMoves();
