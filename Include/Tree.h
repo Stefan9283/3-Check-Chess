@@ -34,6 +34,8 @@ public:
 
     TreeNode(Table* table);
 
+    TreeNode* createNode(std::pair<vec2<int>, vec2<int>> move);
+
     int evaluateState(int priority);
 
     std::vector<std::pair<vec2<int>, vec2<int>>> sortMoves(std::vector<std::pair<vec2<int>, vec2<int>>> allMoves, int priority, bool ascendingOrder);

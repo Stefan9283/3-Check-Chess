@@ -6,6 +6,22 @@ TreeNode::TreeNode(Table* table) {
     this->table = table;
 }
 
+TreeNode* TreeNode::createNode(std::pair<vec2<int>, vec2<int>> move) {
+    TreeNode* newNode = new TreeNode(table);
+    MoveHistory moveHistory;
+
+    newNode->moves = moves;
+    moveHistory.pos = move;
+
+    moveHistory.index = moves.size() + 1;
+    newNode->moves.push_back(moveHistory);
+
+    children.push_back(newNode);
+    newNode->parent = this;
+
+    return newNode;
+}
+
 int TreeNode::evaluateState(int priority) {
     return (table->getTotalScore('w') - table->getTotalScore('b')) * (!priority ? 1 : -1);
 }
@@ -252,12 +268,11 @@ int Tree::MiniMax(TreeNode* root, int depth, int alpha, int beta, int priority, 
         root->movePieceOnState(root->moves[i]);
 
     root->table->markAllPossibleMoves();
-    allMoves = root->table->getAllMoves();
-    allMoves = maximizingPlayer ? root->sortMoves(allMoves, priority, false) : root->sortMoves(allMoves, priority, true);
+    allMoves = root->sortMoves(root->table->getAllMoves(), priority, !maximizingPlayer);
     root->table->unmarkAllPossibleMoves();
   
     for (int i = root->moves.size() - 1; i >= 0; i--)
-        root->movePieceOnState(root->moves[i]);
+        root->undoMoveOnState(root->moves[i]);
 
     if (!allMoves.size())
         return maximizingPlayer ? INF : -INF;
@@ -266,18 +281,7 @@ int Tree::MiniMax(TreeNode* root, int depth, int alpha, int beta, int priority, 
         int maxScore = -INF;
 
         for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
-            TreeNode* newNode = new TreeNode(root->table);
-            MoveHistory moveHistory;
-
-            newNode->moves = root->moves;
-            moveHistory.pos = move;
-
-            moveHistory.index = root->moves.size() + 1;
-            newNode->moves.push_back(moveHistory);
-
-            root->children.push_back(newNode);
-            newNode->parent = root;
-
+            TreeNode* newNode = root->createNode(move);
             int currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, false);
 
             maxScore = std::max(maxScore, currScore);
@@ -294,18 +298,7 @@ int Tree::MiniMax(TreeNode* root, int depth, int alpha, int beta, int priority, 
     int minScore = INF;
 
     for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
-        TreeNode* newNode = new TreeNode(root->table);
-        MoveHistory moveHistory;
-
-        newNode->moves = root->moves;
-        moveHistory.pos = move;
-
-        moveHistory.index = root->moves.size() + 1;
-        newNode->moves.push_back(moveHistory);
-
-        root->children.push_back(newNode);
-        newNode->parent = root;
-
+        TreeNode* newNode = root->createNode(move);
         int currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, false);
 
         minScore = std::min(minScore, currScore);
