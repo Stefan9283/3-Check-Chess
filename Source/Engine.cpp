@@ -29,6 +29,13 @@ Engine::Engine() {
             continue;
         }
 
+        if (strstr(buffer, "go")) {
+            std::string move = t->getBestMove(4);
+            t->parseMove(move.c_str());
+            std::cout << move << "\n";
+            continue;
+        }
+
         if (strstr(buffer, "quit")) {
             if (t)
                 delete t;
@@ -38,10 +45,7 @@ Engine::Engine() {
 
         if (buffer[0] >= 'a' && buffer[0] <= 'z' && buffer[1] >= '1' && buffer[1] <= '9') {
             t->movePiece(buffer);
-
-            //std::string move = t->getARandomMove();
-
-            std::string move = t->getBestMove(4);
+            std::string move = t->getBestMove(5);
             t->parseMove(move.c_str());
             std::cout << move << "\n";
         }

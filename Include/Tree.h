@@ -15,7 +15,7 @@ struct MoveHistory {
 };
 
 struct Pair {
-    int score;
+    float score;
     std::pair<vec2<int>, vec2<int>> pos;
 };
 
@@ -23,7 +23,7 @@ class TreeNode {
 public:
     Table* table;
 
-    int bestScore = -INF;
+    float bestScore = -INF;
     std::vector<MoveHistory> moves;
 
     std::vector<std::pair<ChessPiece*, int>> addedPieces;
@@ -35,8 +35,6 @@ public:
     TreeNode(Table* table);
 
     TreeNode* createNode(std::pair<vec2<int>, vec2<int>> move);
-
-    int evaluateState(int priority);
 
     std::vector<std::pair<vec2<int>, vec2<int>>> sortMoves(std::vector<std::pair<vec2<int>, vec2<int>>> allMoves, int priority, bool ascendingOrder);
 
@@ -64,7 +62,7 @@ public:
 
     ~Tree();
 
-    int MiniMax(TreeNode* root, int depth, int alpha, int beta, int priority, bool maximizingPlayer);
+    float MiniMax(TreeNode* root, int depth, float alpha, float beta, int priority, bool maximizingPlayer);
 
     void deleteNodes(TreeNode* root);
 

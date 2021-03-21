@@ -186,17 +186,6 @@ int Table::getSquareScore(Square* sq, char myColor) {
         return 0;
     return sq->piece->score;
 }
-int Table::getTotalScore(char color) {
-    assert(color == 'w' || color == 'b' && "Unknown piece color");
-
-    int total = 0, line = color == 'w' ? 0 : 1;
-
-    for (ChessPiece* chessPiece : pieces[line])
-        if (chessPiece)
-            total += chessPiece->score;
-
-    return total;
-}
 #pragma endregion
 vec2<int> Table::string2coords(const char *coords) {
     assert(strlen(coords) >= 2 && "Coords should have at least a line and a column");
@@ -369,16 +358,82 @@ void Table::parseMove(const char* s) {
     movePiece(getPiece(from), to);
 }
 
-std::string Table::getBestMove(int depth) {
-    Tree* tree = new Tree(this);
+float Table::getTotalScore(char color) {
+    assert(color == 'w' || color == 'b' && "Unknown piece color");
 
-    int bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
+    float total = 0;
+    int line = color == 'w' ? 0 : 1;
+
+    for (ChessPiece* piece : pieces[line]) {
+        if (!piece)
+            continue;
+
+        if (dynamic_cast<King*>(piece)) {
+            if (piece->color == 'w')
+                total += posFact.whiteKing[piece->pos.x][piece->pos.y];
+            else
+                total += posFact.blackKing[piece->pos.x][piece->pos.y];
+        }
+        else if (dynamic_cast<Queen*>(piece)) {
+            if (piece->color == 'w')
+                total += posFact.whiteQueen[piece->pos.x][piece->pos.y];
+            else
+                total += posFact.blackQueen[piece->pos.x][piece->pos.y];
+        }
+        else if (dynamic_cast<Rook*>(piece)) {
+            if (piece->color == 'w')
+                total += posFact.whiteRook[piece->pos.x][piece->pos.y];
+            else
+                total += posFact.blackRook[piece->pos.x][piece->pos.y];
+        }
+        else if (dynamic_cast<Bishop*>(piece)) {
+            if (piece->color == 'w')
+                total += posFact.whiteBishop[piece->pos.x][piece->pos.y];
+            else
+                total += posFact.blackBishop[piece->pos.x][piece->pos.y];
+        }
+        else if (dynamic_cast<Knight*>(piece)) {
+            if (piece->color == 'w')
+                total += posFact.whiteKnight[piece->pos.x][piece->pos.y];
+            else
+                total += posFact.blackKnight[piece->pos.x][piece->pos.y];
+        }
+        else {
+            if (piece->color == 'w')
+                total += posFact.whitePawn[piece->pos.x][piece->pos.y];
+            else
+                total += posFact.blackPawn[piece->pos.x][piece->pos.y];
+        }
+
+        total += piece->score;
+    }
+
+    return total;
+}
+
+std::string Table::getBestMove(int depth) {
+    srand(time(NULL));
+
+    Tree* tree = new Tree(this);
+    float bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
+
+    int no = 0;
+
+    for (TreeNode* child : tree->root->children)
+        if (child->bestScore == bestScore)
+            no++;
+    
+    int config = rand() % no, actConfig = 0;
     std::pair<vec2<int>, vec2<int>> bestMove;
 
     for (TreeNode* child : tree->root->children)
         if (child->bestScore == bestScore) {
-            bestMove = child->moves.back().pos;
-            break;
+            if (actConfig == config) {
+                bestMove = child->moves.back().pos;
+                break;
+            }
+
+            actConfig++;
         }
 
     std::string from = coords2string(bestMove.first);
@@ -463,7 +518,7 @@ int Table::getTotalScore() {
 
     for (ChessPiece* piece : pieces[turn])
         if (piece)
-            total += piece->index; 
+            total += piece->score;
 
     return total;
 }

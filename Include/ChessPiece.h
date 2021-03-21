@@ -33,9 +33,7 @@ public:
 class King : public ChessPiece {
 public:
     bool castle = false;
-
     bool wasMoved = false;
-
     int checks = 0;
 
     King(char color, vec2<int> pos, int index);
