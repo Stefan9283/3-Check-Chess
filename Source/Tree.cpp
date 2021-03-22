@@ -283,14 +283,35 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
         root->movePieceOnState(root->moves[i]);
 
     root->table->markAllPossibleMoves();
-    allMoves = root->sortMoves(root->table->getAllMoves(), priority, !maximizingPlayer);
+    allMoves = root->table->getAllMoves();
+
+    if (!allMoves.size()) {
+        if (maximizingPlayer) {
+            if (((King*)root->table->pieces[root->table->turn][14])->isInCheck(root->table))
+                root->bestScore = -INF;
+            else
+                root->bestScore = 0;
+        }
+        else {
+            if (((King*)root->table->pieces[root->table->turn][14])->isInCheck(root->table))
+                root->bestScore = INF;
+            else
+                root->bestScore = 0;
+        }
+
+        root->table->unmarkAllPossibleMoves();
+
+        for (int i = root->moves.size() - 1; i >= 0; i--)
+            root->undoMoveOnState(root->moves[i]);
+
+        return root->bestScore;
+    }
+
+    allMoves = root->sortMoves(allMoves, priority, !maximizingPlayer);
     root->table->unmarkAllPossibleMoves();
   
     for (int i = root->moves.size() - 1; i >= 0; i--)
         root->undoMoveOnState(root->moves[i]);
-
-    if (!allMoves.size())
-        return maximizingPlayer ? INF : -INF;
 
     if (maximizingPlayer) {
         float maxScore = -INF;

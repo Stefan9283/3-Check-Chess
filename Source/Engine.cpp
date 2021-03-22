@@ -47,7 +47,7 @@ Engine::Engine() {
             table->movePiece(buffer);
 
             if (table->hasLegalMoves()) {
-                std::string move = table->getBestMove(1);
+                std::string move = table->getBestMove(5);
                 table->parseMove(move.c_str());
                 std::cout << move << "\n";
             }
