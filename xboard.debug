@@ -10,58 +10,33 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-208 >first : xboard
+215 >first : xboard
 protover 2
-218 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-218 >first : accepted sigint
-218 >first : accepted sigterm
-218 >first : accepted san
-218 >first : accepted name
-10210 >first : new
+223 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+224 >first : accepted sigint
+224 >first : accepted sigterm
+224 >first : accepted san
+224 >first : accepted name
+10217 >first : new
 random
-10210 >first : level 40 5 0
-10210 >first : post
-10210 >first : hard
+10217 >first : level 40 5 0
+10217 >first : post
+10217 >first : hard
 nps: w=-1, b=-1
 nps: w=-1, b=-1
-11550 >first : time 30000
-11550 >first : otim 30000
+11123 >first : time 30000
+11123 >first : otim 30000
 book hit = (NULL)
-11550 >first : e2e4
-11551 <first : move a7a5
-12569 >first : time 29999
-12569 >first : otim 29898
+11123 >first : e2e4
+11124 <first : move a7a5
+12877 >first : time 29999
+12877 >first : otim 29824
 book hit = (NULL)
-12569 >first : f1c4
-12614 <first : move a5a4
-14039 >first : time 29995
-14039 >first : otim 29755
-book hit = (NULL)
-14039 >first : d1f3
-14042 <first : move a4a3
-14849 >first : f3f7
-GameEnds(26, Xboard adjudication: Checkmate, 4)
-14849 >first : result 1-0 {Xboard adjudication: Checkmate}
-14849 >first : force
-14853 <first : move a3b2
-Undoing extra move from first, gameMode 8
-14853 >first : undo
-Reset(1, 1) from gameMode 8
-recognized 'normal' (-1) as variant normal
-GameEnds(0, (null), 2)
-shuffleOpenings = 0
-16473 >first : new
-random
-16473 >first : level 40 5 0
-16473 >first : post
-16473 >first : hard
-nps: w=-1, b=-1
-nps: w=-1, b=-1
-17385 >first : time 30000
-17385 >first : otim 30000
-book hit = (NULL)
-17385 >first : e2e4
+12877 >first : d2d4
+12878 <first : move a5a4
+14784 >first : force
+15788 >first : f2f4
+16898 >first : c7c5
+20153 >first : g2g4
 GameEnds(29, xboard exit, 2)
-18597 >first : result * {xboard exit}
-18598 >first : force
-18598 >first : quit
+36374 >first : quit
