@@ -411,6 +411,16 @@ float Table::getTotalScore(char color) {
     return total;
 }
 
+int Table::getDegreesOfFreedoom() {
+    int noOfMoves = 0;
+
+    markPossibleMovesForKing((King*)pieces[turn][14]);
+    noOfMoves = getAllMoves().size();
+    unmarkAllPossibleMoves();
+
+    return noOfMoves;
+}
+
 std::string Table::getBestMove(int depth) {
     srand(time(NULL));
 
@@ -677,6 +687,20 @@ std::vector<std::pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
                 allMoves.push_back({piece->pos, vec2<int>(i, j)});
     
     return allMoves;
+}
+
+std::vector<std::pair<vec2<int>, vec2<int>>> Table::getMovesThatGiveCheck() {
+    std::vector<std::pair<vec2<int>, vec2<int>>> movesThatGiveCheck;
+    TreeNode* treeNode = new TreeNode(this);
+
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            for (ChessPiece* piece : squares[i][j]->possibleMoves)
+                if (treeNode->givesCheck({1, {piece->pos, vec2<int>(i, j)}}))
+                    movesThatGiveCheck.push_back({piece->pos, vec2<int>(i, j)});
+                           
+    delete treeNode;
+    return movesThatGiveCheck;
 }
 
 void Table::markAllPossibleMoves() {

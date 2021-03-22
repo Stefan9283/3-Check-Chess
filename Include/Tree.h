@@ -44,6 +44,8 @@ public:
 
     void undoMoveOnState(MoveHistory move);
 
+    bool givesCheck(MoveHistory move);
+
     void undoEnPassant(ChessPiece* piece, vec2<int> pos);
 
     void undoPawnPromotion(ChessPiece* piece, vec2<int> pos, int index);

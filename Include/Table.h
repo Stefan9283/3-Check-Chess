@@ -9,7 +9,7 @@ struct PieceHistory {
     std::pair<vec2<int>, vec2<int>> move;
 };
 
-struct PositionFactors {
+struct PositionFactor {
 #pragma region White Pieces
     float whiteKing[8][8] = { {-0.3, -0.4, -0.4, -0.5, -0.5, -0.4, -0.4, -0.3},
                               {-0.3, -0.4, -0.4, -0.5, -0.5, -0.4, -0.4, -0.3},
@@ -138,7 +138,7 @@ public:
     int height = 8, width = 8;
     int orientation = 1, turn = 0;
 
-    PositionFactors posFact;
+    PositionFactor posFact;
 
     std::vector<std::vector<Square*>> squares;
     std::vector<std::vector<ChessPiece*>> pieces;
@@ -180,6 +180,8 @@ public:
 
     float getTotalScore(char color);
 
+    int getDegreesOfFreedoom();
+
     std::string getBestMove(int depth);
 
     std::string getARandomMove();
@@ -207,6 +209,8 @@ public:
     bool hasLegalMoves();
 
     std::vector<std::pair<vec2<int>, vec2<int>>> getAllMoves();
+
+    std::vector<std::pair<vec2<int>, vec2<int>>> getMovesThatGiveCheck();
 
     void markAllPossibleMoves();
 

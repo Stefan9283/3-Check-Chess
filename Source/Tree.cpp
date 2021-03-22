@@ -170,6 +170,16 @@ void TreeNode::undoMoveOnState(MoveHistory move) {
     table->turn = 1 - table->turn;
 }
 
+bool TreeNode::givesCheck(MoveHistory move) {
+    bool givesCheck;
+
+    movePieceOnState(move);
+    givesCheck = ((King*)table->pieces[table->turn][14])->isInCheck(table);
+    undoMoveOnState(move);
+
+    return givesCheck;
+}
+
 void TreeNode::undoEnPassant(ChessPiece* piece, vec2<int> pos) {
     table->squares[pos.x][piece->pos.y]->piece = deletedPieces.back().first;
     table->pieces[piece->color == 'w' ? 1 : 0][deletedPieces.back().first->index] = deletedPieces.back().first;

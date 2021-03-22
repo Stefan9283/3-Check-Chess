@@ -9,6 +9,10 @@ int main() {
     table->printGameBoard();
     std::cout << table->getBestMove(4);*/
 
+    //Table* table = new Table();
+
+    //std::cout << table->degreesOfFreedoom();
+
     return 0;
 }
 

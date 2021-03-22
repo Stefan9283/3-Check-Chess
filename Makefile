@@ -204,6 +204,33 @@ Source/ChessPiece.cpp.s:
 	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/ChessPiece.cpp.s
 .PHONY : Source/ChessPiece.cpp.s
 
+Source/EndGame.o: Source/EndGame.cpp.o
+
+.PHONY : Source/EndGame.o
+
+# target to build an object file
+Source/EndGame.cpp.o:
+	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/EndGame.cpp.o
+.PHONY : Source/EndGame.cpp.o
+
+Source/EndGame.i: Source/EndGame.cpp.i
+
+.PHONY : Source/EndGame.i
+
+# target to preprocess a source file
+Source/EndGame.cpp.i:
+	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/EndGame.cpp.i
+.PHONY : Source/EndGame.cpp.i
+
+Source/EndGame.s: Source/EndGame.cpp.s
+
+.PHONY : Source/EndGame.s
+
+# target to generate assembly for a file
+Source/EndGame.cpp.s:
+	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/Source/EndGame.cpp.s
+.PHONY : Source/EndGame.cpp.s
+
 Source/Engine.o: Source/Engine.cpp.o
 
 .PHONY : Source/Engine.o
@@ -357,6 +384,9 @@ help:
 	@echo "... Source/ChessPiece.o"
 	@echo "... Source/ChessPiece.i"
 	@echo "... Source/ChessPiece.s"
+	@echo "... Source/EndGame.o"
+	@echo "... Source/EndGame.i"
+	@echo "... Source/EndGame.s"
 	@echo "... Source/Engine.o"
 	@echo "... Source/Engine.i"
 	@echo "... Source/Engine.s"
