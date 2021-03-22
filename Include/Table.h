@@ -30,7 +30,6 @@ public:
     Table();
     ~Table();
 
-    // Functii Stefan
     void movePiece(ChessPiece* piece, vec2<int> pos);
 
     void movePiece(ChessPiece* piece, const char* pos);
@@ -56,50 +55,9 @@ public:
         history.push_back({move});
     }
 
-    std::vector<ChessPiece*> getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
-
-    // Functii Ovidiu
     void parseMove(const char* s);
 
     std::string getARandomMove();
-
-    bool isAnIllegalMove(ChessPiece* piece, vec2<int> pos);
-
-    bool hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2);
-
-    bool hasNoPiecesBetween_diagonal(vec2<int> pos1, vec2<int> pos2);
-
-    bool isKingInConflict(King* king, vec2<int> pos);
-
-    bool isKingInDanger(ChessPiece* piece, vec2<int> pos);
-
-    bool hasLegalMoves();
-
-    void markAllPossibleMoves();
-
-    void unmarkAllPossibleMoves();
-
-    bool canEnPassant(Pawn* pawn, vec2<int> pos);
-
-    bool canCastleShort(King* king);
-
-    bool canCastleLong(King* king);
-
-    void markPossibleMovesForPawn(Pawn* pawn);
-
-    void markPossibleMovesForKnight(Knight* knight);
-
-    void markPossibleMovesForBishop(Bishop* bishop);
-
-    void markPossibleMovesForRook(Rook* rook);
-
-    void markPossibleMovesForQueen(Queen* queen);
-
-    void markPossibleMovesForKing(King* king);
-
-    bool isSquareOfTheSameColor(vec2<int> pos1, vec2<int> pos2);
-
-    bool isSquareOfTheSameColor(ChessPiece* piece1, ChessPiece* piece2);
 };
 
 #endif //INC_3_CHECK_CHESS_TABLE_H
