@@ -894,53 +894,66 @@ void Table::markPossibleMovesForKnight(Knight* knight) {
 
 void Table::markPossibleMovesForBishop(Bishop* bishop) {
     vec2<int> currPos;
+    int offset;
 
     // Up - right
-    currPos.x = bishop->pos.x + 1; currPos.y = bishop->pos.y + 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
+    while (isInside(vec2<int>(bishop->pos.x + offset, bishop->pos.y + offset))) {
+        currPos.x = bishop->pos.x + offset; currPos.y = bishop->pos.y + offset;
+
+        if (!isAnIllegalMove(bishop, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x++; currPos.y++;
+        offset++;
     }
 
     // Up - left
-    currPos.x = bishop->pos.x + 1; currPos.y = bishop->pos.y - 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
+    while (isInside(vec2<int>(bishop->pos.x + offset, bishop->pos.y - offset))) {
+        currPos.x = bishop->pos.x + offset; currPos.y = bishop->pos.y - offset;
+
+        if (!isAnIllegalMove(bishop, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x++; currPos.y--;
+        offset++;
     }
 
     // Down - right
-    currPos.x = bishop->pos.x - 1; currPos.y = bishop->pos.y + 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
+    while (isInside(vec2<int>(bishop->pos.x - offset, bishop->pos.y + offset))) {
+        currPos.x = bishop->pos.x - offset; currPos.y = bishop->pos.y + offset;
+
+        if (!isAnIllegalMove(bishop, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x--; currPos.y++;
+        offset++;
     }
 
     // Down - left
-    currPos.x = bishop->pos.x - 1; currPos.y = bishop->pos.y - 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(bishop, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
+    while (isInside(vec2<int>(bishop->pos.x - offset, bishop->pos.y - offset))) {
+        currPos.x = bishop->pos.x - offset; currPos.y = bishop->pos.y - offset;
+
+        if (!isAnIllegalMove(bishop, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(bishop);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x--; currPos.y--;
+        offset++;
     }
 }
 
@@ -948,51 +961,47 @@ void Table::markPossibleMovesForRook(Rook* rook) {
     vec2<int> currPos;
 
     // Up
-    currPos.x = rook->pos.x + 1; currPos.y = rook->pos.y;
+    for (int i = rook->pos.x + 1; i < height; i++) {
+        currPos.x = i; currPos.y = rook->pos.y;
 
-    while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
+        if (!isAnIllegalMove(rook, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.x++;
     }
 
     // Down
-    currPos.x = rook->pos.x - 1; currPos.y = rook->pos.y;
+    for (int i = rook->pos.x - 1; i >= 0; i--) {
+        currPos.x = i; currPos.y = rook->pos.y;
 
-    while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
+        if (!isAnIllegalMove(rook, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.x--;
     }
 
     // Left
-    currPos.x = rook->pos.x; currPos.y = rook->pos.y - 1;
+    for (int j = rook->pos.y + 1; j < width; j++) {
+        currPos.x = rook->pos.x; currPos.y = j;
 
-    while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
+        if (!isAnIllegalMove(rook, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.y--;
     }
 
     // Right
-    currPos.x = rook->pos.x; currPos.y = rook->pos.y + 1;
+    for (int j = rook->pos.y - 1; j >= 0; j--) {
+        currPos.x = rook->pos.x; currPos.y = j;
 
-    while (!isAnIllegalMove(rook, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
+        if (!isAnIllegalMove(rook, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(rook);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.y++;
     }
 }
 
@@ -1000,99 +1009,109 @@ void Table::markPossibleMovesForQueen(Queen* queen) {
     vec2<int> currPos;
 
     // Up
-    currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y;
+    for (int i = queen->pos.x + 1; i < height; i++) {
+        currPos.x = i; currPos.y = queen->pos.y;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.x++;
     }
 
     // Down
-    currPos.x = queen->pos.x - 1; currPos.y = queen->pos.y;
+    for (int i = queen->pos.x - 1; i >= 0; i--) {
+        currPos.x = i; currPos.y = queen->pos.y;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.x--;
     }
 
     // Left
-    currPos.x = queen->pos.x; currPos.y = queen->pos.y - 1;
+    for (int j = queen->pos.y + 1; j < width; j++) {
+        currPos.x = queen->pos.x; currPos.y = j;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.y--;
     }
 
     // Right
-    currPos.x = queen->pos.x; currPos.y = queen->pos.y + 1;
+    for (int j = queen->pos.y - 1; j >= 0; j--) {
+        currPos.x = queen->pos.x; currPos.y = j;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
-
-        currPos.y++;
     }
 
-    // Up - right
-    currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y + 1;
+    int offset;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+    // Up - right
+    offset = 1;
+
+    while (isInside(vec2<int>(queen->pos.x + offset, queen->pos.y + offset))) {
+        currPos.x = queen->pos.x + offset; currPos.y = queen->pos.y + offset;
+
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x++; currPos.y++;
+        offset++;
     }
 
     // Up - left
-    currPos.x = queen->pos.x + 1; currPos.y = queen->pos.y - 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+    while (isInside(vec2<int>(queen->pos.x + offset, queen->pos.y - offset))) {
+        currPos.x = queen->pos.x + offset; currPos.y = queen->pos.y - offset;
+
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x++; currPos.y--;
+        offset++;
     }
 
     // Down - right
-    currPos.x = queen->pos.x - 1; currPos.y = queen->pos.y + 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+    while (isInside(vec2<int>(queen->pos.x - offset, queen->pos.y + offset))) {
+        currPos.x = queen->pos.x - offset; currPos.y = queen->pos.y + offset;
+
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x--; currPos.y++;
+        offset++;
     }
 
     // Down - left
-    currPos.x = queen->pos.x - 1; currPos.y = queen->pos.y - 1;
+    offset = 1;
 
-    while (!isAnIllegalMove(queen, currPos)) {
-        squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
+    while (isInside(vec2<int>(queen->pos.x - offset, queen->pos.y - offset))) {
+        currPos.x = queen->pos.x - offset; currPos.y = queen->pos.y - offset;
+
+        if (!isAnIllegalMove(queen, currPos))
+            squares[currPos.x][currPos.y]->possibleMoves.push_back(queen);
 
         if (squares[currPos.x][currPos.y]->piece)
             break;
 
-        currPos.x--; currPos.y--;
+        offset++;
     }
 }
 
