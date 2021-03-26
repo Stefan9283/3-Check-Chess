@@ -70,7 +70,13 @@ public:
 
     void printTree(TreeNode* root, int level);
 
-    void countNodes(TreeNode* root, int *no);
+    void countNodes(TreeNode* root, int* no);
+
+    std::pair<vec2<int>, vec2<int>> doExtraSearch(int depth, float score);
+
+    void createBaseTree(TreeNode* root, TreeNode* root_, float score);
+
+    void setExtraSearchScores(TreeNode* root, int level, int depth);
 };
 
 #endif //INC_3_CHECK_CHESS_TREE_H

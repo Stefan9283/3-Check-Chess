@@ -5,7 +5,9 @@ int main() {
 
     /*Table* table = new Table();
 
-    table->moveInAdvance("(d2, d4)", 'w');
+    table->moveInAdvance("(d2, d4), (b8, c6), (c2, c3), (g8, f6), (d1, d3), (d7, d5), (c1, g5), (f6, e4), (g1, f3)", 'w');
+    //table->moveInAdvance("(c8, h3), (g2, h3), (c6, a5)", 'b');
+    table->printGameBoard('b');
 
     std::cout << table->getBestMove(5);*/
 
@@ -13,27 +15,6 @@ int main() {
     table->printGameBoard();
 
     std::cout << table->getBestMove(5);*/
-
-    /*TreeNode* node = new TreeNode(table);
-
-    node->movePieceOnState({1, {vec2<int>(4, 3), vec2<int>(5, 2)}});
-
-    node->table->printGameBoard();
-    std::cout << node->table->getTotalScore('w') - node->table->getTotalScore('b');
-
-    node->undoMoveOnState({ 1, {vec2<int>(4, 3), vec2<int>(5, 2)} });*/
-
-    /*std::cout << table->getTotalScore('b') - table->getTotalScore('w');
-    
-    std::string move = table->getBestMove(2);
-    table->parseMove(move.c_str());
-    
-    table->printGameBoard();
-    std::cout << table->getTotalScore('b') - table->getTotalScore('w');*/
-
-    //Table* table = new Table();
-
-    //std::cout << table->degreesOfFreedoom();
 
     return 0;
 }

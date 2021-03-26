@@ -270,7 +270,7 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
             root->movePieceOnState(root->moves[i]);
 
         root->bestScore = (root->table->getTotalScore('w') - root->table->getTotalScore('b')) * (!priority ? 1 : -1);
-
+            
         for (int i = root->moves.size() - 1; i >= 0; i--)
             root->undoMoveOnState(root->moves[i]);
 
@@ -382,4 +382,65 @@ void Tree::countNodes(TreeNode* root, int* no) {
 
     for (TreeNode* child : root->children)
         countNodes(child, no);
+}
+
+std::pair<vec2<int>, vec2<int>> Tree::doExtraSearch(int depth, float score) {
+    Tree* baseTree = new Tree(baseTable);
+    std::pair<vec2<int>, vec2<int>> bestMove;
+
+    createBaseTree(baseTree->root, this->root, score);
+    setExtraSearchScores(baseTree->root, 0, depth);
+
+    for (TreeNode* child : baseTree->root->children)
+        if (child->bestScore == baseTree->root->bestScore) {
+            bestMove = child->moves.back().pos;
+            break;
+        }
+
+    delete baseTree;
+    return bestMove;
+}
+
+void Tree::createBaseTree(TreeNode* root, TreeNode* root_, float score) {
+    if (!root_)
+        return;
+
+    for (TreeNode* child : root_->children)
+        if (child->bestScore == score) {
+            TreeNode* newNode = new TreeNode(root_->table);
+
+            newNode->moves = child->moves;
+            root->children.push_back(newNode);
+            newNode->parent = root;
+            createBaseTree(newNode, child, score);
+        }
+}
+
+void Tree::setExtraSearchScores(TreeNode* root, int level, int depth) {
+    if (!root)
+        return;
+
+    if (!root->children.size()) {
+        for (int i = 0; i < root->moves.size(); i++)
+            root->movePieceOnState(root->moves[i]);
+
+        Tree* extendedTree = new Tree(root->table);
+        root->bestScore = MiniMax(extendedTree->root, depth, -INF, INF, root->table->turn, !(level % 2) ? true : false);
+
+        delete extendedTree;
+            
+        for (int i = root->moves.size() - 1; i >= 0; i--)
+            root->undoMoveOnState(root->moves[i]);
+
+        TreeNode* root_ = root;
+
+        while (root_->parent) {
+            root_->parent->bestScore = std::max(root_->parent->bestScore, root->bestScore);
+            root_ = root_->parent;
+        }
+    }
+
+    for (TreeNode* child : root->children)
+        setExtraSearchScores(child, level + 1, depth);
+
 }

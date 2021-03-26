@@ -422,29 +422,10 @@ int Table::getDegreesOfFreedoom() {
 }
 
 std::string Table::getBestMove(int depth) {
-    srand(time(NULL));
-
     Tree* tree = new Tree(this);
+
     float bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
-
-    int no = 0;
-
-    for (TreeNode* child : tree->root->children)
-        if (child->bestScore == bestScore)
-            no++;
-    
-    int config = rand() % no, actConfig = 0;
-    std::pair<vec2<int>, vec2<int>> bestMove;
-
-    for (TreeNode* child : tree->root->children)
-        if (child->bestScore == bestScore) {
-            if (actConfig == config) {
-                bestMove = child->moves.back().pos;
-                break;
-            }
-
-            actConfig++;
-        }
+    std::pair<vec2<int>, vec2<int>> bestMove = tree->doExtraSearch(4, bestScore);
 
     std::string from = coords2string(bestMove.first);
     std::string to = coords2string(bestMove.second);

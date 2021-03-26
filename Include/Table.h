@@ -161,6 +161,7 @@ public:
     bool isInside(vec2<int> pos) const;
 
     std::string coords2string(vec2<int> pos) const;
+
     vec2<int> string2coords(const char* coords);
 
     static int getSquareScore(Square* sq, char myColor);
