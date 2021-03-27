@@ -205,6 +205,10 @@ float TreeNode::getBonus(bool maximizingPlayer) {
         if (!((King*)table->squares[moves.back().pos.first.x][moves.back().pos.first.y]->piece)->wasMoved)
             return maximizingPlayer ? 2 : -2;
 
+    if (dynamic_cast<Rook*>(table->squares[moves.back().pos.first.x][moves.back().pos.first.y]->piece))
+        if (!((Rook*)table->squares[moves.back().pos.first.x][moves.back().pos.first.y]->piece)->wasMoved)
+            return maximizingPlayer ? 1 : -1;
+
     if (givesCheck())
         return maximizingPlayer ? -1 : 1;
 
