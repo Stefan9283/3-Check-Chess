@@ -44,7 +44,11 @@ public:
 
     void undoMoveOnState(MoveHistory move);
 
-    bool givesCheck(std::pair<vec2<int>, vec2<int>> move);
+    bool givesCheck();
+
+    bool receivesCheck();
+
+    float getBonus(bool maximizingPlayer);
 
     void undoEnPassant(ChessPiece* piece, vec2<int> pos);
 

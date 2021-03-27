@@ -170,24 +170,48 @@ void TreeNode::undoMoveOnState(MoveHistory move) {
     table->turn = 1 - table->turn;
 }
 
-bool TreeNode::givesCheck(std::pair<vec2<int>, vec2<int>> move) {
-    bool givesCheck;
-    MoveHistory moveHistory;
-
-    moveHistory.index = moves.size() + 1;
-    moveHistory.pos = move;
-
+bool TreeNode::givesCheck() {
     for (int i = 0; i < moves.size(); i++)
         movePieceOnState(moves[i]);
 
-    movePieceOnState(moveHistory);
-    givesCheck = ((King*)table->pieces[!table->turn][14])->isInCheck(table);
-    undoMoveOnState(moveHistory);
+    bool givesCheck = ((King*)table->pieces[table->turn][14])->isInCheck(table);
 
     for (int i = moves.size() - 1; i >= 0; i--)
         undoMoveOnState(moves[i]);
 
     return givesCheck;
+}
+
+bool TreeNode::receivesCheck() {
+    for (int i = 0; i < moves.size(); i++)
+        movePieceOnState(moves[i]);
+
+    bool receivesCheck = ((King*)table->pieces[!table->turn][14])->isInCheck(table);
+
+    for (int i = moves.size() - 1; i >= 0; i--)
+        undoMoveOnState(moves[i]);
+
+    return receivesCheck;
+}
+
+float TreeNode::getBonus(bool maximizingPlayer) {
+    if ((moves.back().pos.first == vec2<int>(0, 4) && moves.back().pos.second == vec2<int>(0, 2)) ||
+        (moves.back().pos.first == vec2<int>(0, 4) && moves.back().pos.second == vec2<int>(0, 6)) ||
+        (moves.back().pos.first == vec2<int>(7, 4) && moves.back().pos.second == vec2<int>(7, 2)) ||
+        (moves.back().pos.first == vec2<int>(7, 4) && moves.back().pos.second == vec2<int>(7, 6)))
+            return maximizingPlayer ? -1.5 : 1.5;
+
+    if (dynamic_cast<King*>(table->squares[moves.back().pos.first.x][moves.back().pos.first.y]->piece))
+        if (!((King*)table->squares[moves.back().pos.first.x][moves.back().pos.first.y]->piece)->wasMoved)
+            return maximizingPlayer ? 2 : -2;
+
+    if (givesCheck())
+        return maximizingPlayer ? -1 : 1;
+
+    if (receivesCheck())
+        return maximizingPlayer ? 1 : -1;
+   
+    return 0;
 }
 
 void TreeNode::undoEnPassant(ChessPiece* piece, vec2<int> pos) {
@@ -276,14 +300,17 @@ Tree::~Tree() {
 
 float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int priority, bool maximizingPlayer) {
     if (!depth) {
+        float bestScore;
+
         for (int i = 0; i < root->moves.size(); i++)
             root->movePieceOnState(root->moves[i]);
 
-        root->bestScore = (root->table->getTotalScore('w') - root->table->getTotalScore('b')) * (!priority ? 1 : -1);
+        bestScore = (root->table->getTotalScore('w') - root->table->getTotalScore('b')) * (!priority ? 1 : -1);
             
         for (int i = root->moves.size() - 1; i >= 0; i--)
             root->undoMoveOnState(root->moves[i]);
 
+        root->bestScore = bestScore + root->getBonus(maximizingPlayer);
         return root->bestScore;
     }
 
@@ -323,39 +350,41 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
     for (int i = root->moves.size() - 1; i >= 0; i--)
         root->undoMoveOnState(root->moves[i]);
 
+    float bonus = root->moves.size() ? root->getBonus(maximizingPlayer) : 0;
+
     if (maximizingPlayer) {
         float maxScore = -INF;
 
         for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
-            TreeNode* newNode = root->createNode(move);
-            float currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, false);
+            TreeNode* child = root->createNode(move);
+            float currScore = MiniMax(child, depth - 1, alpha, beta, priority, false);
 
-            maxScore = std::max(maxScore, currScore + (root->givesCheck(move) ? -1 : 0));
+            maxScore = std::max(maxScore, currScore);
             alpha = std::max(alpha, maxScore);
-            root->bestScore = maxScore;
 
             if (beta <= alpha)
                 break;
         }
 
-        return maxScore;
+        root->bestScore = maxScore + bonus;
+        return maxScore + bonus;
     }
 
     float minScore = INF;
 
     for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
-        TreeNode* newNode = root->createNode(move);
-        float currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, true);
+        TreeNode* child = root->createNode(move);
+        float currScore = MiniMax(child, depth - 1, alpha, beta, priority, true);
 
-        minScore = std::min(minScore, currScore + (root->givesCheck(move) ? 1 : 0));
+        minScore = std::min(minScore, currScore);
         beta = std::min(beta, minScore);
-        root->bestScore = minScore;
 
         if (beta <= alpha)
             break;
     }
 
-    return minScore;
+    root->bestScore = minScore + bonus;
+    return minScore + bonus;
 }
 
 float Tree::doExtraSearch(Table* table, int depth, int priority, bool maximizingPlayer) {
@@ -415,7 +444,7 @@ std::pair<vec2<int>, vec2<int>> Tree::getBestChoice(int depth, int priority, flo
     int no = 0;
 
     for (TreeNode* child : compressedTree->root->children)
-        if (child->bestScore == compressedTree->root->bestScore) 
+        if (fabs(child->bestScore - compressedTree->root->bestScore) < EPS)
             no++;
 
     int config = rand() % no, actConfig = 0;
@@ -439,7 +468,7 @@ void Tree::getCompressedTree(TreeNode* root, TreeNode* root_, float score) {
         return;
 
     for (TreeNode* child : root_->children)
-        if (child->bestScore == score) {
+        if (fabs(child->bestScore - score) < EPS) {
             TreeNode* newNode = new TreeNode(root_->table);
 
             newNode->moves = child->moves;

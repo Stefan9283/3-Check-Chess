@@ -3,6 +3,7 @@
 #define INC_3_CHECK_CHESS_COMMON_H
 
 #define INF INT_MAX
+#define EPS 0.001
 
 #include <iostream>
 #include <vector>
