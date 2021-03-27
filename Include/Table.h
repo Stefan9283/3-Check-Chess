@@ -211,8 +211,6 @@ public:
 
     std::vector<std::pair<vec2<int>, vec2<int>>> getAllMoves();
 
-    std::vector<std::pair<vec2<int>, vec2<int>>> getMovesThatGiveCheck();
-
     void markAllPossibleMoves();
 
     void unmarkAllPossibleMoves();

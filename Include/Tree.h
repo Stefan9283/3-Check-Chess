@@ -44,7 +44,7 @@ public:
 
     void undoMoveOnState(MoveHistory move);
 
-    bool givesCheck(MoveHistory move);
+    bool givesCheck(std::pair<vec2<int>, vec2<int>> move);
 
     void undoEnPassant(ChessPiece* piece, vec2<int> pos);
 
@@ -66,17 +66,19 @@ public:
 
     float MiniMax(TreeNode* root, int depth, float alpha, float beta, int priority, bool maximizingPlayer);
 
+    float doExtraSearch(Table* table, int depth, int priority, bool maximizingPlayer);
+
     void deleteNodes(TreeNode* root);
 
     void printTree(TreeNode* root, int level);
 
     void countNodes(TreeNode* root, int* no);
 
-    std::pair<vec2<int>, vec2<int>> doExtraSearch(int depth, float score);
+    std::pair<vec2<int>, vec2<int>> getBestChoice(int depth, int priority, float score);
 
-    void createBaseTree(TreeNode* root, TreeNode* root_, float score);
+    void getCompressedTree(TreeNode* root, TreeNode* root_, float score);
 
-    void setExtraSearchScores(TreeNode* root, int level, int depth);
+    void setExtraSearchScores(TreeNode* root, int level, int depth, int priority, bool maximizingPlayer);
 };
 
 #endif //INC_3_CHECK_CHESS_TREE_H

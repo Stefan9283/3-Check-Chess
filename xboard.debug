@@ -10,15 +10,297 @@ recognized 'normal' (-1) as variant normal
 GameEnds(0, (null), 2)
 shuffleOpenings = 0
 StartChildProcess (dir=".") ./3_Check_Chess
-282 >first : xboard
+219 >first : xboard
 protover 2
-292 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
-292 >first : accepted sigint
-293 >first : accepted sigterm
-293 >first : accepted san
-293 >first : accepted name
-10287 >first : new
+231 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+231 >first : accepted sigint
+231 >first : accepted sigterm
+231 >first : accepted san
+231 >first : accepted name
+10221 >first : new
 random
-10287 >first : level 40 5 0
-10287 >first : post
-10287 >first : hard
+10222 >first : level 40 5 0
+10222 >first : post
+10222 >first : hard
+nps: w=-1, b=-1
+nps: w=-1, b=-1
+23197 >first : time 30000
+23197 >first : otim 30000
+book hit = (NULL)
+23197 >first : e2e4
+23770 <first : move b7b5
+29757 >first : time 29942
+29757 >first : otim 29401
+book hit = (NULL)
+29757 >first : d1h5
+30630 <first : move b8c6
+36105 >first : time 29855
+36105 >first : otim 28853
+book hit = (NULL)
+36105 >first : g1h3
+36959 <first : move e7e6
+43262 >first : time 29770
+43262 >first : otim 28223
+book hit = (NULL)
+43262 >first : e1d1
+44634 <first : move a7a6
+49234 >first : time 29632
+49234 >first : otim 27763
+book hit = (NULL)
+49234 >first : h5g4
+53054 <first : move a8b8
+58089 >first : time 29250
+58089 >first : otim 27260
+book hit = (NULL)
+58089 >first : h3g5
+62890 <first : move g8h6
+66507 >first : time 28770
+66507 >first : otim 26898
+book hit = (NULL)
+66507 >first : g4f4
+70810 <first : move f8d6
+75314 >first : time 28340
+75314 >first : otim 26447
+book hit = (NULL)
+75314 >first : f4e3
+77129 <first : move f7f6
+80610 >first : time 28158
+80610 >first : otim 26099
+book hit = (NULL)
+80610 >first : g5f3
+83845 <first : move e6e5
+89040 >first : time 27835
+89040 >first : otim 25580
+book hit = (NULL)
+89040 >first : d1e2
+92220 <first : move c6a5
+97413 >first : time 27517
+97413 >first : otim 25061
+book hit = (NULL)
+97413 >first : d2d3
+100056 <first : move h6g4
+106222 >first : time 27253
+106222 >first : otim 24444
+book hit = (NULL)
+106222 >first : e3d2
+107896 <first : move a5c6
+113409 >first : time 27085
+113409 >first : otim 23893
+book hit = (NULL)
+113409 >first : h2h3
+114927 <first : move g4h6
+119982 >first : time 26933
+119982 >first : otim 23387
+book hit = (NULL)
+119982 >first : d2c3
+122678 <first : move h6f7
+127202 >first : time 26664
+127202 >first : otim 22935
+book hit = (NULL)
+127202 >first : e2d1
+131919 <first : move c6a7
+137825 >first : time 26192
+137825 >first : otim 22344
+book hit = (NULL)
+137825 >first : c1d2
+140629 <first : move c8b7
+144757 >first : time 25912
+144757 >first : otim 21932
+book hit = (NULL)
+144757 >first : d2e3
+146883 <first : move b5b4
+151749 >first : time 25699
+151749 >first : otim 21445
+book hit = (NULL)
+151749 >first : c3c4
+153851 <first : move a7c6
+161866 >first : time 25489
+161866 >first : otim 20643
+book hit = (NULL)
+161866 >first : d1e2
+167269 <first : move c6a5
+174349 >first : time 24948
+174349 >first : otim 19935
+book hit = (NULL)
+174349 >first : b1d2
+175175 <first : move f7g5
+188377 >first : time 24866
+188377 >first : otim 18615
+book hit = (NULL)
+188377 >first : e3g5
+188875 <first : move a5c4
+193313 >first : time 24816
+193313 >first : otim 18171
+book hit = (NULL)
+193313 >first : d2c4
+193710 <first : move f6g5
+199870 >first : time 24776
+199870 >first : otim 17555
+book hit = (NULL)
+199870 >first : a1e1
+200728 <first : move d8f6
+208707 >first : time 24691
+208707 >first : otim 16758
+book hit = (NULL)
+208707 >first : e1b1
+210359 <first : move e8g8
+216359 >first : time 24525
+216359 >first : otim 16158
+book hit = (NULL)
+216359 >first : c4d6
+217437 <first : move c7d6
+221837 >first : time 24418
+221837 >first : otim 15718
+book hit = (NULL)
+221837 >first : b1d1
+223927 <first : move f6f7
+228663 >first : time 24209
+228663 >first : otim 15244
+book hit = (NULL)
+228663 >first : a2a3
+229374 <first : move b4a3
+232716 >first : time 24137
+232716 >first : otim 14910
+book hit = (NULL)
+232716 >first : b2a3
+233708 <first : move b7c6
+239108 >first : time 24038
+239108 >first : otim 14370
+book hit = (NULL)
+239108 >first : d1a1
+241936 <first : move g8h8
+247227 >first : time 23755
+247227 >first : otim 13841
+book hit = (NULL)
+247227 >first : e2e1
+248817 <first : move f7e7
+252631 >first : time 23596
+252631 >first : otim 13459
+book hit = (NULL)
+252631 >first : e1d2
+256608 <first : move b8b5
+262834 >first : time 23199
+262834 >first : otim 12837
+book hit = (NULL)
+262834 >first : f1e2
+265874 <first : move e7f6
+271909 >first : time 22895
+271909 >first : otim 12233
+book hit = (NULL)
+271909 >first : h1b1
+272484 <first : move b5c5
+277474 >first : time 22837
+277474 >first : otim 11734
+book hit = (NULL)
+277474 >first : g2g3
+279807 <first : move g5g4
+284713 >first : time 22604
+284713 >first : otim 11244
+book hit = (NULL)
+284713 >first : f3h4
+285792 <first : move g4h3
+291886 >first : time 22496
+291886 >first : otim 10634
+book hit = (NULL)
+291886 >first : b1h1
+293269 <first : move c6a4
+299284 >first : time 22357
+299284 >first : otim 10033
+book hit = (NULL)
+299284 >first : h4f5
+300637 <first : move c5c2
+305737 >first : time 22222
+305737 >first : otim 9523
+book hit = (NULL)
+305737 >first : d2e3
+306892 <first : move g7g6
+312743 >first : time 22107
+312743 >first : otim 8938
+book hit = (NULL)
+312743 >first : e2d1
+313231 <first : move f6g5
+319165 >first : time 22058
+319165 >first : otim 38345
+book hit = (NULL)
+319165 >first : f2f4
+319699 <first : move g5f6
+328599 >first : time 52004
+328599 >first : otim 37455
+book hit = (NULL)
+328599 >first : d1c2
+328962 <first : move e5f4
+335186 >first : time 51968
+335186 >first : otim 36832
+book hit = (NULL)
+335186 >first : g3f4
+335645 <first : move a4c2
+340993 >first : time 51922
+340993 >first : otim 36297
+book hit = (NULL)
+340993 >first : a1c1
+341591 <first : move c2b3
+347024 >first : time 51862
+347024 >first : otim 35754
+book hit = (NULL)
+347024 >first : c1b1
+347873 <first : move b3a2
+353129 >first : time 51777
+353129 >first : otim 35229
+book hit = (NULL)
+353129 >first : b1b4
+353667 <first : move g6f5
+359325 >first : time 51724
+359325 >first : otim 34663
+book hit = (NULL)
+359325 >first : h1h3
+359989 <first : move f5e4
+364337 >first : time 51657
+364337 >first : otim 34228
+book hit = (NULL)
+364337 >first : b4e4
+365293 <first : move d6d5
+369768 >first : time 51562
+369768 >first : otim 33780
+book hit = (NULL)
+369768 >first : e4a4
+370222 <first : move f6e6
+375454 >first : time 51516
+375454 >first : otim 33257
+book hit = (NULL)
+375454 >first : e3d2
+375812 <first : move f8b8
+383300 >first : time 51480
+383300 >first : otim 32508
+book hit = (NULL)
+383300 >first : h3e3
+383947 <first : move b8b2
+389676 >first : time 51416
+389676 >first : otim 31936
+book hit = (NULL)
+389676 >first : d2c1
+389887 <first : move b2b1
+396323 >first : time 51395
+396323 >first : otim 31292
+book hit = (NULL)
+396323 >first : c1d2
+396734 <first : move b1b2
+402339 >first : time 51353
+402339 >first : otim 30731
+book hit = (NULL)
+402339 >first : d2c1
+402549 <first : move b2b1
+406481 >first : time 51332
+406481 >first : otim 30338
+book hit = (NULL)
+406481 >first : c1d2
+406892 <first : move b1b2
+Reset(1, 1) from gameMode 2
+recognized 'normal' (-1) as variant normal
+GameEnds(0, (null), 2)
+493524 >first : force
+shuffleOpenings = 0
+493539 >first : new
+random
+493539 >first : level 40 5 0
+493539 >first : post
+493539 >first : hard

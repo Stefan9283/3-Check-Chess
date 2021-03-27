@@ -5,9 +5,9 @@ int main() {
 
     /*Table* table = new Table();
 
-    table->moveInAdvance("(d2, d4), (b8, c6), (c2, c3), (g8, f6), (d1, d3), (d7, d5), (c1, g5), (f6, e4), (g1, f3)", 'w');
-    //table->moveInAdvance("(c8, h3), (g2, h3), (c6, a5)", 'b');
-    table->printGameBoard('b');
+    table->moveInAdvance("(e2, e4), (b8, c6), (b1, c3), (g8, f6), (d2, d4), (c6, b8), (d4, d5), (d7, d6), (e4, e5), (d6, e5), (d1, g4), (c8, g4), (c1, g5), (d8, d6), (g5, f6), (e7, f6), (f1, a6), (b8, a6), (c3, b5), (d6, d7), (b5, c7), (d7, c7), (g1, f3), (c7, b8), (f3, g5), (e8, e7), (g5, h7), (h8, h7), (h2, h3), (b8, d6), (c2, c4), (d6, d7), (d5, d6), (e7, d6), (h3, g4)", 'w');
+
+    table->printGameBoard();
 
     std::cout << table->getBestMove(5);*/
 

@@ -423,9 +423,9 @@ int Table::getDegreesOfFreedoom() {
 
 std::string Table::getBestMove(int depth) {
     Tree* tree = new Tree(this);
-
     float bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
-    std::pair<vec2<int>, vec2<int>> bestMove = tree->doExtraSearch(4, bestScore);
+
+    std::pair<vec2<int>, vec2<int>> bestMove = tree->getBestChoice(3, turn, bestScore);
 
     std::string from = coords2string(bestMove.first);
     std::string to = coords2string(bestMove.second);
@@ -668,20 +668,6 @@ std::vector<std::pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
                 allMoves.push_back({piece->pos, vec2<int>(i, j)});
     
     return allMoves;
-}
-
-std::vector<std::pair<vec2<int>, vec2<int>>> Table::getMovesThatGiveCheck() {
-    std::vector<std::pair<vec2<int>, vec2<int>>> movesThatGiveCheck;
-    TreeNode* treeNode = new TreeNode(this);
-
-    for (int i = 0; i < height; i++)
-        for (int j = 0; j < width; j++)
-            for (ChessPiece* piece : squares[i][j]->possibleMoves)
-                if (treeNode->givesCheck({1, {piece->pos, vec2<int>(i, j)}}))
-                    movesThatGiveCheck.push_back({piece->pos, vec2<int>(i, j)});
-                           
-    delete treeNode;
-    return movesThatGiveCheck;
 }
 
 void Table::markAllPossibleMoves() {

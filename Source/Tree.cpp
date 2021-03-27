@@ -170,12 +170,22 @@ void TreeNode::undoMoveOnState(MoveHistory move) {
     table->turn = 1 - table->turn;
 }
 
-bool TreeNode::givesCheck(MoveHistory move) {
+bool TreeNode::givesCheck(std::pair<vec2<int>, vec2<int>> move) {
     bool givesCheck;
+    MoveHistory moveHistory;
 
-    movePieceOnState(move);
-    givesCheck = ((King*)table->pieces[table->turn][14])->isInCheck(table);
-    undoMoveOnState(move);
+    moveHistory.index = moves.size() + 1;
+    moveHistory.pos = move;
+
+    for (int i = 0; i < moves.size(); i++)
+        movePieceOnState(moves[i]);
+
+    movePieceOnState(moveHistory);
+    givesCheck = ((King*)table->pieces[!table->turn][14])->isInCheck(table);
+    undoMoveOnState(moveHistory);
+
+    for (int i = moves.size() - 1; i >= 0; i--)
+        undoMoveOnState(moves[i]);
 
     return givesCheck;
 }
@@ -320,7 +330,7 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
             TreeNode* newNode = root->createNode(move);
             float currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, false);
 
-            maxScore = std::max(maxScore, currScore);
+            maxScore = std::max(maxScore, currScore + (root->givesCheck(move) ? -1 : 0));
             alpha = std::max(alpha, maxScore);
             root->bestScore = maxScore;
 
@@ -330,14 +340,14 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
 
         return maxScore;
     }
-        
+
     float minScore = INF;
 
     for (std::pair<vec2<int>, vec2<int>> move : allMoves) {
         TreeNode* newNode = root->createNode(move);
         float currScore = MiniMax(newNode, depth - 1, alpha, beta, priority, true);
 
-        minScore = std::min(minScore, currScore);
+        minScore = std::min(minScore, currScore + (root->givesCheck(move) ? 1 : 0));
         beta = std::min(beta, minScore);
         root->bestScore = minScore;
 
@@ -346,6 +356,15 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
     }
 
     return minScore;
+}
+
+float Tree::doExtraSearch(Table* table, int depth, int priority, bool maximizingPlayer) {
+    Tree* extendedTree = new Tree(table);
+
+    float bestScore = MiniMax(extendedTree->root, depth, -INF, INF, priority, maximizingPlayer);
+    delete extendedTree;
+
+    return bestScore;
 }
 
 void Tree::deleteNodes(TreeNode* root) {
@@ -384,24 +403,38 @@ void Tree::countNodes(TreeNode* root, int* no) {
         countNodes(child, no);
 }
 
-std::pair<vec2<int>, vec2<int>> Tree::doExtraSearch(int depth, float score) {
-    Tree* baseTree = new Tree(baseTable);
+std::pair<vec2<int>, vec2<int>> Tree::getBestChoice(int depth, int priority, float score) {
+    srand(time(NULL));
+
+    Tree* compressedTree = new Tree(baseTable);
     std::pair<vec2<int>, vec2<int>> bestMove;
 
-    createBaseTree(baseTree->root, this->root, score);
-    setExtraSearchScores(baseTree->root, 0, depth);
+    getCompressedTree(compressedTree->root, this->root, score);
+    setExtraSearchScores(compressedTree->root, 0, depth, priority, true);
 
-    for (TreeNode* child : baseTree->root->children)
-        if (child->bestScore == baseTree->root->bestScore) {
-            bestMove = child->moves.back().pos;
-            break;
+    int no = 0;
+
+    for (TreeNode* child : compressedTree->root->children)
+        if (child->bestScore == compressedTree->root->bestScore) 
+            no++;
+
+    int config = rand() % no, actConfig = 0;
+
+    for (TreeNode* child : compressedTree->root->children)
+        if (child->bestScore == compressedTree->root->bestScore) {
+            if (actConfig == config) {
+                bestMove = child->moves.back().pos;
+                break;
+            }
+
+            actConfig++;
         }
 
-    delete baseTree;
+    delete compressedTree;
     return bestMove;
 }
 
-void Tree::createBaseTree(TreeNode* root, TreeNode* root_, float score) {
+void Tree::getCompressedTree(TreeNode* root, TreeNode* root_, float score) {
     if (!root_)
         return;
 
@@ -412,11 +445,11 @@ void Tree::createBaseTree(TreeNode* root, TreeNode* root_, float score) {
             newNode->moves = child->moves;
             root->children.push_back(newNode);
             newNode->parent = root;
-            createBaseTree(newNode, child, score);
+            getCompressedTree(newNode, child, score);
         }
 }
 
-void Tree::setExtraSearchScores(TreeNode* root, int level, int depth) {
+void Tree::setExtraSearchScores(TreeNode* root, int level, int depth, int priority, bool maximizingPlayer) {
     if (!root)
         return;
 
@@ -424,10 +457,7 @@ void Tree::setExtraSearchScores(TreeNode* root, int level, int depth) {
         for (int i = 0; i < root->moves.size(); i++)
             root->movePieceOnState(root->moves[i]);
 
-        Tree* extendedTree = new Tree(root->table);
-        root->bestScore = MiniMax(extendedTree->root, depth, -INF, INF, root->table->turn, !(level % 2) ? true : false);
-
-        delete extendedTree;
+        root->bestScore = doExtraSearch(root->table, depth, priority, maximizingPlayer);
             
         for (int i = root->moves.size() - 1; i >= 0; i--)
             root->undoMoveOnState(root->moves[i]);
@@ -435,12 +465,15 @@ void Tree::setExtraSearchScores(TreeNode* root, int level, int depth) {
         TreeNode* root_ = root;
 
         while (root_->parent) {
-            root_->parent->bestScore = std::max(root_->parent->bestScore, root->bestScore);
+            if (root->bestScore > root_->parent->bestScore)
+                root_->parent->bestScore = root->bestScore;
+            else
+                break;
+
             root_ = root_->parent;
         }
     }
 
     for (TreeNode* child : root->children)
-        setExtraSearchScores(child, level + 1, depth);
-
+        setExtraSearchScores(child, level + 1, depth, priority, !maximizingPlayer);
 }
