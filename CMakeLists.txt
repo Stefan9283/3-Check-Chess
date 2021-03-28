@@ -1,7 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 project(3_Check_Chess)
 
-set(CMAKE_CXX_STANDARD 14)
+
+set(CMAKE_CXX_STANDARD 17)
+
+if(MSVC)
+	# Windows
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /MDd /std:c++17")
+else()
+	# Linux or WSL
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
+endif()
 
 include_directories(Include)
 
