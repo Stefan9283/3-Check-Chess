@@ -36,8 +36,6 @@ public:
 
     TreeNode* createNode(std::pair<vec2<int>, vec2<int>> move);
 
-    std::vector<std::pair<vec2<int>, vec2<int>>> sortMoves(std::vector<std::pair<vec2<int>, vec2<int>>> allMoves, int priority, bool ascendingOrder);
-
     void eliminatePieceFromState(ChessPiece* piece, int index);
 
     void movePieceOnState(MoveHistory move);
@@ -49,6 +47,10 @@ public:
     bool receivesCheck();
 
     float getBonus(bool maximizingPlayer);
+
+    float getScoreFromTerminalState(bool maximizingPlayer);
+
+    float getScoreFromState(int priority, bool maximizingPlayer);
 
     void undoEnPassant(ChessPiece* piece, vec2<int> pos);
 

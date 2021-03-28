@@ -123,6 +123,19 @@ depend:
 	$(MAKE) -f CMakeFiles/3_Check_Chess.dir/build.make CMakeFiles/3_Check_Chess.dir/build
 .PHONY : 3_Check_Chess/fast
 
+#=============================================================================
+# Target rules for targets named run
+
+# Build rule for target.
+run: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 run
+.PHONY : run
+
+# fast build rule for target.
+run/fast:
+	$(MAKE) -f CMakeFiles/run.dir/build.make CMakeFiles/run.dir/build
+.PHONY : run/fast
+
 Source/AlgoPicker.o: Source/AlgoPicker.cpp.o
 
 .PHONY : Source/AlgoPicker.o
@@ -375,6 +388,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... 3_Check_Chess"
+	@echo "... run"
 	@echo "... Source/AlgoPicker.o"
 	@echo "... Source/AlgoPicker.i"
 	@echo "... Source/AlgoPicker.s"

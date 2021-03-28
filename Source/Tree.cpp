@@ -22,32 +22,6 @@ TreeNode* TreeNode::createNode(std::pair<vec2<int>, vec2<int>> move) {
     return newNode;
 }
 
-std::vector<std::pair<vec2<int>, vec2<int>>> TreeNode::sortMoves(std::vector<std::pair<vec2<int>, vec2<int>>> allMoves, int priority, bool ascendingOrder) {
-    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves_sorted;
-    std::vector<Pair> pairs;
-
-    for (int i = 0; i < allMoves.size(); i++) {
-        MoveHistory moveHistory;
-
-        moveHistory.index = moves.size() + 1;
-        moveHistory.pos = allMoves[i];
-
-        movePieceOnState(moveHistory);
-        pairs.push_back({(table->getTotalScore('w') - table->getTotalScore('b')) * (!priority ? 1 : -1), allMoves[i]});
-        undoMoveOnState(moveHistory);
-    }
-
-    if (ascendingOrder)
-        std::sort(pairs.begin(), pairs.end(), [](const Pair& pair1, const Pair& pair2) { return pair1.score < pair2.score; });
-    else
-        std::sort(pairs.begin(), pairs.end(), [](const Pair& pair1, const Pair& pair2) { return pair1.score > pair2.score; });
-
-    for (int i = 0; i < pairs.size(); i++)
-        allMoves_sorted.push_back(pairs[i].pos);
-
-    return allMoves_sorted;
-}
-
 void TreeNode::eliminatePieceFromState(ChessPiece* piece, int index) {
     table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = nullptr;
     table->squares[piece->pos.x][piece->pos.y]->piece = nullptr;
@@ -171,27 +145,11 @@ void TreeNode::undoMoveOnState(MoveHistory move) {
 }
 
 bool TreeNode::givesCheck() {
-    for (int i = 0; i < moves.size(); i++)
-        movePieceOnState(moves[i]);
-
-    bool givesCheck = ((King*)table->pieces[table->turn][14])->isInCheck(table);
-
-    for (int i = moves.size() - 1; i >= 0; i--)
-        undoMoveOnState(moves[i]);
-
-    return givesCheck;
+    return ((King*)table->pieces[table->turn][14])->isInCheck(table);
 }
 
 bool TreeNode::receivesCheck() {
-    for (int i = 0; i < moves.size(); i++)
-        movePieceOnState(moves[i]);
-
-    bool receivesCheck = ((King*)table->pieces[!table->turn][14])->isInCheck(table);
-
-    for (int i = moves.size() - 1; i >= 0; i--)
-        undoMoveOnState(moves[i]);
-
-    return receivesCheck;
+    return ((King*)table->pieces[!table->turn][14])->isInCheck(table);
 }
 
 float TreeNode::getBonus(bool maximizingPlayer) {
@@ -210,12 +168,39 @@ float TreeNode::getBonus(bool maximizingPlayer) {
             return maximizingPlayer ? 1 : -1;
 
     if (givesCheck())
-        return maximizingPlayer ? -1 : 1;
+        return maximizingPlayer ? -0.5 : 0.5;
 
     if (receivesCheck())
-        return maximizingPlayer ? 1 : -1;
+        return maximizingPlayer ? 0.5 : -0.5;
    
     return 0;
+}
+
+float TreeNode::getScoreFromTerminalState(bool maximizingPlayer) {
+    if (maximizingPlayer) {
+        if (((King*)table->pieces[table->turn][14])->isInCheck(table))
+            return -INF;
+        
+        if (((King*)table->pieces[!table->turn][14])->isInCheck(table))
+            return INF;
+        
+        return 0;
+    } 
+    
+    if (((King*)table->pieces[table->turn][14])->isInCheck(table))
+        return INF;
+    
+    if (((King*)table->pieces[!table->turn][14])->isInCheck(table))
+        return -INF;
+    
+    return 0;
+}
+
+float TreeNode::getScoreFromState(int priority, bool maximizingPlayer) {
+    if (!table->getAllMoves().size())
+        return getScoreFromTerminalState(maximizingPlayer);
+
+    return (table->getTotalScore('w') - table->getTotalScore('b')) * (!priority ? 1 : -1);
 }
 
 void TreeNode::undoEnPassant(ChessPiece* piece, vec2<int> pos) {
@@ -304,43 +289,24 @@ Tree::~Tree() {
 
 float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int priority, bool maximizingPlayer) {
     if (!depth) {
-        float bestScore;
-
         for (int i = 0; i < root->moves.size(); i++)
             root->movePieceOnState(root->moves[i]);
 
-        bestScore = (root->table->getTotalScore('w') - root->table->getTotalScore('b')) * (!priority ? 1 : -1);
-            
+        root->bestScore = root->getScoreFromState(priority, maximizingPlayer) + root->getBonus(maximizingPlayer);
+
         for (int i = root->moves.size() - 1; i >= 0; i--)
             root->undoMoveOnState(root->moves[i]);
 
-        root->bestScore = bestScore + root->getBonus(maximizingPlayer);
         return root->bestScore;
     }
-
-    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves;
 
     for (int i = 0; i < root->moves.size(); i++)
         root->movePieceOnState(root->moves[i]);
 
-    root->table->markAllPossibleMoves();
-    allMoves = root->table->getAllMoves();
+    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves = root->table->getAllMoves();
 
     if (!allMoves.size()) {
-        if (maximizingPlayer) {
-            if (((King*)root->table->pieces[root->table->turn][14])->isInCheck(root->table))
-                root->bestScore = -INF;
-            else
-                root->bestScore = 0;
-        }
-        else {
-            if (((King*)root->table->pieces[root->table->turn][14])->isInCheck(root->table))
-                root->bestScore = INF;
-            else
-                root->bestScore = 0;
-        }
-
-        root->table->unmarkAllPossibleMoves();
+        root->bestScore = root->getScoreFromTerminalState(maximizingPlayer);
 
         for (int i = root->moves.size() - 1; i >= 0; i--)
             root->undoMoveOnState(root->moves[i]);
@@ -348,13 +314,10 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
         return root->bestScore;
     }
 
-    allMoves = root->sortMoves(allMoves, priority, !maximizingPlayer);
-    root->table->unmarkAllPossibleMoves();
-  
+    float bonus =  root->moves.size() ? root->getBonus(maximizingPlayer) : 0;
+
     for (int i = root->moves.size() - 1; i >= 0; i--)
         root->undoMoveOnState(root->moves[i]);
-
-    float bonus = root->moves.size() ? root->getBonus(maximizingPlayer) : 0;
 
     if (maximizingPlayer) {
         float maxScore = -INF;

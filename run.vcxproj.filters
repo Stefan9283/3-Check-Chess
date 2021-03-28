@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Ovidiu\Desktop\3-Check-Chess\CMakeFiles\eb314e44b3fa87457369b2635a90afad\run.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Ovidiu\Desktop\3-Check-Chess\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Ovidiu\Desktop\3-Check-Chess\CMakeFiles\run" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{4CA65947-8D23-3B60-90DE-A309606A1D6E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

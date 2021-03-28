@@ -662,11 +662,14 @@ bool Table::hasLegalMoves() {
 std::vector<std::pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
     std::vector<std::pair<vec2<int>, vec2<int>>> allMoves;
 
+    markAllPossibleMoves();
+    
     for (int i = 0; i < height; i++)
         for (int j = 0; j < width; j++)
             for (ChessPiece* piece : squares[i][j]->possibleMoves)
                 allMoves.push_back({piece->pos, vec2<int>(i, j)});
-    
+
+    unmarkAllPossibleMoves();
     return allMoves;
 }
 
