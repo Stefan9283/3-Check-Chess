@@ -1,4 +1,4 @@
 #! /usr/bin/bash
 
 bash clear.sh
-zip TheROOKies_Stage1.zip Include Source CmakeLists.txt 
+zip Etapa1.zip -r Include Source Makefile README.md

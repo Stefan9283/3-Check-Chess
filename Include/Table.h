@@ -11,7 +11,6 @@ typedef struct PieceHistory {
 class Square {
 public:
     char color;
-
     ChessPiece* piece;
     std::vector<ChessPiece*> possibleMoves;
 

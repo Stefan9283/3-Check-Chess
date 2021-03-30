@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
 	# Windows
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /MDd /std:c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /std:c++17")
 else()
 	# Linux or WSL
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -std=c++17")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 
 include_directories(Include)
@@ -18,6 +18,12 @@ file(GLOB SOURCES Source/*.cpp)
 
 add_custom_target(run
         COMMAND ./3_Check_Chess
+        DEPENDS 3_Check_Chess
+        WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+        )
+
+add_custom_target(build
+        COMMAND make
         DEPENDS 3_Check_Chess
         WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
         )
