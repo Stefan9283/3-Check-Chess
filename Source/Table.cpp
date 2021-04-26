@@ -479,7 +479,7 @@ string Table::getARandomMoveV2() {
         Square* sq = squares[x][y];
         if (sq->possibleMoves.size()) {
             uniform_int_distribution<int> mvdistribution(0, sq->possibleMoves.size() - 1);
-            string from = coords2string(sq->possibleMoves[mvdistribution(generator)]->pos), to = coords2string(vec2{x, y});
+            string from = coords2string(sq->possibleMoves[mvdistribution(generator)]->pos), to = coords2string(vec2<int>{x, y});
             unmarkAllPossibleMoves();
             return string("move ").append(from).append(to);
         }
