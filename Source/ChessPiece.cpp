@@ -249,9 +249,9 @@ ChessPiece* Pawn::promotePawn(Table* table, char op = 'q') {
         default:
             assert("Pawn promote operation is not valid" && op);
     }
+    return nullptr;
 }
 
-// Functii Ovidiu
 bool King::isInCheck(Table* table) {
 	int line = color == 'w' ? 1 : 0;
 

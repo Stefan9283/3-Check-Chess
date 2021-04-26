@@ -48,7 +48,7 @@ Engine::Engine() {
             t->movePiece(buffer);
 
             if (!editMode) {
-                string move = t->getARandomMove();
+                string move = t->getARandomMoveV2();
                 cout << move << "\n";
                 t->parseMove(move.c_str());
             }

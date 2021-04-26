@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "ChessPiece.h"
-#include "Tree.h"
 
 struct PieceHistory {
     pair<vec2<int>, vec2<int>> move;
@@ -147,7 +146,6 @@ public:
     Table();
     ~Table();
 
-    // Functii Stefan
     void movePiece(ChessPiece* piece, vec2<int> pos, char opt);
 
     void movePiece(ChessPiece* piece, const char* pos, char opt);
@@ -176,7 +174,6 @@ public:
 
     vector<ChessPiece*> getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
 
-    // Functii Ovidiu
     void parseMove(const char* s);
 
     float getTotalScore(char color);

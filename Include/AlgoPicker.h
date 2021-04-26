@@ -2,7 +2,7 @@
 #ifndef INC_3_CHECK_CHESS_ALGOPICKER_H
 #define INC_3_CHECK_CHESS_ALGOPICKER_H
 
-#include "common.h"
+#include "../../../Stefan/Downloads/3-Check-Chess-Omega/3-Check-Chess-Omega/Include/common.h"
 #include "Algorithm.h"
 
 class AlgoPicker {

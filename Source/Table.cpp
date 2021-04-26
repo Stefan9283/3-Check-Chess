@@ -84,7 +84,6 @@ Table::~Table() {
     }
 }
 
-//Functii Stefan
 #pragma region pieces manuvering
 void Table::movePiece(ChessPiece* piece, vec2<int> pos, char op) {
     assert(piece && "Piece meant to be moved is null");
@@ -353,7 +352,6 @@ vector<ChessPiece *> Table::getVulnerablePieces(int leastNumOfPiecesThatShouldBe
     return res;
 }
 
-// Functii Ovidiu
 void Table::parseMove(const char* s) {
     const char from[] = {s[strlen(s) - 4], s[strlen(s) - 3], '\0'};
     const char to[] = {s[strlen(s) - 2], s[strlen(s) - 1], '\0'};
@@ -425,19 +423,6 @@ int Table::getDegreesOfFreedoom() {
     return noOfMoves;
 }
 
-string Table::getBestMove(int depth) {
-    Tree* tree = new Tree(this);
-    float bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
-
-    pair<vec2<int>, vec2<int>> bestMove = tree->getBestChoice(3, turn, bestScore);
-
-    string from = coords2string(bestMove.first);
-    string to = coords2string(bestMove.second);
-
-    delete tree;
-    return string("move ").append(from).append(to);
-}
-
 string Table::getARandomMove() {
     srand(time(NULL));
     markAllPossibleMoves();
@@ -479,7 +464,7 @@ string Table::getARandomMoveV2() {
         Square* sq = squares[x][y];
         if (sq->possibleMoves.size()) {
             uniform_int_distribution<int> mvdistribution(0, sq->possibleMoves.size() - 1);
-            string from = coords2string(sq->possibleMoves[mvdistribution(generator)]->pos), to = coords2string(vec2{x, y});
+            string from = coords2string(sq->possibleMoves[mvdistribution(generator)]->pos), to = coords2string(vec2<int>{x, y});
             unmarkAllPossibleMoves();
             return string("move ").append(from).append(to);
         }

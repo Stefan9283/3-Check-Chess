@@ -40,7 +40,6 @@ public:
 
     vector<PieceMove> getPositions(Table* t) override;
 
-    // Functii Ovidiu
     bool isInCheck(Table* table);
 };
 

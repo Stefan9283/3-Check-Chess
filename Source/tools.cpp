@@ -1,6 +1,4 @@
-//
-// Created by Stefan on 08-Mar-21.
-//
+
 
 #include "tools.h"
 

@@ -5,8 +5,8 @@
 #ifndef INC_3_CHECK_CHESS_ALGORITHM_H
 #define INC_3_CHECK_CHESS_ALGORITHM_H
 
-#include "common.h"
-#include "Table.h"
+#include "../../../Stefan/Downloads/3-Check-Chess-Omega/3-Check-Chess-Omega/Include/common.h"
+#include "../../../Stefan/Downloads/3-Check-Chess-Omega/3-Check-Chess-Omega/Include/Table.h"
 
 class Algorithm {
 public:
