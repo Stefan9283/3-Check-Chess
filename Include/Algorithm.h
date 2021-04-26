@@ -1,12 +1,8 @@
-//
-// Created by Stefan on 08-Mar-21.
-//
-
 #ifndef INC_3_CHECK_CHESS_ALGORITHM_H
 #define INC_3_CHECK_CHESS_ALGORITHM_H
 
-#include "../../../Stefan/Downloads/3-Check-Chess-Omega/3-Check-Chess-Omega/Include/common.h"
-#include "../../../Stefan/Downloads/3-Check-Chess-Omega/3-Check-Chess-Omega/Include/Table.h"
+#include "common.h"
+#include "Table.h"
 
 class Algorithm {
 public:
