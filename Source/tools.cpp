@@ -6,5 +6,5 @@
 
 void printTabs(int count) {
     for (int i = 0; i < count; ++i)
-        std::cout << "\t";
+        cout << "\t";
 }

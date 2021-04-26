@@ -10,7 +10,7 @@ Square::Square(char color, ChessPiece* piece) {
 
 Table::Table() {
     for (int i = 0; i < height; i++) {
-        std::vector<Square*> line;
+        vector<Square*> line;
 
         for (int j = 0; j < width; j++) {
             char color = i % 2 == 0 ? (j % 2 == 0 ? 'b' : 'w') : (j % 2 == 0 ? 'w' : 'b');
@@ -21,7 +21,7 @@ Table::Table() {
         squares.push_back(line);
     }
 
-    std::vector<ChessPiece*> white, black;
+    vector<ChessPiece*> white, black;
 
     for (int j = 0; j < width; j++) {
         squares[1][j]->piece = new Pawn('w', vec2<int>{ 1, j }, j);
@@ -86,16 +86,18 @@ Table::~Table() {
 
 //Functii Stefan
 #pragma region pieces manuvering
-void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
+void Table::movePiece(ChessPiece* piece, vec2<int> pos, char op) {
     assert(piece && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
     if (dynamic_cast<Pawn*>(piece)) {
         if (!pos.x || pos.x == height - 1) {
-            Queen* queen = ((Pawn*)piece)->promotePawn(this);
+
+
+            ChessPiece* newChesspiece = ((Pawn*)piece)->promotePawn(this, op);
 
             removePiece(piece);
-            piece = queen;
+            piece = newChesspiece;
 
             pieces[piece->color == 'w' ? 0 : 1].push_back(piece);
             piece->noOfMoves--;
@@ -134,21 +136,21 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos) {
     squares[pos.x][pos.y]->piece = piece;
     piece->pos = pos;
 
-    addMove2History(std::make_pair(prev, pos));
+    addMove2History(make_pair(prev, pos));
     turn = 1 - turn;
 }
-void Table::movePiece(ChessPiece *piece, const char* pos) {
+void Table::movePiece(ChessPiece *piece, const char* pos, char op) {
     assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
 
     if (pos[0] >= 'a' && isInside(vec2<int>{pos[1] - '1', pos[0] - 'a'}))
-        movePiece(piece, vec2<int>{pos[1] - '1', pos[0] - 'a'});
+        movePiece(piece, vec2<int>{pos[1] - '1', pos[0] - 'a'}, op);
     else
         if (isInside(vec2<int>{pos[0] - '1', pos[1] - 'a'}))
-            movePiece(piece, vec2<int>{pos[0] - '1', pos[1] - 'a'});
+            movePiece(piece, vec2<int>{pos[0] - '1', pos[1] - 'a'}, op);
         else assert(!"Illegal move position");
 }
 void Table::movePiece(const char* move) {
-    movePiece(getPiece(move), move + 2);
+    movePiece(getPiece(move), move + 2, move[4]);
 }
 void Table::removePiece(ChessPiece* piece) {
     assert(piece != nullptr && "Piece meant to be deleted is null");
@@ -192,17 +194,17 @@ vec2<int> Table::string2coords(const char *coords) {
     return {coords[1] - '0' - 1, coords[0] - 'a'};
 }
 
-std::string Table::coords2string(vec2<int> pos) const {
+string Table::coords2string(vec2<int> pos) const {
     assert(isInside(pos) && "Position outside of the table");
-    std::string s = "a";
+    string s = "a";
     s[0] += pos.y;
-    return s.append(std::to_string(pos.x + 1));
+    return s.append(to_string(pos.x + 1));
 }
 
-std::string Table::pickAMove() {
+string Table::pickAMove() {
     AlgoPicker* picker = new TestPicker();
     Algorithm* algo = picker->pickAlgorithm(this);
-    std::string move = "move ";
+    string move = "move ";
     move = move + algo->pickMove(this);
     vec2<int> start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
     delete algo;
@@ -239,102 +241,103 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
             table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = table->squares[i][j]->piece;
         }
 
-    if (piece)
-        table->movePiece(table->squares[piece->pos.x][piece->pos.y]->piece, pos);
-
+    if (piece) {
+        char op = 'q';
+        table->movePiece(table->squares[piece->pos.x][piece->pos.y]->piece, pos, op);  // TODO completeaza cu q/r/b/n pentru promote de pion sau cu orice altceva daca nu se face promote
+    }
     return table;
 }
 
 void Table::printGameBoard(char perspective, bool fromZero, bool yLetters, int tabsCount)  {
     assert(perspective == 'r' || perspective == 'b' || perspective == 'w' && "Perpective (w)hite/(b)lack/(r)otated");
-    printTabs(tabsCount); std::cout << "##################################\n";
+    printTabs(tabsCount); cout << "##################################\n";
     if (perspective == 'w') {
 
         for (int i = height - 1; i >= 0; --i) {
             printTabs(tabsCount);
-            if (fromZero) std::cout << i << "| ";
-                    else std::cout << i + 1 << "| ";
+            if (fromZero) cout << i << "| ";
+                    else cout << i + 1 << "| ";
 
                 for (int j = 0; j < width; ++j)
                     if (squares[i][j]->piece) {
-                        std::cout << " " << squares[i][j]->piece->abbreviation;
-                        std::cout << squares[i][j]->piece->color << " ";
+                        cout << " " << squares[i][j]->piece->abbreviation;
+                        cout << squares[i][j]->piece->color << " ";
                     } else
-                        std::cout << " -- ";
+                        cout << " -- ";
 
-            std::cout << "\n";
+            cout << "\n";
         }
 
-        printTabs(tabsCount); std::cout << "   -------------------------------\n";
-        printTabs(tabsCount); std::cout << "   ";
+        printTabs(tabsCount); cout << "   -------------------------------\n";
+        printTabs(tabsCount); cout << "   ";
 
         for (int j = 0; j < width; ++j)
             if (fromZero)
-                std::cout << " " << j << "  ";
-            else if (yLetters) std::cout << " " << (char)('a' + j) << "  ";
-            else std::cout << " " << j + 1 << "  ";
-        std::cout << "\n";
+                cout << " " << j << "  ";
+            else if (yLetters) cout << " " << (char)('a' + j) << "  ";
+            else cout << " " << j + 1 << "  ";
+        cout << "\n";
     } else if (perspective == 'b') {
         printTabs(tabsCount);
         for (int j = width - 1; j >= 0; --j)
             if (fromZero)
-                std::cout << " " << j << "  ";
-            else if (yLetters) std::cout << " " << (char)('a' + j) << "  ";
-            else std::cout << " " << j + 1 << "  ";
-        std::cout << "\n";
-        printTabs(tabsCount); std::cout << " -----------------------------------\n";
+                cout << " " << j << "  ";
+            else if (yLetters) cout << " " << (char)('a' + j) << "  ";
+            else cout << " " << j + 1 << "  ";
+        cout << "\n";
+        printTabs(tabsCount); cout << " -----------------------------------\n";
         for (int i = 0; i <= height - 1; ++i) {
             printTabs(tabsCount);
             for (int j = width - 1; j >= 0; --j) {
                 if (squares[i][j]->piece) {
-                    std::cout << " " << squares[i][j]->piece->abbreviation;
-                    std::cout << squares[i][j]->piece->color << " ";
+                    cout << " " << squares[i][j]->piece->abbreviation;
+                    cout << squares[i][j]->piece->color << " ";
                 }
                 else
-                    std::cout << " -- ";
+                    cout << " -- ";
             }
-            if (fromZero) std::cout << " |" << i ;
-            else std::cout << " |" << i + 1 ;
-            std::cout << "\n";
+            if (fromZero) cout << " |" << i ;
+            else cout << " |" << i + 1 ;
+            cout << "\n";
         }
     } else {
         printTabs(tabsCount);
-        std::cout << "    ";
+        cout << "    ";
         for (int k = 0; k < width; ++k)
             if (fromZero)
-                std::cout << " " << k << "  ";
-                else std::cout << " " << k + 1 << "  ";
+                cout << " " << k << "  ";
+                else cout << " " << k + 1 << "  ";
 
-        std::cout << "\n";
+        cout << "\n";
         printTabs(tabsCount);
-        std::cout << "   ";
+        cout << "   ";
         for (int k = 0; k < width; ++k)
-            std::cout << "----";
-        std::cout << "\n";
+            cout << "----";
+        cout << "\n";
 
         for (int i = 0; i < width ; ++i) {
             printTabs(tabsCount);
             if (fromZero)
-                std::cout << " " << width - i - 1 << " |";
-            else if (yLetters) std::cout << " " << (char)('a' + i) << " |";
-            else std::cout << " " << width - i << " |";
+                cout << " " << width - i - 1 << " |";
+            else if (yLetters) cout << " " << (char)('a' + i) << " |";
+            else cout << " " << width - i << " |";
 
             for (int j = height - 1; j >= 0; --j) {
                 if (squares[j][i]->piece) {
-                    std::cout << " " << squares[j][i]->piece->abbreviation;
-                    std::cout << squares[j][i]->piece->color << " ";
+                    cout << " " << squares[j][i]->piece->abbreviation;
+                    cout << squares[j][i]->piece->color << " ";
                 }
                 else
-                    std::cout << " -- ";
+                    cout << " -- ";
             }
-            std::cout << "\n";
+            cout << "\n";
         }
     }
-    printTabs(tabsCount); std::cout << "##################################\n";
+    printTabs(tabsCount); cout << "##################################\n";
 }
 
-std::vector<ChessPiece *> Table::getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece) {
-    std::vector<ChessPiece *> res;
+vector<ChessPiece *> Table::getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece) {
+    vector<ChessPiece *> res;
 
     turn = 1 - turn;
     markAllPossibleMoves();
@@ -355,7 +358,8 @@ void Table::parseMove(const char* s) {
     const char from[] = {s[strlen(s) - 4], s[strlen(s) - 3], '\0'};
     const char to[] = {s[strlen(s) - 2], s[strlen(s) - 1], '\0'};
 
-    movePiece(getPiece(from), to);
+    char op = 'q';
+    movePiece(getPiece(from), to, op); // TODO completeaza cu q/r/b/n pentru promote de pion sau cu orice altceva daca nu se face promote
 }
 
 float Table::getTotalScore(char color) {
@@ -421,20 +425,20 @@ int Table::getDegreesOfFreedoom() {
     return noOfMoves;
 }
 
-std::string Table::getBestMove(int depth) {
+string Table::getBestMove(int depth) {
     Tree* tree = new Tree(this);
     float bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
 
-    std::pair<vec2<int>, vec2<int>> bestMove = tree->getBestChoice(3, turn, bestScore);
+    pair<vec2<int>, vec2<int>> bestMove = tree->getBestChoice(3, turn, bestScore);
 
-    std::string from = coords2string(bestMove.first);
-    std::string to = coords2string(bestMove.second);
+    string from = coords2string(bestMove.first);
+    string to = coords2string(bestMove.second);
 
     delete tree;
-    return std::string("move ").append(from).append(to);
+    return string("move ").append(from).append(to);
 }
 
-std::string Table::getARandomMove() {
+string Table::getARandomMove() {
     srand(time(NULL));
     markAllPossibleMoves();
 
@@ -445,12 +449,42 @@ std::string Table::getARandomMove() {
 
     int moveNo = rand() % squares[squareNo / height][squareNo % width]->possibleMoves.size();
 
-    std::string from = coords2string(squares[squareNo / height][squareNo % width]->possibleMoves[moveNo]->pos);
-    std::string to = coords2string(vec2<int>(squareNo / height, squareNo % width));
+    string from = coords2string(squares[squareNo / height][squareNo % width]->possibleMoves[moveNo]->pos);
+    string to = coords2string(vec2<int>(squareNo / height, squareNo % width));
 
     unmarkAllPossibleMoves();
-    return std::string("move ").append(from).append(to);
+    return string("move ").append(from).append(to);
 }
+
+string Table::getARandomMoveV2() {
+    default_random_engine generator;
+
+    markAllPossibleMoves();
+
+    bool atLeastOneMove = false;
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (squares[i][j]->possibleMoves.size()) {
+                atLeastOneMove = true;
+                break;
+            }
+        }
+    }
+
+    if (!atLeastOneMove) return string("resign");
+
+    uniform_int_distribution<int> xdistribution(0,7), ydistribution(0,7);
+    while (1) {
+        int x = xdistribution(generator), y = ydistribution(generator);
+        Square* sq = squares[x][y];
+        if (sq->possibleMoves.size()) {
+            uniform_int_distribution<int> mvdistribution(0, sq->possibleMoves.size() - 1);
+            string from = coords2string(sq->possibleMoves[mvdistribution(generator)]->pos), to = coords2string(vec2{x, y});
+            unmarkAllPossibleMoves();
+            return string("move ").append(from).append(to);
+        }
+    }
+ }
 
 void Table::castleShort(King* king) {
     vec2<int> prev = king->pos;
@@ -469,7 +503,7 @@ void Table::castleShort(King* king) {
     ((Rook*)pieces[turn][9])->wasMoved = true;
     pieces[turn][9]->noOfMoves++;
 
-    addMove2History(std::make_pair(prev, vec2<int>(!turn ? 0 : 7, 6)));
+    addMove2History(make_pair(prev, vec2<int>(!turn ? 0 : 7, 6)));
     turn = 1 - turn;
 }
 
@@ -490,7 +524,7 @@ void Table::castleLong(King* king) {
     ((Rook*)pieces[turn][8])->wasMoved = true;
     pieces[turn][8]->noOfMoves++;
 
-    addMove2History(std::make_pair(prev, vec2<int>(!turn ? 0 : 7, 2)));
+    addMove2History(make_pair(prev, vec2<int>(!turn ? 0 : 7, 2)));
     turn = 1 - turn;
 }
 
@@ -521,15 +555,16 @@ void Table::moveInAdvance(const char* moves, char color) {
         from[0] = moves[i + 1]; from[1] = moves[i + 2]; from[2] = '\0';
         to[0] = moves[i + 5]; to[1] = moves[i + 6]; to[2] = '\0';
 
-        movePiece(getPiece(from), to);
+        char op = 'q'; // TODO completeaza cu q/r/b/n pentru promote de pion sau cu orice altceva daca nu se face promote
+        movePiece(getPiece(from), to, op);
         color = color == 'w' ? 'b' : 'w';
     }
 }
 
 bool Table::hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2) {
     if (pos1.x == pos2.x) {
-        int stY = std::min(pos1.y, pos2.y) + 1;
-        int spY = std::max(pos1.y, pos2.y) - 1;
+        int stY = min(pos1.y, pos2.y) + 1;
+        int spY = max(pos1.y, pos2.y) - 1;
 
         while (stY <= spY) {
             if (squares[pos1.x][stY]->piece)
@@ -541,8 +576,8 @@ bool Table::hasNoPiecesBetween_axis(vec2<int> pos1, vec2<int> pos2) {
         return true;
     }
 
-    int stX = std::min(pos1.x, pos2.x) + 1;
-    int spX = std::max(pos1.x, pos2.x) - 1;
+    int stX = min(pos1.x, pos2.x) + 1;
+    int spX = max(pos1.x, pos2.x) - 1;
 
     while (stX <= spX) {
         if (squares[stX][pos1.y]->piece)
@@ -659,8 +694,8 @@ bool Table::hasLegalMoves() {
     return found;
 }
 
-std::vector<std::pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
-    std::vector<std::pair<vec2<int>, vec2<int>>> allMoves;
+vector<pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
+    vector<pair<vec2<int>, vec2<int>>> allMoves;
 
     markAllPossibleMoves();
     

@@ -27,7 +27,7 @@ public:
 
     virtual ~ChessPiece();
 
-    virtual std::vector<PieceMove> getPositions(Table* t) = 0;
+    virtual vector<PieceMove> getPositions(Table* t) = 0;
 };
 
 class King : public ChessPiece {
@@ -38,7 +38,7 @@ public:
 
     King(char color, vec2<int> pos, int index);
 
-    std::vector<PieceMove> getPositions(Table* t) override;
+    vector<PieceMove> getPositions(Table* t) override;
 
     // Functii Ovidiu
     bool isInCheck(Table* table);
@@ -48,7 +48,7 @@ class Queen : public ChessPiece {
 public:
     Queen(char color, vec2<int> pos, int index);
 
-    std::vector<PieceMove> getPositions(Table* t) override;
+    vector<PieceMove> getPositions(Table* t) override;
 };
 
 class Rook : public ChessPiece {
@@ -57,21 +57,21 @@ public:
 
     Rook(char color, vec2<int> pos, int index);
 
-    std::vector<PieceMove> getPositions(Table* t) override;
+    vector<PieceMove> getPositions(Table* t) override;
 };
 
 class Knight : public ChessPiece {
 public:
     Knight(char color, vec2<int> pos, int index);
 
-    std::vector<PieceMove> getPositions(Table* t) override;
+    vector<PieceMove> getPositions(Table* t) override;
 };
 
 class Bishop : public ChessPiece {
 public:
     Bishop(char color, vec2<int> pos, int index);
 
-    std::vector<PieceMove> getPositions(Table* t) override;
+    vector<PieceMove> getPositions(Table* t) override;
 };
 
 class Pawn : public ChessPiece {
@@ -80,9 +80,9 @@ public:
 
     Pawn(char color, vec2<int> pos, int index);
 
-    std::vector<PieceMove> getPositions(Table* t) override;
+    vector<PieceMove> getPositions(Table* t) override;
 
-    Queen* promotePawn(Table* table);
+    ChessPiece* promotePawn(Table* table, char op);
 };
 
 #endif //INC_3_CHECK_CHESS_CHESSPIECE_H

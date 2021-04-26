@@ -4,9 +4,9 @@
 
 using namespace std;
 
-std::string RandomChessPiecePicker::pickMove(Table* t) {
+string RandomChessPiecePicker::pickMove(Table* t) {
     srand(time(0));
-    std::ofstream f("out2.txt");
+    ofstream f("out2.txt");
     
     streambuf* stream_buffer_cout = cout.rdbuf(); 
     streambuf* stream_buffer_file = f.rdbuf(); 
@@ -15,7 +15,7 @@ std::string RandomChessPiecePicker::pickMove(Table* t) {
         int index = rand() % t->pieces.size();
         f << "AAAAAAAAAAAAAAAAAAAAA\n";
         if (t->pieces[t->orientation][index]) {
-            std::vector<PieceMove> moves = t->pieces[t->orientation][index]->getPositions(t);
+            vector<PieceMove> moves = t->pieces[t->orientation][index]->getPositions(t);
             int moveIndex = rand() % moves.size();
             f << index << " " << moveIndex << " " << t->coords2string(t->pieces[t->orientation][index]->pos) + t->coords2string(moves[moveIndex].ownMove) << "\n";
             t->printGameBoard();            
@@ -32,8 +32,8 @@ vec2<float> RandomChessPiecePicker::CalculateStateScore(Table *t) {
 
 
 
-std::string dontHurtMe::pickMove(Table *t) {
-    return std::string();
+string dontHurtMe::pickMove(Table *t) {
+    return string();
 }
 vec2<float> dontHurtMe::CalculateStateScore(Table *t) {
     vec2<float> scores{};
@@ -60,8 +60,8 @@ vec2<float> dontHurtMe::CalculateStateScore(Table *t) {
     };
 }
 
-std::string BringThemOn::pickMove(Table *t) {
-    return std::string();
+string BringThemOn::pickMove(Table *t) {
+    return string();
 }
 vec2<float> BringThemOn::CalculateStateScore(Table *t) {
     vec2<float> scores{};
@@ -95,8 +95,8 @@ vec2<float> BringThemOn::CalculateStateScore(Table *t) {
     return scores; //TODO use this --> 10 * (scores/9 + pieceCounter/16);
 }
 
-std::string IamDeathIncarnate::pickMove(Table *t) {
-    return std::string();
+string IamDeathIncarnate::pickMove(Table *t) {
+    return string();
 }
 vec2<float> IamDeathIncarnate::CalculateStateScore(Table *t) {
     vec2<float> scores{};
@@ -132,8 +132,8 @@ vec2<float> IamDeathIncarnate::CalculateStateScore(Table *t) {
     return scores;
 }
 
-std::string UberMode::pickMove(Table *t) {
-    return std::string();
+string UberMode::pickMove(Table *t) {
+    return string();
 }
 vec2<float> UberMode::CalculateStateScore(Table *t) {
     vec2<float> scores{};

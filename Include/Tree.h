@@ -11,12 +11,12 @@ class Table;
 
 struct MoveHistory {
     int index;
-    std::pair<vec2<int>, vec2<int>> pos;
+    pair<vec2<int>, vec2<int>> pos;
 };
 
 struct Pair {
     float score;
-    std::pair<vec2<int>, vec2<int>> pos;
+    pair<vec2<int>, vec2<int>> pos;
 };
 
 class TreeNode {
@@ -24,17 +24,17 @@ public:
     Table* table;
 
     float bestScore = -INF;
-    std::vector<MoveHistory> moves;
+    vector<MoveHistory> moves;
 
-    std::vector<std::pair<ChessPiece*, int>> addedPieces;
-    std::vector<std::pair<ChessPiece*, int>> deletedPieces;
+    vector<pair<ChessPiece*, int>> addedPieces;
+    vector<pair<ChessPiece*, int>> deletedPieces;
 
     TreeNode* parent = nullptr;
-    std::vector<TreeNode*> children;
+    vector<TreeNode*> children;
 
     TreeNode(Table* table);
 
-    TreeNode* createNode(std::pair<vec2<int>, vec2<int>> move);
+    TreeNode* createNode(pair<vec2<int>, vec2<int>> move);
 
     void eliminatePieceFromState(ChessPiece* piece, int index);
 
@@ -80,7 +80,7 @@ public:
 
     void countNodes(TreeNode* root, int* no);
 
-    std::pair<vec2<int>, vec2<int>> getBestChoice(int depth, int priority, float score);
+    pair<vec2<int>, vec2<int>> getBestChoice(int depth, int priority, float score);
 
     void getCompressedTree(TreeNode* root, TreeNode* root_, float score);
 

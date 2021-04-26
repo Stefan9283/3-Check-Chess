@@ -2,6 +2,7 @@
 
 Engine::Engine() {
     char buffer[256];
+    bool editMode = false;
 
     signal(SIGTERM, SIG_IGN);
     signal(SIGINT, SIG_IGN);
@@ -17,39 +18,39 @@ Engine::Engine() {
             continue;
 
         if (strstr(buffer, "protover 2")) {
-            std::cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
+            cout << "feature sigint=0 sigterm=0 san=0 name=Maximuss\n";
             continue;
         }
 
         if (strstr(buffer, "new")) {
-            if (table)
-                delete table;
-
-            table = new Table();
+            delete t;
+            t = new Table();
             continue;
         }
 
         if (strstr(buffer, "go")) {
-            std::string move = table->getBestMove(4);
-            table->parseMove(move.c_str());
-            std::cout << move << "\n";
+            editMode = false;
+            string move = t->getARandomMove();
+            cout << move << "\n";
+            t->parseMove(move.c_str());
             continue;
         }
 
-        if (strstr(buffer, "quit")) {
-            if (table)
-                delete table;
+        if (strstr(buffer, "force"))
+            editMode = true;
 
+        if (strstr(buffer, "quit")) {
+            delete t;
             break;
         }
 
         if (buffer[0] >= 'a' && buffer[0] <= 'z' && buffer[1] >= '1' && buffer[1] <= '9') {
-            table->movePiece(buffer);
+            t->movePiece(buffer);
 
-            if (table->hasLegalMoves()) {
-                std::string move = table->getBestMove(5);
-                table->parseMove(move.c_str());
-                std::cout << move << "\n";
+            if (!editMode) {
+                string move = t->getARandomMove();
+                cout << move << "\n";
+                t->parseMove(move.c_str());
             }
         }
     }

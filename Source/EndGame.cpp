@@ -5,12 +5,12 @@ float PiecesVsKing::MiniMax(TreeNode* root, int depth, float alpha, float beta, 
 	return 0.0f;
 }
 
-std::string PiecesVsKing::getBestMove(Table* table, int depth) {
+string PiecesVsKing::getBestMove(Table* table, int depth) {
 	if (advantageousPart == table->turn) {
 
 	} else {
 
 	}
 
-	return std::string("move");
+	return string("move");
 }

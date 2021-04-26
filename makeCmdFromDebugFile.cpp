@@ -20,6 +20,7 @@ int main() {
     string cmd = "table->moveInAdvance(\"";
     while(getline(f, line ) ) 
     {
+        if (strstr(line.c_str(), "undo")) continue;
         if (strstr(line.c_str(), "first : ") && !strstr(line.c_str(), "tim") && !strstr(line.c_str(), "accept")
         && !strstr(line.c_str(), "=") && !strstr(line.c_str(), "xboard") && !strstr(line.c_str(), "new") && !strstr(line.c_str(), "level")
         && !strstr(line.c_str(), "hard") && !strstr(line.c_str(), "result") && !strstr(line.c_str(), "post") && !strstr(line.c_str(), "force")

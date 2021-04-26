@@ -60,11 +60,11 @@ public:
     float getDistanceTo(vec2<T> v) {
         return sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y));
     }
-    std::string toString() {
-        return std::string("vec2(").
-               append(std::to_string(x)).
+    string toString() {
+        return string("vec2(").
+               append(to_string(x)).
                append(", ").
-               append(std::to_string(y)).
+               append(to_string(y)).
                append(")");
     }
 };

@@ -8,8 +8,8 @@ ChessPiece::ChessPiece(char color, vec2<int> pos, int index) {
 ChessPiece::~ChessPiece() = default;
 
 King::King(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 0; abbreviation = 'K';}
-std::vector<PieceMove> King::getPositions(Table* t) {
-    std::vector<PieceMove> moves;
+vector<PieceMove> King::getPositions(Table* t) {
+    vector<PieceMove> moves;
 
     vec2<int> v{};
 
@@ -49,8 +49,8 @@ std::vector<PieceMove> King::getPositions(Table* t) {
 } // {DONE}
 
 Queen::Queen(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 9; abbreviation = 'Q';}
-std::vector<PieceMove> Queen::getPositions(Table* t) {
-    std::vector<PieceMove> moves, rmoves, bmoves;
+vector<PieceMove> Queen::getPositions(Table* t) {
+    vector<PieceMove> moves, rmoves, bmoves;
 
     Rook r(color, pos, index);;
     rmoves = r.getPositions(t);
@@ -64,8 +64,8 @@ std::vector<PieceMove> Queen::getPositions(Table* t) {
 } // {DONE}
 
 Rook::Rook(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 5; abbreviation = 'R';}
-std::vector<PieceMove> Rook::getPositions(Table* t) {
-    std::vector<PieceMove> moves;
+vector<PieceMove> Rook::getPositions(Table* t) {
+    vector<PieceMove> moves;
     int i;
 
     i = 1;
@@ -109,8 +109,8 @@ std::vector<PieceMove> Rook::getPositions(Table* t) {
 } // {DONE}
 
 Bishop::Bishop(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 3; abbreviation = 'B';}
-std::vector<PieceMove> Bishop::getPositions(Table* t) {
-    std::vector<PieceMove> moves;
+vector<PieceMove> Bishop::getPositions(Table* t) {
+    vector<PieceMove> moves;
 
     int i;
 
@@ -169,8 +169,8 @@ std::vector<PieceMove> Bishop::getPositions(Table* t) {
 } // {DONE}
 
 Knight::Knight(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 3; abbreviation = 'N';}
-std::vector<PieceMove> Knight::getPositions(Table* t) {
-    std::vector<PieceMove> moves;
+vector<PieceMove> Knight::getPositions(Table* t) {
+    vector<PieceMove> moves;
 
     vec2<int> v{};
 
@@ -210,8 +210,8 @@ std::vector<PieceMove> Knight::getPositions(Table* t) {
 } // {DONE}
 
 Pawn::Pawn(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 1; abbreviation = 'P';}
-std::vector<PieceMove> Pawn::getPositions(Table* t) {
-    std::vector<PieceMove> moves;
+vector<PieceMove> Pawn::getPositions(Table* t) {
+    vector<PieceMove> moves;
 
     int direction = color == 'w' ? 1 : -1;
 
@@ -235,11 +235,23 @@ std::vector<PieceMove> Pawn::getPositions(Table* t) {
         return moves;
     } // {DONE}
 
-// Functii Ovidiu
-Queen* Pawn::promotePawn(Table* table) {
-    return new Queen(color, pos, table->pieces[color == 'w' ? 0 : 1].size());
+// TODO verifica asta
+ChessPiece* Pawn::promotePawn(Table* table, char op = 'q') {
+    switch (op) {
+        case 'q':
+            return new Queen(color, pos, table->pieces[color == 'w' ? 0 : 1].size());
+        case 'n':
+            return new Knight(color, pos, table->pieces[color == 'w' ? 0 : 1].size());
+        case 'r':
+            return new Rook(color, pos, table->pieces[color == 'w' ? 0 : 1].size());
+        case 'b':
+            return new Bishop(color, pos, table->pieces[color == 'w' ? 0 : 1].size());
+        default:
+            assert("Pawn promote operation is not valid" && op);
+    }
 }
 
+// Functii Ovidiu
 bool King::isInCheck(Table* table) {
 	int line = color == 'w' ? 1 : 0;
 

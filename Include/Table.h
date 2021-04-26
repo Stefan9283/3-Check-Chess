@@ -6,7 +6,7 @@
 #include "Tree.h"
 
 struct PieceHistory {
-    std::pair<vec2<int>, vec2<int>> move;
+    pair<vec2<int>, vec2<int>> move;
 };
 
 struct PositionFactor {
@@ -128,7 +128,7 @@ public:
     char color;
 
     ChessPiece* piece;
-    std::vector<ChessPiece*> possibleMoves;
+    vector<ChessPiece*> possibleMoves;
 
     Square(char color, ChessPiece* piece);
 };
@@ -140,17 +140,17 @@ public:
 
     PositionFactor posFact;
 
-    std::vector<std::vector<Square*>> squares;
-    std::vector<std::vector<ChessPiece*>> pieces;
-    std::vector<PieceHistory> history;
+    vector<vector<Square*>> squares;
+    vector<vector<ChessPiece*>> pieces;
+    vector<PieceHistory> history;
 
     Table();
     ~Table();
 
     // Functii Stefan
-    void movePiece(ChessPiece* piece, vec2<int> pos);
+    void movePiece(ChessPiece* piece, vec2<int> pos, char opt);
 
-    void movePiece(ChessPiece* piece, const char* pos);
+    void movePiece(ChessPiece* piece, const char* pos, char opt);
 
     void movePiece(const char* move);
 
@@ -160,21 +160,21 @@ public:
     static bool canIPlaceItHere(ChessPiece* cp, Square* sq);
     bool isInside(vec2<int> pos) const;
 
-    std::string coords2string(vec2<int> pos) const;
+    string coords2string(vec2<int> pos) const;
 
     vec2<int> string2coords(const char* coords);
 
     static int getSquareScore(Square* sq, char myColor);
 
     Table* createNewState(ChessPiece* piece = nullptr, vec2<int> pos = vec2<int>());
-    std::string pickAMove();
+    string pickAMove();
     void printGameBoard(char perspective = 'w', bool fromZero = false, bool yLetters = true, int tabsCount = 0);
 
-    void addMove2History(std::pair<vec2<int>, vec2<int>> move) {
+    void addMove2History(pair<vec2<int>, vec2<int>> move) {
         history.push_back({move});
     }
 
-    std::vector<ChessPiece*> getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
+    vector<ChessPiece*> getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
 
     // Functii Ovidiu
     void parseMove(const char* s);
@@ -183,9 +183,11 @@ public:
 
     int getDegreesOfFreedoom();
 
-    std::string getBestMove(int depth);
+    string getBestMove(int depth);
 
-    std::string getARandomMove();
+    string getARandomMove();
+
+    string getARandomMoveV2();
 
     void castleShort(King* king);
     
@@ -209,7 +211,7 @@ public:
 
     bool hasLegalMoves();
 
-    std::vector<std::pair<vec2<int>, vec2<int>>> getAllMoves();
+    vector<pair<vec2<int>, vec2<int>>> getAllMoves();
 
     void markAllPossibleMoves();
 

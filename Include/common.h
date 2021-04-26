@@ -5,6 +5,15 @@
 #define INF INT_MAX
 #define EPS 0.001
 
+#include <cstring>
+#include <climits>
+#include <fcntl.h>
+#include <cstdio>
+#include <csignal>
+#include <cstdlib>
+#include <ctime>
+#include <cassert>
+
 #include <iostream>
 #include <vector>
 #include <map>
@@ -13,19 +22,11 @@
 #include <deque>
 #include <stack>
 #include <algorithm>
-#include <climits>
-
+#include <random>
 #include <string>
-#include <cstring>
 
-#include <fcntl.h>
-#include <cstdio>
-#include <csignal>
-#include <cstdlib>
-#include <ctime>
-#include <cassert>
+using namespace std;
 
 #include "Vec2.h"
-
 
 #endif //INC_3_CHECK_CHESS_COMMON_H
