@@ -253,60 +253,47 @@ ChessPiece* Pawn::promotePawn(Table* table, char op = 'q') {
 }
 
 bool King::isInCheck(Table* table) {
-	int line = color == 'w' ? 1 : 0;
+    int line = color == 'w' ? 1 : 0;
 
-	// Check from pawn
-	for (int j = 0; j < table->width; j++)
-		if (table->pieces[line][j])
-			if (((color == 'w' && table->pieces[line][j]->pos.x == pos.x + 1) ||
-				(color == 'b' && table->pieces[line][j]->pos.x == pos.x - 1)) &&
-				abs(table->pieces[line][j]->pos.y - pos.y) == 1)
-					return true;
-
-	// Check from rook
-	if (table->pieces[line][8])
-		if (table->pieces[line][8]->pos.x == pos.x || table->pieces[line][8]->pos.y == pos.y)
-			if (table->hasNoPiecesBetween_axis(table->pieces[line][8]->pos, pos))
-				return true;
-
-	if (table->pieces[line][9])
-		if (table->pieces[line][9]->pos.x == pos.x || table->pieces[line][9]->pos.y == pos.y)
-			if (table->hasNoPiecesBetween_axis(table->pieces[line][9]->pos, pos))
-				return true;
-
-	// Check from knight
-	if (table->pieces[line][10])
-		if ((abs(table->pieces[line][10]->pos.x - pos.x) == 2 && abs(table->pieces[line][10]->pos.y - pos.y) == 1) ||
-			(abs(table->pieces[line][10]->pos.y - pos.y) == 2 && abs(table->pieces[line][10]->pos.x - pos.x) == 1))
-				return true;
-
-	if (table->pieces[line][11])
-		if ((abs(table->pieces[line][11]->pos.x - pos.x) == 2 && abs(table->pieces[line][11]->pos.y - pos.y) == 1) ||
-			(abs(table->pieces[line][11]->pos.y - pos.y) == 2 && abs(table->pieces[line][11]->pos.x - pos.x) == 1))
-				return true;
-
-	// Check from bishop
-	if (table->pieces[line][12] && table->isSquareOfTheSameColor(this, table->pieces[line][12]))
-		if (abs(table->pieces[line][12]->pos.x - pos.x) == abs(table->pieces[line][12]->pos.y - pos.y))
-			if (table->hasNoPiecesBetween_diagonal(table->pieces[line][12]->pos, pos))
-				return true;
-
-	if (table->pieces[line][13] && table->isSquareOfTheSameColor(this, table->pieces[line][13]))
-		if (abs(table->pieces[line][13]->pos.x - pos.x) == abs(table->pieces[line][13]->pos.y - pos.y))
-			if (table->hasNoPiecesBetween_diagonal(table->pieces[line][13]->pos, pos))
-				return true;
-
-	// Check from queen(s)
-    for (int i = 15; i < table->pieces[line].size(); i++)
-        if (table->pieces[line][i]) {
-            if (table->pieces[line][i]->pos.x == pos.x || table->pieces[line][i]->pos.y == pos.y)
-                if (table->hasNoPiecesBetween_axis(table->pieces[line][i]->pos, pos))
-                    return true;
-
-            if (table->isSquareOfTheSameColor(this, table->pieces[line][i]))
-                if (abs(table->pieces[line][i]->pos.x - pos.x) == abs(table->pieces[line][i]->pos.y - pos.y))
-                    if (table->hasNoPiecesBetween_diagonal(table->pieces[line][i]->pos, pos))
+    for (int j = 0; j < table->pieces[line].size(); j++)
+        if (table->pieces[line][j]) {
+            // Check from pawn
+            if (dynamic_cast<Pawn*>(table->pieces[line][j]))
+                if (((color == 'w' && table->pieces[line][j]->pos.x == pos.x + 1) ||
+                    (color == 'b' && table->pieces[line][j]->pos.x == pos.x - 1)) &&
+                    abs(table->pieces[line][j]->pos.y - pos.y) == 1)
                         return true;
+
+            // Check from rook
+            if (dynamic_cast<Rook*>(table->pieces[line][j]))
+                if (table->pieces[line][j]->pos.x == pos.x || table->pieces[line][j]->pos.y == pos.y)
+                    if (table->hasNoPiecesBetween_axis(table->pieces[line][j]->pos, pos))
+                        return true;
+
+            // Check from knight
+            if (dynamic_cast<Knight*>(table->pieces[line][j]))
+                if ((abs(table->pieces[line][j]->pos.x - pos.x) == 2 && abs(table->pieces[line][j]->pos.y - pos.y) == 1) ||
+                    (abs(table->pieces[line][j]->pos.y - pos.y) == 2 && abs(table->pieces[line][j]->pos.x - pos.x) == 1))
+                        return true;
+
+            // Check from bishop
+            if (dynamic_cast<Bishop*>(table->pieces[line][j]))
+                if (table->pieces[line][j] && table->isSquareOfTheSameColor(this, table->pieces[line][j]))
+                    if (abs(table->pieces[line][j]->pos.x - pos.x) == abs(table->pieces[line][j]->pos.y - pos.y))
+                        if (table->hasNoPiecesBetween_diagonal(table->pieces[line][j]->pos, pos))
+                            return true;
+
+            // Check from queen
+            if (dynamic_cast<Queen*>(table->pieces[line][j])) {
+                if (table->pieces[line][j]->pos.x == pos.x || table->pieces[line][j]->pos.y == pos.y)
+                    if (table->hasNoPiecesBetween_axis(table->pieces[line][j]->pos, pos))
+                        return true;
+
+                if (table->isSquareOfTheSameColor(this, table->pieces[line][j]))
+                    if (abs(table->pieces[line][j]->pos.x - pos.x) == abs(table->pieces[line][j]->pos.y - pos.y))
+                        if (table->hasNoPiecesBetween_diagonal(table->pieces[line][j]->pos, pos))
+                            return true;
+            }
         }
 
 	return false;
