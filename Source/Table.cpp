@@ -223,7 +223,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
 
             if (!piece)
                 continue;
-    
+
             if (dynamic_cast<Pawn*>(piece))
                 table->squares[i][j]->piece = new Pawn(*dynamic_cast<Pawn*>(piece));
             else if (dynamic_cast<Rook*>(piece))
@@ -236,7 +236,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
                 table->squares[i][j]->piece = new Knight(*dynamic_cast<Knight*>(piece));
             else if (dynamic_cast<King*>(piece))
                 table->squares[i][j]->piece = new King(*dynamic_cast<King*>(piece));
-    
+
             table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = table->squares[i][j]->piece;
         }
 
@@ -360,59 +360,6 @@ void Table::parseMove(const char* s) {
     movePiece(getPiece(from), to, op); // TODO completeaza cu q/r/b/n pentru promote de pion sau cu orice altceva daca nu se face promote
 }
 
-float Table::getTotalScore(char color) {
-    assert(color == 'w' || color == 'b' && "Unknown piece color");
-
-    float total = 0;
-    int line = color == 'w' ? 0 : 1;
-
-    for (ChessPiece* piece : pieces[line]) {
-        if (!piece)
-            continue;
-
-        if (dynamic_cast<King*>(piece)) {
-            if (piece->color == 'w')
-                total += posFact.whiteKing[piece->pos.x][piece->pos.y];
-            else
-                total += posFact.blackKing[piece->pos.x][piece->pos.y];
-        }
-        else if (dynamic_cast<Queen*>(piece)) {
-            if (piece->color == 'w')
-                total += posFact.whiteQueen[piece->pos.x][piece->pos.y];
-            else
-                total += posFact.blackQueen[piece->pos.x][piece->pos.y];
-        }
-        else if (dynamic_cast<Rook*>(piece)) {
-            if (piece->color == 'w')
-                total += posFact.whiteRook[piece->pos.x][piece->pos.y];
-            else
-                total += posFact.blackRook[piece->pos.x][piece->pos.y];
-        }
-        else if (dynamic_cast<Bishop*>(piece)) {
-            if (piece->color == 'w')
-                total += posFact.whiteBishop[piece->pos.x][piece->pos.y];
-            else
-                total += posFact.blackBishop[piece->pos.x][piece->pos.y];
-        }
-        else if (dynamic_cast<Knight*>(piece)) {
-            if (piece->color == 'w')
-                total += posFact.whiteKnight[piece->pos.x][piece->pos.y];
-            else
-                total += posFact.blackKnight[piece->pos.x][piece->pos.y];
-        }
-        else {
-            if (piece->color == 'w')
-                total += posFact.whitePawn[piece->pos.x][piece->pos.y];
-            else
-                total += posFact.blackPawn[piece->pos.x][piece->pos.y];
-        }
-
-        total += piece->score;
-    }
-
-    return total;
-}
-
 int Table::getDegreesOfFreedoom() {
     int noOfMoves = 0;
 
@@ -445,6 +392,18 @@ string Table::getARandomMoveV2() {
     default_random_engine generator;
 
     markAllPossibleMoves();
+
+    King* k = (King*)pieces[turn][14];
+    if (!k->wasMoved) {
+        Square* longCastleSq = squares[k->pos.x][k->pos.y + 2];
+        if (find(longCastleSq->possibleMoves.begin(), longCastleSq->possibleMoves.end(), k) != longCastleSq->possibleMoves.end())
+            return string("move ").append(coords2string(k->pos)).append(coords2string(vec2<int>{k->pos.x, k->pos.y + 2}));
+        
+        Square* shortCastleSq = squares[k->pos.x][k->pos.y - 2];
+        if (find(shortCastleSq->possibleMoves.begin(), shortCastleSq->possibleMoves.end(), k) != shortCastleSq->possibleMoves.end())
+            return string("move ").append(coords2string(k->pos)).append(coords2string(vec2<int>{k->pos.x, k->pos.y - 2}));
+    }
+
 
     bool atLeastOneMove = false;
     for (int i = 0; i < 8; ++i) {
@@ -523,15 +482,6 @@ int Table::getNoOfPieces(char color) {
     return no;
 }
 
-int Table::getTotalScore() {
-    int total = 0;
-
-    for (ChessPiece* piece : pieces[turn])
-        if (piece)
-            total += piece->score;
-
-    return total;
-}
 
 void Table::moveInAdvance(const char* moves, char color) {
     for (int i = 0; i < strlen(moves); i += 10) {
@@ -616,7 +566,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
     if (!isInside(pos))
         return true;
 
-    if (squares[pos.x][pos.y]->piece && 
+    if (squares[pos.x][pos.y]->piece &&
         (piece->color == squares[pos.x][pos.y]->piece->color ||
         dynamic_cast<King*>(squares[pos.x][pos.y]->piece)))
             return true;
@@ -626,7 +576,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
             return true;
     } else if (isKingInDanger(piece, pos))
         return true;
-        
+
     return false;
 }
 
@@ -683,7 +633,7 @@ vector<pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
     vector<pair<vec2<int>, vec2<int>>> allMoves;
 
     markAllPossibleMoves();
-    
+
     for (int i = 0; i < height; i++)
         for (int j = 0; j < width; j++)
             for (ChessPiece* piece : squares[i][j]->possibleMoves)
@@ -744,7 +694,7 @@ bool Table::canEnPassant(Pawn* pawn, vec2<int> pos) {
 
     squares[oldPos.x][pos.y]->piece = nullptr;
     pieces[turn == 0 ? 1 : 0][oldPiece->index] = nullptr;
-        
+
     bool inCheck = ((King*)pieces[turn][14])->isInCheck(this);
 
     pieces[turn == 0 ? 1 : 0][oldPiece->index] = oldPiece;
@@ -753,7 +703,7 @@ bool Table::canEnPassant(Pawn* pawn, vec2<int> pos) {
     pawn->pos = oldPos;
     squares[pos.x][pos.y]->piece = nullptr;
     squares[pawn->pos.x][pawn->pos.y]->piece = pawn;
-    
+
     return inCheck;
 }
 
