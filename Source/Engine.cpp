@@ -30,7 +30,7 @@ Engine::Engine() {
 
         if (strstr(buffer, "go")) {
             editMode = false;
-            string move = t->getARandomMove();
+            string move = t->getARandomMoveV2();
             cout << move << "\n";
             t->parseMove(move.c_str());
             continue;

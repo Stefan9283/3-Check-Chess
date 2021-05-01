@@ -64,8 +64,6 @@ public:
 
     int getDegreesOfFreedoom();
 
-    string getBestMove(int depth);
-
     string getARandomMove();
 
     string getARandomMoveV2();

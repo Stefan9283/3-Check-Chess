@@ -372,6 +372,17 @@ string Table::getARandomMove() {
     srand(time(NULL));
     markAllPossibleMoves();
 
+    King* k = (King*)pieces[turn][14];
+    if (!k->wasMoved) {
+        Square* longCastleSq = squares[k->pos.x][k->pos.y + 2];
+        if (find(longCastleSq->possibleMoves.begin(), longCastleSq->possibleMoves.end(), k) != longCastleSq->possibleMoves.end())
+            return string("move ").append(coords2string(k->pos)).append(coords2string(vec2<int>{k->pos.x, k->pos.y + 2}));
+
+        Square* shortCastleSq = squares[k->pos.x][k->pos.y - 2];
+        if (find(shortCastleSq->possibleMoves.begin(), shortCastleSq->possibleMoves.end(), k) != shortCastleSq->possibleMoves.end())
+            return string("move ").append(coords2string(k->pos)).append(coords2string(vec2<int>{k->pos.x, k->pos.y - 2}));
+    }
+
     int squareNo = rand() % (height * width);
 
     while (!squares[squareNo / height][squareNo % width]->possibleMoves.size())
@@ -479,7 +490,6 @@ int Table::getNoOfPieces(char color) {
 
     return no;
 }
-
 
 void Table::moveInAdvance(const char* moves, char color) {
     for (int i = 0; i < strlen(moves); i += 10) {
@@ -750,7 +760,7 @@ bool Table::canCastleLong(King* king) {
         isKingInDanger(king, vec2<int>{king->pos.x, king->pos.y - 3}))
             return false;
 
-    return false;
+    return true;
 }
 
 void Table::markPossibleMovesForPawn(Pawn* pawn) {

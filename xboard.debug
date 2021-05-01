@@ -1,0 +1,89 @@
+locale = C.UTF-8
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+recognized 'normal' (-1) as variant normal
+shuffleOpenings = 0
+shuffleOpenings = 0
+Version: xboard 4.9.1 + 3_Check_Chess ()
+Reset(1, 0) from gameMode 0
+recognized 'normal' (-1) as variant normal
+GameEnds(0, (null), 2)
+shuffleOpenings = 0
+StartChildProcess (dir=".") ./3_Check_Chess
+232 >first : xboard
+protover 2
+242 <first : feature sigint=0 sigterm=0 san=0 name=Maximuss
+242 >first : accepted sigint
+242 >first : accepted sigterm
+242 >first : accepted san
+242 >first : accepted name
+10234 >first : new
+random
+10234 >first : level 40 5 0
+10234 >first : post
+10234 >first : hard
+89027 >first : black
+89027 >first : time 30000
+89027 >first : otim 30000
+89027 >first : white
+book hit = (NULL)
+89027 >first : go
+nps: w=-1, b=-1
+89031 <first : move a2a4
+90408 >first : white
+90408 >first : time 29899
+90408 >first : otim 29999
+90408 >first : black
+book hit = (NULL)
+90408 >first : go
+nps: w=-1, b=-1
+90412 <first : move d7d5
+91443 >first : black
+91443 >first : time 29899
+91443 >first : otim 29899
+91443 >first : white
+book hit = (NULL)
+91443 >first : go
+nps: w=-1, b=-1
+91447 <first : move a4a5
+94040 >first : white
+94040 >first : time 29699
+94040 >first : otim 29899
+94040 >first : black
+book hit = (NULL)
+94040 >first : go
+nps: w=-1, b=-1
+94044 <first : move e7e6
+107420 >first : time 29699
+107420 >first : otim 28561
+book hit = (NULL)
+107420 >first : e2e3
+107435 <first : move f8c5
+109357 >first : black
+109357 >first : time 28399
+109357 >first : otim 29698
+109357 >first : white
+book hit = (NULL)
+109357 >first : go
+nps: w=-1, b=-1
+109361 <first : move d2d3
+110695 >first : white
+110695 >first : time 29599
+110695 >first : otim 28399
+110695 >first : black
+book hit = (NULL)
+110695 >first : go
+nps: w=-1, b=-1
+110699 <first : move c5e3
+111627 >first : black
+111627 >first : time 28399
+111627 >first : otim 29599
+111627 >first : white
+book hit = (NULL)
+111627 >first : go
+nps: w=-1, b=-1
+111631 <first : move f1e2
+GameEnds(29, xboard exit, 2)
+118492 >first : result * {xboard exit}
+118492 >first : force
+118492 >first : quit
