@@ -12,7 +12,7 @@ Engine::Engine() {
 
     while (true) {
         fflush(stdout);
-        fgets(buffer, 256, stdin);
+        char* res = fgets(buffer, 256, stdin);
 
         if (strstr(buffer, "xboard"))
             continue;
