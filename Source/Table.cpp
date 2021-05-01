@@ -91,8 +91,6 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos, char op) {
 
     if (dynamic_cast<Pawn*>(piece)) {
         if (!pos.x || pos.x == height - 1) {
-
-
             ChessPiece* newChesspiece = ((Pawn*)piece)->promotePawn(this, op);
 
             removePiece(piece);
