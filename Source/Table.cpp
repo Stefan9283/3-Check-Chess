@@ -9,6 +9,10 @@ Square::Square(char color, ChessPiece* piece) {
 }
 
 Table::Table() {
+    srand(time(nullptr));
+    
+    generator = default_random_engine(rand());
+
     for (int i = 0; i < height; i++) {
         vector<Square*> line;
 
@@ -398,8 +402,6 @@ string Table::getARandomMove() {
 }
 
 string Table::getARandomMoveV2() {
-    default_random_engine generator;
-
     markAllPossibleMoves();
 
     King* k = (King*)pieces[turn][14];

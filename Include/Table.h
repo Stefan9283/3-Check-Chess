@@ -24,6 +24,7 @@ public:
     int height = 8, width = 8;
     int orientation = 1, turn = 0;
 
+    default_random_engine generator;
 
     vector<vector<Square*>> squares;
     vector<vector<ChessPiece*>> pieces;
