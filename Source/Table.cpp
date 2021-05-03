@@ -396,7 +396,7 @@ string Table::getARandomMove() {
 
     string from = coords2string(squares[squareNo / height][squareNo % width]->possibleMoves[moveNo]->pos);
     string to = coords2string(vec2<int>(squareNo / height, squareNo % width));
-
+ 
     unmarkAllPossibleMoves();
     return string("move ").append(from).append(to);
 }
