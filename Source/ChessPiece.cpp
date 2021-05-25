@@ -1,5 +1,7 @@
 #include "ChessPiece.h"
 #include "Table.h"
+#include <fstream>
+
 
 ChessPiece::ChessPiece(char color, vec2<int> pos, int index) {
     assert((color == 'w' || color == 'b') && "Chess Piece color should be either (b)lack or (w)hite");
@@ -46,7 +48,7 @@ vector<PieceMove> King::getPositions(Table* t) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
     }
     return moves;
-} // {DONE}
+}
 
 Queen::Queen(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 9; abbreviation = 'Q';}
 vector<PieceMove> Queen::getPositions(Table* t) {
@@ -61,7 +63,7 @@ vector<PieceMove> Queen::getPositions(Table* t) {
     moves.insert(moves.begin(), bmoves.begin(), bmoves.end());
 
     return moves;
-} // {DONE}
+}
 
 Rook::Rook(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 5; abbreviation = 'R';}
 vector<PieceMove> Rook::getPositions(Table* t) {
@@ -106,7 +108,7 @@ vector<PieceMove> Rook::getPositions(Table* t) {
         i--;
     } // LEFT
     return moves;
-} // {DONE}
+}
 
 Bishop::Bishop(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 3; abbreviation = 'B';}
 vector<PieceMove> Bishop::getPositions(Table* t) {
@@ -166,7 +168,7 @@ vector<PieceMove> Bishop::getPositions(Table* t) {
     } // RIGHT DOWN
 
     return moves;
-} // {DONE}
+}
 
 Knight::Knight(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 3; abbreviation = 'N';}
 vector<PieceMove> Knight::getPositions(Table* t) {
@@ -207,7 +209,7 @@ vector<PieceMove> Knight::getPositions(Table* t) {
         moves.push_back(PieceMove{ v, t->getSquareScore(t->squares[v.x][v.y], color) });
 
     return moves;
-} // {DONE}
+}
 
 Pawn::Pawn(char color, vec2<int> pos, int index) : ChessPiece(color, pos, index) {score = 1; abbreviation = 'P';}
 vector<PieceMove> Pawn::getPositions(Table* t) {
@@ -233,9 +235,8 @@ vector<PieceMove> Pawn::getPositions(Table* t) {
             && t->squares[pos.x + 1 * direction][pos.y + 1 * direction]->piece && t->squares[pos.x + 1 * direction][pos.y + 1 * direction]->piece->color != color)
             moves.push_back(PieceMove{ vec2<int>{pos.x + 1 * direction, pos.y + 1 * direction}, t->getSquareScore(t->squares[pos.x + 1 * direction][pos.y + 1 * direction], color)});
         return moves;
-    } // {DONE}
+    }
 
-// TODO verifica asta
 ChessPiece* Pawn::promotePawn(Table* table, char op = 'q') {
     switch (op) {
         case 'q':
@@ -249,52 +250,59 @@ ChessPiece* Pawn::promotePawn(Table* table, char op = 'q') {
         default:
             assert("Pawn promote operation is not valid" && op);
     }
+    return nullptr;
 }
 
-// Functii Ovidiu
 bool King::isInCheck(Table* table) {
 	int line = color == 'w' ? 1 : 0;
 
-    for (int j = 0; j < table->pieces[line].size(); j++)
+    for (int j = 0; j < table->pieces[line].size(); j++){
         if (table->pieces[line][j]) {
             // Check from pawn
             if (dynamic_cast<Pawn*>(table->pieces[line][j]))
                 if (((color == 'w' && table->pieces[line][j]->pos.x == pos.x + 1) ||
                     (color == 'b' && table->pieces[line][j]->pos.x == pos.x - 1)) &&
-                    abs(table->pieces[line][j]->pos.y - pos.y) == 1)
+                    abs(table->pieces[line][j]->pos.y - pos.y) == 1) {
                         return true;
+					}
 
             // Check from rook
             if (dynamic_cast<Rook*>(table->pieces[line][j]))
                 if (table->pieces[line][j]->pos.x == pos.x || table->pieces[line][j]->pos.y == pos.y)
-                    if (table->hasNoPiecesBetween_axis(table->pieces[line][j]->pos, pos))
+                    if (table->hasNoPiecesBetween_axis(table->pieces[line][j]->pos, pos)) {
                         return true;
+					}
 
             // Check from knight
             if (dynamic_cast<Knight*>(table->pieces[line][j]))
                 if ((abs(table->pieces[line][j]->pos.x - pos.x) == 2 && abs(table->pieces[line][j]->pos.y - pos.y) == 1) ||
-                    (abs(table->pieces[line][j]->pos.y - pos.y) == 2 && abs(table->pieces[line][j]->pos.x - pos.x) == 1))
+                    (abs(table->pieces[line][j]->pos.y - pos.y) == 2 && abs(table->pieces[line][j]->pos.x - pos.x) == 1)){
                         return true;
+					}
 
             // Check from bishop
             if (dynamic_cast<Bishop*>(table->pieces[line][j]))
                 if (table->pieces[line][j] && table->isSquareOfTheSameColor(this, table->pieces[line][j]))
                     if (abs(table->pieces[line][j]->pos.x - pos.x) == abs(table->pieces[line][j]->pos.y - pos.y))
-                        if (table->hasNoPiecesBetween_diagonal(table->pieces[line][j]->pos, pos))
+                        if (table->hasNoPiecesBetween_diagonal(table->pieces[line][j]->pos, pos)){
                             return true;
+						}
 
             // Check from queen
             if (dynamic_cast<Queen*>(table->pieces[line][j])) {
                 if (table->pieces[line][j]->pos.x == pos.x || table->pieces[line][j]->pos.y == pos.y)
-                    if (table->hasNoPiecesBetween_axis(table->pieces[line][j]->pos, pos))
+                    if (table->hasNoPiecesBetween_axis(table->pieces[line][j]->pos, pos)){
                         return true;
+					}
 
                 if (table->isSquareOfTheSameColor(this, table->pieces[line][j]))
                     if (abs(table->pieces[line][j]->pos.x - pos.x) == abs(table->pieces[line][j]->pos.y - pos.y))
-                        if (table->hasNoPiecesBetween_diagonal(table->pieces[line][j]->pos, pos))
+                        if (table->hasNoPiecesBetween_diagonal(table->pieces[line][j]->pos, pos)){
                             return true;
+						}
             }
         }
+	}
 
 	return false;
 }

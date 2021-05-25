@@ -19,7 +19,7 @@ struct PositionFactor {
                               {-0.1, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2, -0.1},
                               { 0.2,  0.2,  0.0,  0.0,  0.0,  0.0,  0.2,  0.2},
                               { 0.2,  0.3,  0.1,  0.0,  0.0,  0.1,  0.3,  0.2} };
-     
+
     float whiteQueen[8][8] = { {-0.2 , -0.1 , -0.1 , -0.05, -0.05, -0.1 , -0.1, -0.2 },
                                {-0.1 ,  0.0 ,  0.0 ,  0.0 ,  0.0 ,  0.0 ,  0.0, -0.1 },
                                {-0.1 ,  0.0 ,  0.05,  0.05,  0.05,  0.05,  0.0, -0.1 },
@@ -30,7 +30,7 @@ struct PositionFactor {
                                {-0.2 , -0.1 , -0.1 , -0.05, -0.05, -0.1 , -0.1, -0.2 } };
 
     float whiteRook[8][8] = { { 0.0 , 0.0, 0.0, 0.0 ,  0.0 ,  0.0, 0.0,  0.0 },
-                              { 0.05, 0.1, 0.1, 0.1 ,  0.1 ,  0.1, 0.1,  0.0 }, 
+                              { 0.05, 0.1, 0.1, 0.1 ,  0.1 ,  0.1, 0.1,  0.0 },
                               {-0.05, 0.0, 0.0, 0.0 ,  0.0 ,  0.0, 0.0, -0.05},
                               {-0.05, 0.0, 0.0, 0.0 ,  0.0 ,  0.0, 0.0, -0.05},
                               {-0.05, 0.0, 0.0, 0.0 ,  0.0 ,  0.0, 0.0, -0.05},
@@ -105,8 +105,8 @@ struct PositionFactor {
 
     float blackKnight[8][8] = { {-0.5, -0.4 , -0.3 , -0.3 , -0.3 , -0.3 , -0.4 , -0.5},
                                 {-0.4, -0.2 ,  0.0 ,  0.05,  0.05,  0.0 , -0.2 , -0.4},
-                                {-0.3,  0.05,  0.1 ,  0.15,  0.15,  0.1 ,  0.05, -0.3}, 
-                                {-0.3,  0.05,  0.1 ,  0.15,  0.15,  0.1 ,  0.05, -0.3}, 
+                                {-0.3,  0.05,  0.1 ,  0.15,  0.15,  0.1 ,  0.05, -0.3},
+                                {-0.3,  0.05,  0.1 ,  0.15,  0.15,  0.1 ,  0.05, -0.3},
                                 {-0.3,  0.05,  0.15,  0.2 ,  0.2 ,  0.15,  0.05, -0.3},
                                 {-0.3,  0.0 ,  0.1 ,  0.15,  0.15,  0.1 ,  0.0 , -0.3},
                                 {-0.4, -0.2 ,  0.0 ,  0.0 ,  0.0 ,  0.0 , -0.2 , -0.4},
@@ -135,6 +135,8 @@ public:
 
 class Table {
 public:
+	int checks[2];
+
     int height = 8, width = 8;
     int orientation = 1, turn = 0;
 
@@ -147,7 +149,6 @@ public:
     Table();
     ~Table();
 
-    // Functii Stefan
     void movePiece(ChessPiece* piece, vec2<int> pos, char opt);
 
     void movePiece(ChessPiece* piece, const char* pos, char opt);
@@ -167,8 +168,6 @@ public:
     static int getSquareScore(Square* sq, char myColor);
 
     Table* createNewState(ChessPiece* piece = nullptr, vec2<int> pos = vec2<int>());
-    string pickAMove();
-    void printGameBoard(char perspective = 'w', bool fromZero = false, bool yLetters = true, int tabsCount = 0);
 
     void addMove2History(pair<vec2<int>, vec2<int>> move) {
         history.push_back({move});
@@ -176,7 +175,6 @@ public:
 
     vector<ChessPiece*> getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece = 1);
 
-    // Functii Ovidiu
     void parseMove(const char* s);
 
     float getTotalScore(char color);
@@ -190,7 +188,7 @@ public:
     string getARandomMoveV2();
 
     void castleShort(King* king);
-    
+
     void castleLong(King* king);
 
     int getNoOfPieces(char color);

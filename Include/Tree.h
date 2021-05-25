@@ -76,8 +76,6 @@ public:
 
     void deleteNodes(TreeNode* root);
 
-    void printTree(TreeNode* root, int level);
-
     void countNodes(TreeNode* root, int* no);
 
     pair<vec2<int>, vec2<int>> getBestChoice(int depth, int priority, float score);

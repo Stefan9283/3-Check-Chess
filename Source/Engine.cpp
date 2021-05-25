@@ -12,7 +12,7 @@ Engine::Engine() {
 
     while (true) {
         fflush(stdout);
-        fgets(buffer, 256, stdin);
+        char* res = fgets(buffer, 256, stdin);
 
         if (strstr(buffer, "xboard"))
             continue;
@@ -28,9 +28,12 @@ Engine::Engine() {
             continue;
         }
 
+
+
+
         if (strstr(buffer, "go")) {
             editMode = false;
-            string move = t->getARandomMove();
+            string move = t->getBestMove(3);
             cout << move << "\n";
             t->parseMove(move.c_str());
             continue;
@@ -47,10 +50,20 @@ Engine::Engine() {
         if (buffer[0] >= 'a' && buffer[0] <= 'z' && buffer[1] >= '1' && buffer[1] <= '9') {
             t->movePiece(buffer);
 
-            if (!editMode) {
-                string move = t->getARandomMove();
+            if (((King*)t->pieces[1][14])->isInCheck(t)){
+        		t->checks[1]++;
+			}
+
+            if (t->checks[1] >= 3)
+                cout << "resign" << "\n";
+            else if (!editMode) {
+                string move = t->getBestMove(3);
+
                 cout << move << "\n";
                 t->parseMove(move.c_str());
+				if (((King*)t->pieces[0][14])->isInCheck(t)){
+        			t->checks[0]++;
+				}
             }
         }
     }

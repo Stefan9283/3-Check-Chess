@@ -1,14 +1,12 @@
-#include <Algorithm.h>
-#include <AlgoPicker.h>
 #include "Table.h"
-
-#include "tools.h"
 
 Square::Square(char color, ChessPiece* piece) {
     this->color = color; this->piece = piece;
 }
 
 Table::Table() {
+    orientation = 1;
+
     for (int i = 0; i < height; i++) {
         vector<Square*> line;
 
@@ -20,6 +18,10 @@ Table::Table() {
 
         squares.push_back(line);
     }
+
+
+    checks[0] = 0;
+	checks[1] = 0;
 
     vector<ChessPiece*> white, black;
 
@@ -84,16 +86,15 @@ Table::~Table() {
     }
 }
 
-//Functii Stefan
 #pragma region pieces manuvering
 void Table::movePiece(ChessPiece* piece, vec2<int> pos, char op) {
     assert(piece && "Piece meant to be moved is null");
     assert(isInside(pos) && "Can't move piece outside the squares");
 
+
+
     if (dynamic_cast<Pawn*>(piece)) {
         if (!pos.x || pos.x == height - 1) {
-
-
             ChessPiece* newChesspiece = ((Pawn*)piece)->promotePawn(this, op);
 
             removePiece(piece);
@@ -138,6 +139,7 @@ void Table::movePiece(ChessPiece* piece, vec2<int> pos, char op) {
 
     addMove2History(make_pair(prev, pos));
     turn = 1 - turn;
+
 }
 void Table::movePiece(ChessPiece *piece, const char* pos, char op) {
     assert(strlen(pos) >= 2 && "A valid move position needs a line and a column");
@@ -201,17 +203,6 @@ string Table::coords2string(vec2<int> pos) const {
     return s.append(to_string(pos.x + 1));
 }
 
-string Table::pickAMove() {
-    AlgoPicker* picker = new TestPicker();
-    Algorithm* algo = picker->pickAlgorithm(this);
-    string move = "move ";
-    move = move + algo->pickMove(this);
-    vec2<int> start = string2coords(move.c_str() + 5), end = string2coords(move.c_str() + 7);
-    delete algo;
-    delete picker;
-    return move;
-}
-
 Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
     auto* table = new Table(*this);
 
@@ -224,7 +215,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
 
             if (!piece)
                 continue;
-    
+
             if (dynamic_cast<Pawn*>(piece))
                 table->squares[i][j]->piece = new Pawn(*dynamic_cast<Pawn*>(piece));
             else if (dynamic_cast<Rook*>(piece))
@@ -237,7 +228,7 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
                 table->squares[i][j]->piece = new Knight(*dynamic_cast<Knight*>(piece));
             else if (dynamic_cast<King*>(piece))
                 table->squares[i][j]->piece = new King(*dynamic_cast<King*>(piece));
-    
+
             table->pieces[piece->color == 'w' ? 0 : 1][piece->index] = table->squares[i][j]->piece;
         }
 
@@ -246,94 +237,6 @@ Table* Table::createNewState(ChessPiece* piece, vec2<int> pos) {
         table->movePiece(table->squares[piece->pos.x][piece->pos.y]->piece, pos, op);  // TODO completeaza cu q/r/b/n pentru promote de pion sau cu orice altceva daca nu se face promote
     }
     return table;
-}
-
-void Table::printGameBoard(char perspective, bool fromZero, bool yLetters, int tabsCount)  {
-    assert(perspective == 'r' || perspective == 'b' || perspective == 'w' && "Perpective (w)hite/(b)lack/(r)otated");
-    printTabs(tabsCount); cout << "##################################\n";
-    if (perspective == 'w') {
-
-        for (int i = height - 1; i >= 0; --i) {
-            printTabs(tabsCount);
-            if (fromZero) cout << i << "| ";
-                    else cout << i + 1 << "| ";
-
-                for (int j = 0; j < width; ++j)
-                    if (squares[i][j]->piece) {
-                        cout << " " << squares[i][j]->piece->abbreviation;
-                        cout << squares[i][j]->piece->color << " ";
-                    } else
-                        cout << " -- ";
-
-            cout << "\n";
-        }
-
-        printTabs(tabsCount); cout << "   -------------------------------\n";
-        printTabs(tabsCount); cout << "   ";
-
-        for (int j = 0; j < width; ++j)
-            if (fromZero)
-                cout << " " << j << "  ";
-            else if (yLetters) cout << " " << (char)('a' + j) << "  ";
-            else cout << " " << j + 1 << "  ";
-        cout << "\n";
-    } else if (perspective == 'b') {
-        printTabs(tabsCount);
-        for (int j = width - 1; j >= 0; --j)
-            if (fromZero)
-                cout << " " << j << "  ";
-            else if (yLetters) cout << " " << (char)('a' + j) << "  ";
-            else cout << " " << j + 1 << "  ";
-        cout << "\n";
-        printTabs(tabsCount); cout << " -----------------------------------\n";
-        for (int i = 0; i <= height - 1; ++i) {
-            printTabs(tabsCount);
-            for (int j = width - 1; j >= 0; --j) {
-                if (squares[i][j]->piece) {
-                    cout << " " << squares[i][j]->piece->abbreviation;
-                    cout << squares[i][j]->piece->color << " ";
-                }
-                else
-                    cout << " -- ";
-            }
-            if (fromZero) cout << " |" << i ;
-            else cout << " |" << i + 1 ;
-            cout << "\n";
-        }
-    } else {
-        printTabs(tabsCount);
-        cout << "    ";
-        for (int k = 0; k < width; ++k)
-            if (fromZero)
-                cout << " " << k << "  ";
-                else cout << " " << k + 1 << "  ";
-
-        cout << "\n";
-        printTabs(tabsCount);
-        cout << "   ";
-        for (int k = 0; k < width; ++k)
-            cout << "----";
-        cout << "\n";
-
-        for (int i = 0; i < width ; ++i) {
-            printTabs(tabsCount);
-            if (fromZero)
-                cout << " " << width - i - 1 << " |";
-            else if (yLetters) cout << " " << (char)('a' + i) << " |";
-            else cout << " " << width - i << " |";
-
-            for (int j = height - 1; j >= 0; --j) {
-                if (squares[j][i]->piece) {
-                    cout << " " << squares[j][i]->piece->abbreviation;
-                    cout << squares[j][i]->piece->color << " ";
-                }
-                else
-                    cout << " -- ";
-            }
-            cout << "\n";
-        }
-    }
-    printTabs(tabsCount); cout << "##################################\n";
 }
 
 vector<ChessPiece *> Table::getVulnerablePieces(int leastNumOfPiecesThatShouldBeAbleToTakeThePiece) {
@@ -353,7 +256,6 @@ vector<ChessPiece *> Table::getVulnerablePieces(int leastNumOfPiecesThatShouldBe
     return res;
 }
 
-// Functii Ovidiu
 void Table::parseMove(const char* s) {
     const char from[] = {s[strlen(s) - 4], s[strlen(s) - 3], '\0'};
     const char to[] = {s[strlen(s) - 2], s[strlen(s) - 1], '\0'};
@@ -429,7 +331,7 @@ string Table::getBestMove(int depth) {
     Tree* tree = new Tree(this);
     float bestScore = tree->MiniMax(tree->root, depth, -INF, INF, turn, true);
 
-    pair<vec2<int>, vec2<int>> bestMove = tree->getBestChoice(3, turn, bestScore);
+    pair<vec2<int>, vec2<int>> bestMove = tree->getBestChoice(depth, turn, bestScore);
 
     string from = coords2string(bestMove.first);
     string to = coords2string(bestMove.second);
@@ -631,7 +533,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
     if (!isInside(pos))
         return true;
 
-    if (squares[pos.x][pos.y]->piece && 
+    if (squares[pos.x][pos.y]->piece &&
         (piece->color == squares[pos.x][pos.y]->piece->color ||
         dynamic_cast<King*>(squares[pos.x][pos.y]->piece)))
             return true;
@@ -641,7 +543,7 @@ bool Table::isAnIllegalMove(ChessPiece* piece, vec2<int> pos) {
             return true;
     } else if (isKingInDanger(piece, pos))
         return true;
-        
+
     return false;
 }
 
@@ -698,7 +600,7 @@ vector<pair<vec2<int>, vec2<int>>> Table::getAllMoves() {
     vector<pair<vec2<int>, vec2<int>>> allMoves;
 
     markAllPossibleMoves();
-    
+
     for (int i = 0; i < height; i++)
         for (int j = 0; j < width; j++)
             for (ChessPiece* piece : squares[i][j]->possibleMoves)
@@ -759,7 +661,7 @@ bool Table::canEnPassant(Pawn* pawn, vec2<int> pos) {
 
     squares[oldPos.x][pos.y]->piece = nullptr;
     pieces[turn == 0 ? 1 : 0][oldPiece->index] = nullptr;
-        
+
     bool inCheck = ((King*)pieces[turn][14])->isInCheck(this);
 
     pieces[turn == 0 ? 1 : 0][oldPiece->index] = oldPiece;
@@ -768,7 +670,7 @@ bool Table::canEnPassant(Pawn* pawn, vec2<int> pos) {
     pawn->pos = oldPos;
     squares[pos.x][pos.y]->piece = nullptr;
     squares[pawn->pos.x][pawn->pos.y]->piece = pawn;
-    
+
     return inCheck;
 }
 

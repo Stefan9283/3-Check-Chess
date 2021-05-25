@@ -54,7 +54,7 @@ void TreeNode::movePieceOnState(MoveHistory move) {
         ((Rook*)piece)->wasMoved = true;
     else if (dynamic_cast<King*>(piece) && !((King*)piece)->wasMoved) {
         ((King*)piece)->wasMoved = true;
-            
+
         if (piece->color == 'w' && pos == vec2<int>(0, 6)) {
             table->castleShort((King*)piece);
             return;
@@ -89,7 +89,7 @@ void TreeNode::movePieceOnState(MoveHistory move) {
 void TreeNode::undoMoveOnState(MoveHistory move) {
     ChessPiece* piece = table->squares[move.pos.second.x][move.pos.second.y]->piece;
     vec2<int> pos = move.pos.first;
-      
+
     assert(piece && table->isInside(pos) && "Illegal piece or position!");
 
     if (dynamic_cast<Pawn*>(piece)) {
@@ -138,7 +138,7 @@ void TreeNode::undoMoveOnState(MoveHistory move) {
             table->pieces[piece->color == 'w' ? 1 : 0][deletedPieces.back().first->index] = deletedPieces.back().first;
             deletedPieces.pop_back();
         }
-        
+
     piece->pos = pos;
 
     table->history.pop_back();
@@ -173,27 +173,36 @@ float TreeNode::getBonus(bool maximizingPlayer) {
 
     if (receivesCheck())
         return maximizingPlayer ? 0.5 : -0.5;
-   
+
     return 0;
 }
 
 float TreeNode::getScoreFromTerminalState(bool maximizingPlayer) {
     if (maximizingPlayer) {
-        if (((King*)table->pieces[table->turn][14])->isInCheck(table))
-            return -INF;
-        
-        if (((King*)table->pieces[!table->turn][14])->isInCheck(table))
-            return INF;
-        
+
+        if (((King*)table->pieces[table->turn][14])->isInCheck(table)) {
+			table->checks[1-table->turn]++;
+			return -INF;
+		}
+
+        if (((King*)table->pieces[1-table->turn][14])->isInCheck(table)) {
+			table->checks[1-table->turn]++;
+			return INF;
+		}
+
         return 0;
-    } 
-    
-    if (((King*)table->pieces[table->turn][14])->isInCheck(table))
-        return INF;
-    
-    if (((King*)table->pieces[!table->turn][14])->isInCheck(table))
-        return -INF;
-    
+    }
+
+    if (((King*)table->pieces[table->turn][14])->isInCheck(table)) {
+		table->checks[1-table->turn]++;
+		return INF;
+	}
+
+    if (((King*)table->pieces[1-table->turn][14])->isInCheck(table)) {
+		table->checks[1-table->turn]++;
+		return -INF;
+	}
+
     return 0;
 }
 
@@ -335,7 +344,7 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
         }
 
         root->bestScore = maxScore + bonus;
-        return maxScore + bonus;
+        return root->bestScore;
     }
 
     float minScore = INF;
@@ -352,7 +361,7 @@ float Tree::MiniMax(TreeNode* root, int depth, float alpha, float beta, int prio
     }
 
     root->bestScore = minScore + bonus;
-    return minScore + bonus;
+    return root->bestScore;
 }
 
 float Tree::doExtraSearch(Table* table, int depth, int priority, bool maximizingPlayer) {
@@ -374,21 +383,6 @@ void Tree::deleteNodes(TreeNode* root) {
     delete root;
 }
 
-void Tree::printTree(TreeNode* root, int level) {
-    if (!root)
-        return;
-
-    for (int i = 0; i < root->moves.size(); i++)
-        root->movePieceOnState(root->moves[i]);
-
-    root->table->printGameBoard('w', false, true, level);
-
-    for (int i = root->moves.size() - 1; i >= 0; i--)
-        root->undoMoveOnState(root->moves[i]);
-
-    for (TreeNode* child : root->children)
-        printTree(child, level + 1);
-}
 
 void Tree::countNodes(TreeNode* root, int* no) {
     if (!root)
@@ -455,7 +449,7 @@ void Tree::setExtraSearchScores(TreeNode* root, int level, int depth, int priori
             root->movePieceOnState(root->moves[i]);
 
         root->bestScore = doExtraSearch(root->table, depth, priority, maximizingPlayer);
-            
+
         for (int i = root->moves.size() - 1; i >= 0; i--)
             root->undoMoveOnState(root->moves[i]);
 
